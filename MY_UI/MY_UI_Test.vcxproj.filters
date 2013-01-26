@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{f7ff92db-d765-492d-a20e-ae186d654378}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MY_UI_Test.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="Test_Helper.h">
+      <Filter>Example Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Camera_Example.h">
+      <Filter>Example Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MY_UI_Test.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="Test_Helper.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Text_Test.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_Camera_Example.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Values_Test.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Window_Test.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="3D_Functions.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Areas_Test.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Button_Test.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatTemplate.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tabs.cpp">
+      <Filter>Example Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
