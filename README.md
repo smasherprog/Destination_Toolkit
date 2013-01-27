@@ -51,6 +51,6 @@ Sky Dome: A working sky and sun demo. The dome is always positioned over the cam
 
 Sound_Lib?: Directx based sound engine. Simplifies loading and playing of music, sound effects, as well as handles 3d sounds. Still alot of functionality to implement here . . . stay tuned
 
-Threading_Example?: An example of my TASK based, threading library and how to use it. (this is outdated as of c++11 with async and future. If you want to see how it was done in the good ol days, check it out.)
+Threading_Example?: An example of my TASK based, threading library and how to use it. 
 
 Utilities_Lib?: This contains my network code, math code, threading code , as well as some other utilities… Hence the name: Utilities! 
