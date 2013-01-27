@@ -5,19 +5,11 @@ A tookit for video game development
 
 Destination is an free to use Game Programming Toolkit. The libraries that I make are free to use for any purpose.
 
-TO DOWNLOAD, get a SVN program -- I use Tortoise SVN http://tortoisesvn.net/ After installing it, create a new folder on your computer (anywhere). Right Click the folder, goto SVN checkout, for URL of the repository, enter http://destination.googlecode.com/svn/trunk/ and press ok. This will download the code. Each time I release a code change, you get it by right clicking on the folder and go to SVN Update which will check for any code changes. Happy Coding!
-
-Click here to see code updates
-
 FreeImage_Library?: There are 8 projects for this library. These were needed for the OpenGL MY_UI Renderer texture loader. You can check it out at http://freeimage.sourceforge.net/ for more information.
 
 Allocator_example: Custom memory allocator, which can improve allocation speed by 1000% vs the standard OS calls.
 
 Assimp_Lib?: A dump of the latest release of ASSIMP, which is by far the best Model Importing Library out there. For their License and information goto, http://assimp.sourceforge.net/
-
-Authentication Server: A working login server for the Client
-
-Client: A working MMO 3d client. I am currently in a rewrite of the client and most of the codebase. (DOES NOT BUILD Redoing the supporting libraries then I will come back to the client)
 
 Common_Game_Objects_Lib?: Any code that is shared between the Client and Game server goes into this library project.
 
@@ -26,8 +18,6 @@ crypto++Lib: An amazing free to use c++ encryption library. For their License an
 Fire_Demo?: A modified version of a fire demo from http://www.rastertek.com/tutindex.html
 
 Fireworks Particle Demo: A project to get myself into creating particle systems. This is taken from the Directx SDK.
-
-Game_Server?: A world server for the Client to run around in. Currently, in the middle of a rebuild.(DOES NOT BUILD Redoing the supporting libraries then I will come back to the client)
 
 Glew_Lib?: I was having problems with the Glew Library running correctly with different Builds. The correct DLL's were not being selected and so I decided it was easier to include the library. This library is needed for the OpenGL My_UI Renderer.
 
