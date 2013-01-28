@@ -28,6 +28,7 @@ PSPTNTIn VS(float3 position : Position, float2 texcoord : TexCoord, float3 norma
 	Out.position = mul(mul(float4(position, 1.0f), ObjectToWorld), ViewProjection);
 	return Out;
 }
+
 float4 PS(PSPTNTIn input): SV_Target0{
 	float4 outcolor = Slot0.Sample(sampler0, input.texcoord);
 	float3 Normal  = normalize(input.normal);

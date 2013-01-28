@@ -37,9 +37,31 @@ namespace Graphics{
 			"return Out;"
 			"}"
 			);
-
-		
-		
+		const std::string BV_Definitions = std::string(
+		"cbuffer CBuffer0{"
+			"float4x4 View_Proj;"
+			"float4 color;"
+		"};"
+		"struct VSOut{"
+			"float4 position : SV_Position;"
+			"float4 color: Color;"
+		"};\n"
+		);
+		const std::string BV_VS = std::string(
+			BV_Definitions+
+			"VSOut VS(float3 position :Position){"
+			"VSOut Out;"
+			"Out.position = mul(float4(position, 1.0f), View_Proj);"
+			"Out.color = color;"
+			"return Out;"
+			"}"
+			);
+		const std::string BV_PS = std::string(
+			BV_Definitions+
+			"float4 PS(VSOut inp): SV_Target0{"
+				"return inp.color;"
+			"}"
+			);
 
 		const std::string NormalBumpConverterPS = std::string(
 			FullScreenQuadDefinitions +

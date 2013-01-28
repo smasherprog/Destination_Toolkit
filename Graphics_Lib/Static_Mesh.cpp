@@ -75,21 +75,29 @@ void Static_Mesh::Generate_BV(){
 	do{	Bounding_Volume.Add(Vertices[i]); } while(++i!=Vertices.size());
 	Bounding_Volume.Init();
 }
-float Static_Mesh::RayIntersect(const vec3& rayorig, const vec3& raydir) const {
+float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const {
 	mat4 inverseW(GetWorld());
 	inverseW.inverse();
 	vec3 org(rayorig*inverseW), di(raydir);// transform these to the mesh's space so the checks are in object space, not world space
 	TransformNormal(di, inverseW);
 	// do all checks in OBJECT SPACE!!!
-	di*=20000.0f;
+	di*=20000.0f;//make sure the ray is long enough
 	if(Bounding_Volume.RayIntersect(org, di) == INFINITY) return INFINITY;// did not hit the aabb, therefore, we did not hit the object
-	if(Index_Stride == 4){
-		return RayTriangleIntersect(org, di, &Vertices[0], reinterpret_cast<const uint32_t*>(&Indices[0]),Indices.size()*2);
+	if(IB.Stride == 4){
+		return RayTriangleIntersect(org, di, &Vertices[0], reinterpret_cast<const uint32_t*>(&Indices[0]),Indices.size()/2);
 	} else {
 		return RayTriangleIntersect(org, di, &Vertices[0],&Indices[0],Indices.size());
 	}
 }
-
+float Static_Mesh::Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) const {
+	mat4 inverseW(GetWorld());
+	inverseW.inverse();
+	vec3 org(rayorig*inverseW), di(raydir);// transform these to the mesh's space so the checks are in object space, not world space
+	TransformNormal(di, inverseW);
+	// do all checks in OBJECT SPACE!!!
+	di*=20000.0f;//make sure the ray is long enough
+	return Bounding_Volume.RayIntersect(org, di);
+}
 bool Static_Mesh::Load(const std::string& file){
 	OUTPUT_DEBUG_MSG("Static_Mesh::Load file: '" + file+"'");
 	if(!FileExists(file)) {
@@ -120,13 +128,13 @@ bool Static_Mesh::Load_Assimp(const std::string& file){
 		numverts+=load->mMeshes[i]->mNumVertices;
 		numindices+=load->mMeshes[i]->mNumFaces*3;
 	}
-	Index_Stride=2;
-	if(numverts >= 65536) Index_Stride=4;
+	IB.Stride=2;
+	if(numverts >= 65536) IB.Stride=4;
 
 	std::vector<Vertex_Types::Tex_Norm> texnorm(numverts);
 	std::vector<vec3> tang(numverts);
 	Vertices.resize(numverts);
-	Indices.resize((Index_Stride/2)*numindices);
+	Indices.resize((IB.Stride/2)*numindices);
 	std::vector<Vertex_Types::Pos_Tex_Norm_Tang> tempverts(numverts);
 
 	for (unsigned int i = 0; i < load->mNumMeshes;++i){
@@ -160,7 +168,7 @@ bool Static_Mesh::Load_Assimp(const std::string& file){
 			tempverts[x + currentvertex].Tang = *reinterpret_cast<vec3*>(&mesh->mTangents[x]);
 		}
 		// check whether we can use 16 bit indices for our format... the ASSIMPOBLARBLA uses 32 bit indices for all theirs..
-		if (Index_Stride == 4){
+		if (IB.Stride == 4){
 			uint32_t* pbData = reinterpret_cast<uint32_t*>(&Indices[currentindex]);
 			for (unsigned int x = 0; x < mesh->mNumFaces;++x){
 				for (unsigned int a = 0; a < 3 ;++a) {
@@ -221,9 +229,9 @@ bool Static_Mesh::Load_Assimp(const std::string& file){
 		return false;
 	}
 	VB[0].Create(currentvertex, sizeof(Vertex_Types::Pos_Tex_Norm_Tang), VERTEX_BUFFER, IMMUTABLE, CPU_NONE, &tempverts[0] );
-	IB.Create(currentindex, Index_Stride, INDEX_BUFFER, IMMUTABLE, CPU_NONE, &Indices[0]); // create index buffer!
+	IB.Create(currentindex, IB.Stride, INDEX_BUFFER, IMMUTABLE, CPU_NONE, &Indices[0]); // create index buffer!
 	OUTPUT_DEBUG_MSG("Finished Loading the Mesh");
-	FileName =file;
+	Name=FileName =file;
 	return true;
 }
 bool Static_Mesh::Load_MyFormat(const std::string& file){
@@ -280,6 +288,16 @@ bool Static_Mesh::Save(const std::string& file){
 	}
 	FileName = file;
 	return true;
+}
+void Static_Mesh::Draw_BV(const mat4& view, const mat4& proj) {
+	mat4 bvscal, bvtrans;
+	vec3 maxbv(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize());
+	bvscal.setupScale(maxbv);
+
+	vec3 offset = Bounding_Volume.Max - (maxbv/2.0f);
+	bvtrans.setupTranslation(offset);
+	mat4 w = bvscal *bvtrans*Scaling*Rotation * Translation;
+	Graphics::Draw_AABV(view, proj, w);
 }
 void Static_Mesh::Draw(const mat4& view, const mat4& proj){
 	Graphics::SetTopology(PRIM_TRIANGLELIST);

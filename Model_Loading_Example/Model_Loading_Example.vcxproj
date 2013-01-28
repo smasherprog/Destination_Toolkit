@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cD3DApp.h" />
+    <ClInclude Include="Mesh_Container.h" />
     <ClInclude Include="Mesh_UI.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UI_WorldSelector.h" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="cD3DApp.cpp" />
     <ClCompile Include=".\Demo.cpp" />
+    <ClCompile Include="Mesh_Container.cpp" />
     <ClCompile Include="Mesh_UI.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

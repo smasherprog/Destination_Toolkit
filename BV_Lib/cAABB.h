@@ -14,7 +14,6 @@ public:
 	cAABB(vec3& min, vec3& max);
 	cAABB(const cSphere& shp);
 
-	cAABB GetAABB(){ return *this; }
 	void Centroid(vec3* p) const{ *p=Min+Max; *p*=.5f;}
 	void HalfDiag(vec3* p) const{ *p=Max-Min; *p*=.5f; }
 	void CreateDefault(){ clear(); Min = vec3(-1, -1, -1); Max = vec3(1, 1, 1); Init(); }
@@ -31,7 +30,7 @@ public:
 	bool Intersect(const Plane& n) const;
 	bool Intersect(const cSphere& sphere) const;
 	bool Intersect(const cAABB& A, cAABB* boxintersect) const;
-	bool Intersect(const vec3& pos, float radius) const{ return cSphere::Insertsect(pos, radius); }// the ray and the ray origin are assumed to be within the BV's space
+	bool Intersect(const vec3& pos, float radius) const{ return cSphere::Insertsect(pos, radius); }// the ray and the ray origin are assumed to be in the same space
 	bool Intersect(const vec4& pos) const;
 	//RayIntersect expects rayDir to be not normalized, meaning if you want to test for an aabb hit, you must scale the ray to ensure its long enough to hit it
 	float RayIntersect(const vec3& rayOrg, const vec3& rayDir) const{ return RayAABBIntersect(Min, Max, rayOrg, rayDir); }// the ray and the ray origin are assumed to be within the BV's space

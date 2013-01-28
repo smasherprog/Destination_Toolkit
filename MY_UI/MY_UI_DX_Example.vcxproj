@@ -172,7 +172,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MY_UI_Test.h" />
-    <ClInclude Include="Objects_3d.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Test_Helper.h" />
     <ClInclude Include="UI_Camera_Example.h" />
@@ -183,7 +182,6 @@
     <ClCompile Include="Button_Test.cpp" />
     <ClCompile Include="ChatTemplate.cpp" />
     <ClCompile Include="MY_UI_Test.cpp" />
-    <ClCompile Include="Objects_3d.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

@@ -173,6 +173,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="List_Box.h" />
     <ClInclude Include="MY_UI_Camera.h" />
+    <ClInclude Include="Objects_3d.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="RadioButton.h" />
     <ClInclude Include="Resizable.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="List_Box.cpp" />
     <ClCompile Include="MY_UI_Camera.cpp" />
+    <ClCompile Include="Objects_3d.cpp" />
     <ClCompile Include="PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PCH.h</PrecompiledHeaderFile>

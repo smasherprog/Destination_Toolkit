@@ -71,14 +71,8 @@ void Base_Camera::PerFrame(float dt){
 	Forward( Walking *dt );// normal walk speed
 	Strafe( Strafing * dt);
 
-	if(Rotating != 0.0f){
-		dt *= Rotating;
-		mat4 R;
-		R.setupRotateY(dt);
-		TransformNormal(Right, R);
-		TransformNormal(Up, R);
-		TransformNormal(Look, R);
-	}
+	if(Rotating != 0.0f) Heading(dt *= Rotating);
+	
 	Proj.setupProject(Screen_Fov, Screen_Aspect, NearPlane, FarPlane);// regular camera....
 	VP = View * Proj;// saves a few calculations, classes can access VP instead of mutliplying over and over
 	InvView= View;
@@ -114,14 +108,15 @@ void Base_Camera::Pitch(float radians){
 	mat4 R;
 	radians*=Look_Sentitivity;
 	R.setupRotate(Right, radians);
-	TransformNormal(Up, R);
-	TransformNormal(Look, R);
+	Up*=R;
+	Look*=R;
 }
+//heading and yaw are used interchangeably, and are the same
 void Base_Camera::Heading(float radians){
 	mat4 R;
 	radians*=Look_Sentitivity;
 	R.setupRotate(Up, radians);
-	TransformNormal(Look, R);
-	TransformNormal(Right, R);
+	Look*=R;
+	Right*=R;
 }
 

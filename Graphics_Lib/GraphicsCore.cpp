@@ -4,6 +4,8 @@
 #include "Shaders.h"
 #include "../Utilities/My_Timer.h"
 #include "D3Dcompiler.h"
+
+
 //Internals
 std::vector<Graphics::Internal::OnResizeCB_S> Graphics::Internal::OnResizeCallBacks;
 Primitives Graphics::Internal::CurrentTopology = PRIM_UNDEFINED;// a PRIM_UNDEFINED is not supported so it will set the first time through
@@ -63,8 +65,10 @@ unsigned int Graphics::BlendState::CurrentMask=0;
 //rasterizerstates
 ID3D11RasterizerState* Graphics::RasterizerState::CurrentState=0;
 
-Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough;
-Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur;
+Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough, Graphics::Shaders::VS_BV;
+Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur, Graphics::Shaders::PS_BV;
+Graphics::Buffer Graphics::Shaders::VS_BV_Cbuffer0, Graphics::Shaders::VS_BV_VB, Graphics::Shaders::VS_BV_IB;
+
 Graphics::SamplerState Graphics::Samplers::Nearest, Graphics::Samplers::Linear, Graphics::Samplers::BiLinear, Graphics::Samplers::TriLinear, Graphics::Samplers::Anisotropic;
 Graphics::SamplerState Graphics::Samplers::NearestClampUVW, Graphics::Samplers::LinearClampUVW, Graphics::Samplers::BiLinearClampUVW, Graphics::Samplers::TriLinearClampUVW, Graphics::Samplers::AnisotropicClampUVW;
 Graphics::Texture Graphics::Textures::RT_Base, Graphics::Textures::RT_Normal, Graphics::Textures::RT_DepthStencil, Graphics::Textures::RT_Depth, Graphics::Textures::RT_BackBufferTexture;
@@ -294,15 +298,15 @@ void Graphics::VertexShader::CreateInputLayout(const FormatDesc* formatDesc, con
 	CompiledShader.resize(0);
 	CachedLayouts[Hash_Key] = InputLayout;
 }
-void Graphics::VertexShader::SetResource(Texture* tex, unsigned int slot) { 
+void Graphics::VertexShader::SetResource(const Texture* tex, unsigned int slot)const  { 
 	if(tex == 0) Internal::DeviceContext->VSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->VSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::VertexShader::SetResource(Buffer* tex, unsigned int slot) { 
+void Graphics::VertexShader::SetResource(const Buffer* tex, unsigned int slot)const  { 
 	if(tex == 0) Internal::DeviceContext->VSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->VSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::VertexShader::SetSampler(const SamplerState& sampler, unsigned int slot){
+void Graphics::VertexShader::SetSampler(const SamplerState& sampler, unsigned int slot)const {
 	if((CurrentSamplerSlot != slot) | (sampler.Sampler != CurrentSampler)){
 		Internal::DeviceContext->VSSetSamplers(slot, 1, &sampler.Sampler); 
 		CurrentSamplerSlot= slot;
@@ -310,7 +314,7 @@ void Graphics::VertexShader::SetSampler(const SamplerState& sampler, unsigned in
 	}
 }
 
-void Graphics::VertexShader::SetConstantBuffer(Buffer& buffer, unsigned int slot) const{
+void Graphics::VertexShader::SetConstantBuffer(const Buffer& buffer, unsigned int slot) const{
 	Internal::DeviceContext->VSSetConstantBuffers(slot, 1, &buffer.Data);
 }
 void Graphics::VertexShader::Bind() const {
@@ -446,22 +450,22 @@ void Graphics::GeometryShader::CompileShaderFromMemory(std::string str, FormatDe
 	}
 }
 
-void Graphics::GeometryShader::SetResource(Texture* tex, unsigned int slot) {
+void Graphics::GeometryShader::SetResource(const Texture* tex, unsigned int slot)const  {
 	if(tex == 0) Internal::DeviceContext->GSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->GSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::GeometryShader::SetResource(Buffer* tex, unsigned int slot) { 
+void Graphics::GeometryShader::SetResource(const Buffer* tex, unsigned int slot) const { 
 	if(tex == 0) Internal::DeviceContext->GSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->GSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::GeometryShader::SetSampler(const SamplerState& sampler, unsigned int slot){
+void Graphics::GeometryShader::SetSampler(const SamplerState& sampler, unsigned int slot)const {
 	if((CurrentSamplerSlot != slot) | (sampler.Sampler != CurrentSampler)){
 		Internal::DeviceContext->GSSetSamplers(slot, 1, &sampler.Sampler); 
 		CurrentSamplerSlot= slot;
 		CurrentSampler = sampler.Sampler;
 	}
 }
-void Graphics::GeometryShader::SetConstantBuffer(Buffer& buffer, unsigned int slot ) const{
+void Graphics::GeometryShader::SetConstantBuffer(const Buffer& buffer, unsigned int slot ) const{
 	Internal::DeviceContext->GSSetConstantBuffers(slot, 1, &buffer.Data);
 }
 void Graphics::GeometryShader::Bind() const { 
@@ -534,22 +538,22 @@ void Graphics::HullShader::CompileShaderFromMemory(std::string str, std::string 
 		CachedShader[Hash_Key] = Shader;
 	}
 }
-void Graphics::HullShader::SetResource(Texture* tex, unsigned int slot) {
+void Graphics::HullShader::SetResource(const Texture* tex, unsigned int slot)const  {
 	if(tex == 0) Internal::DeviceContext->HSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->HSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::HullShader::SetResource(Buffer* tex, unsigned int slot) { 
+void Graphics::HullShader::SetResource(const Buffer* tex, unsigned int slot)const  { 
 	if(tex == 0) Internal::DeviceContext->HSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->HSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::HullShader::SetSampler(const SamplerState& sampler, unsigned int slot){
+void Graphics::HullShader::SetSampler(const SamplerState& sampler, unsigned int slot)const {
 	if((CurrentSamplerSlot != slot) | (sampler.Sampler != CurrentSampler)){
 		Internal::DeviceContext->HSSetSamplers(slot, 1, &sampler.Sampler); 
 		CurrentSamplerSlot= slot;
 		CurrentSampler = sampler.Sampler;
 	}
 }
-void Graphics::HullShader::SetConstantBuffer(Buffer& buffer, unsigned int slot) const{
+void Graphics::HullShader::SetConstantBuffer(const Buffer& buffer, unsigned int slot) const{
 	Internal::DeviceContext->HSSetConstantBuffers(slot, 1, &buffer.Data);
 }
 void Graphics::HullShader::Bind() const { 
@@ -623,22 +627,22 @@ void Graphics::DomainShader::CompileShaderFromMemory(std::string str, std::strin
 		CachedShader[Hash_Key] = Shader;
 	}
 }
-void Graphics::DomainShader::SetResource(Texture* tex, unsigned int slot) {
+void Graphics::DomainShader::SetResource(const Texture* tex, unsigned int slot)const  {
 	if(tex == 0) Internal::DeviceContext->DSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->DSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::DomainShader::SetResource(Buffer* tex, unsigned int slot) { 
+void Graphics::DomainShader::SetResource(const Buffer* tex, unsigned int slot)const  { 
 	if(tex == 0) Internal::DeviceContext->DSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->DSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::DomainShader::SetSampler(const SamplerState& sampler, unsigned int slot){
+void Graphics::DomainShader::SetSampler(const SamplerState& sampler, unsigned int slot)const {
 	if((CurrentSamplerSlot != slot) | (sampler.Sampler != CurrentSampler)){
 		Internal::DeviceContext->DSSetSamplers(slot, 1, &sampler.Sampler); 
 		CurrentSamplerSlot= slot;
 		CurrentSampler = sampler.Sampler;
 	}
 }
-void Graphics::DomainShader::SetConstantBuffer(Buffer& buffer, unsigned int slot ) const{
+void Graphics::DomainShader::SetConstantBuffer(const Buffer& buffer, unsigned int slot ) const{
 	Internal::DeviceContext->DSSetConstantBuffers(slot, 1, &buffer.Data);
 }
 void Graphics::DomainShader::Bind() const { 
@@ -710,22 +714,22 @@ void Graphics::PixelShader::CompileShaderFromMemory(std::string str, std::string
 		CachedShader[Hash_Key] = Shader;
 	}
 }
-void Graphics::PixelShader::SetResource(Texture* tex, unsigned int slot) {
+void Graphics::PixelShader::SetResource(const Texture* tex, unsigned int slot)const  {
 	if(tex == 0) Internal::DeviceContext->PSSetShaderResources(slot, 0, 0); 
 	else Internal::DeviceContext->PSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::PixelShader::SetResource(Buffer* tex, unsigned int slot) { 
+void Graphics::PixelShader::SetResource(const Buffer* tex, unsigned int slot)const  { 
 	if(tex == 0) Internal::DeviceContext->PSSetShaderResources(slot, 1, 0); 
 	else Internal::DeviceContext->PSSetShaderResources(slot, 1, &tex->Srv); 
 }
-void Graphics::PixelShader::SetSampler(const SamplerState& sampler, unsigned int slot) {
+void Graphics::PixelShader::SetSampler(const SamplerState& sampler, unsigned int slot) const {
 	assert(slot<8);
 	if(sampler.Sampler != CurrentSampler[slot]){
 		Internal::DeviceContext->PSSetSamplers(slot, 1, &sampler.Sampler); 
 		CurrentSampler[slot] = sampler.Sampler;
 	}
 }
-void Graphics::PixelShader::SetConstantBuffer(Buffer& buffer, unsigned int slot) const{
+void Graphics::PixelShader::SetConstantBuffer(const Buffer& buffer, unsigned int slot) const{
 	Internal::DeviceContext->PSSetConstantBuffers(slot, 1, &buffer.Data);
 }
 void Graphics::PixelShader::Bind() const { 
@@ -1855,10 +1859,15 @@ void Graphics::Internal::Init(int x, int y, HWND wnd){
 	Shaders::VS_PreHSPassThrough.CreateInputLayout(layers, 1);
 	Shaders::VS_FullScreenQuadWOne.CompileShaderFromMemory(Shader_Defines::FullScreenQuadWOneVS);
 	Shaders::VS_FullScreenQuadWOne.CreateInputLayout(layers, 1);
+	Shaders::VS_BV.CompileShaderFromMemory(Shader_Defines::BV_VS);
+	Shaders::VS_BV.CreateInputLayout(layers, 1);
+
+	Shaders::VS_BV_Cbuffer0.Create(1, sizeof(mat4) + sizeof(vec4), CONSTANT_BUFFER);
+	CreateAABVBuffers();
 
 	Shaders::PS_NormalBumpConverter.CompileShaderFromMemory(Shader_Defines::NormalBumpConverterPS);
 	Shaders::PS_Blur.CompileShaderFromMemory(Shader_Defines::Blur_PS);
-
+	Shaders::PS_BV.CompileShaderFromMemory(Shader_Defines::BV_PS);
 
 	//init the standard render targets
 	unsigned int width(x), height(y);
@@ -1921,9 +1930,15 @@ void Graphics::Internal::DeInit(){
 	Shaders::VS_FullScreenQuad.Destroy();
 	Shaders::VS_FullScreenQuadWOne.Destroy();
 	Shaders::VS_PreHSPassThrough.Destroy();
+	Shaders::VS_BV.Destroy();
+
+	Shaders::VS_BV_Cbuffer0.Destroy();
+
 	Shaders::PS_NormalBumpConverter.Destroy();
 	Shaders::PS_Blur.Destroy();
+	Shaders::PS_BV.Destroy();
 
+	DestroyAABBBuffers();
 	//destroy the textures
 	Textures::RT_Base.Destroy();
 	Textures::RT_Normal.Destroy();
@@ -1998,4 +2013,56 @@ void Graphics::Internal::OnResize(int x, int y){
 	for(auto i(Internal::OnResizeCallBacks.begin()); i !=Internal::OnResizeCallBacks.end(); i++){
 		i->func(x, y);
 	}
+}
+
+
+void Graphics::CreateAABVBuffers(){
+	vec3 points[] = {
+		vec3(.5f, .5f, .5f),
+		vec3(.5f,-.5f,.5f),
+		vec3(.5f, -.5f, -.5f),
+		vec3(.5f, .5f, -.5f),
+
+		vec3(-.5f, .5f, .5f),
+		vec3(-.5f,-.5f, .5f),
+		vec3(-.5f, -.5f, -.5f),
+		vec3(-.5f, .5f, -.5f),
+		vec3(-.5f, .5f, -.5f)
+	};
+	uint16_t inds[] = {0,1,2,3,0,4,5,6, 7,4, 0, 5, 1, 6, 2, 7, 3,4};
+	Shaders::VS_BV_VB.Create(sizeof(points)/sizeof(vec3), sizeof(vec3), BufferType::VERTEX_BUFFER, DEFAULT, CPU_NONE, points);
+	Shaders::VS_BV_IB.Create(sizeof(inds)/sizeof(uint16_t), sizeof(uint16_t), BufferType::INDEX_BUFFER, DEFAULT, CPU_NONE, inds);
+}
+void Graphics::DestroyAABBBuffers(){
+	Shaders::VS_BV_IB.Destroy();
+	Shaders::VS_BV_VB.Destroy();
+}
+
+void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world){
+	Graphics::SetTopology(PRIM_LINE_STRIP);
+
+	Graphics::DepthStates::DepthTest.Bind();
+	Graphics::RasterizerStates::CullNone.Bind();
+	Graphics::BlendStates::No_Blend.Bind();
+
+	Shaders::VS_BV.Bind();
+	Shaders::PS_BV.Bind();
+
+	struct tempstruct{
+		mat4 vp;
+		vec4 color;
+	};
+	tempstruct t;
+	t.vp = world*view*proj;
+	t.vp.Transpose();
+	t.color = vec4(1.0f, 0, 0, 1);//red
+	Shaders::VS_BV_Cbuffer0.Update(&t);
+	Shaders::VS_BV.SetConstantBuffer(Shaders::VS_BV_Cbuffer0);
+
+	Shaders::VS_BV_IB.BindAsIndexBuffer();
+	Shaders::VS_BV_VB.BindAsVertexBuffer();
+	
+
+	DrawIndexed(0, Shaders::VS_BV_IB.Size);
+	
 }

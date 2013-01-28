@@ -37,7 +37,6 @@
     <ClCompile Include="Window_Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects_3d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MY_UI_Test.h">
@@ -52,7 +51,6 @@
     <ClInclude Include="UI_Camera_Example.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects_3d.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

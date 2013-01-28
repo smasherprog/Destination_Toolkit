@@ -18,7 +18,7 @@ public:
 	
 	void GetContactPoint(const vec3 &raydir, const vec3& rayorigin, vec3& outraydir, vec3& outrayorigin);
 	void GetCorners(vec3* arr)  const; // the array is assumed to always have 8 slots
-	cAABB GetAABB() { return cAABB::GetAABB(); }
+
 	quat Rot;
 	mat4 MatRot, World, InvWorld;
 };

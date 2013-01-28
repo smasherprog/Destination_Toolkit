@@ -10,10 +10,10 @@ UI_Camera::~UI_Camera(){
 	MY_UI::GetApplicationLayer()->SetCamera(0);
 	delete Camera;
 }
-UI_Camera::UI_Camera(Base_Camera* camera) : cWidgetBase(0){
+UI_Camera::UI_Camera(Base_Camera* camera) : cWidgetBase(0), Camera(0){
 	Self_Counter+=1;
 	assert(Self_Counter==1);
-	Camera = camera;
+	Set_Camera(camera);
 	SetControlBounds(MY_UI::Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
 	SetClientBounds(MY_UI::Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
 	SetDraggable(true);
@@ -26,7 +26,10 @@ void UI_Camera::MouseMoved(){
 		Camera->Heading(Screen_x_Pixels_To_Radians(Delta_Mousex, Camera->Screen_Fov, Camera->Screen_Width, Camera->Screen_Aspect));
 	}
 }
-
+void UI_Camera::Set_Camera(Base_Camera* c){
+	delete Camera;
+	Camera=c;
+}
 void UI_Camera::KeyDown(){// no need to call the lower version, this  has no need for that functionality
 
 	switch(Current_Key){

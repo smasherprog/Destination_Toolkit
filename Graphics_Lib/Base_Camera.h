@@ -44,7 +44,7 @@ public:
 	//Pitch is the amount of radians of movement ABOUT the x axis. You can visualize this as nodding your head yes. That motion is Pitch
 	virtual void Pitch(float radians);
 	//heading is the amount of radians of movment ABOUT the y axis. You can visual this as moving your head left to right. If you answer NO to a question using a head gesture, this is the movment of Heading.
-	virtual void Heading(float radians);
+	virtual void Heading(float radians);//heading is also known as Yaw
 	
 	//No yaw here because I am not creating a camera for a flight sim. This is a camera as would be for a human walking on the ground. Yaw
 	//Yaw would be tilting your head to the left or to right.

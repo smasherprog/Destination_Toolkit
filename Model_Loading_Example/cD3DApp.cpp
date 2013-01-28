@@ -7,10 +7,11 @@
 #include "../MY_UI/cWidgetSkin.h"
 #include "../MY_UI/Text.h"
 #include "../Graphics_Lib/UI_Camera.h"
-#include "../Graphics_Lib/Base_Mesh.h"
+#include "UI_WorldSelector.h"
 #include "Mesh_UI.h"
 #include "../assimp/include/assimp/cimport.h"
-#include "../Graphics_Lib/Static_Mesh.h"
+
+#include "Mesh_Container.h"
 
 D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, unsigned int width) : cBaseD3D(hInstance, appname, height, width) {
 
@@ -24,7 +25,8 @@ D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, un
 	Frame_Stats = new MY_UI::Controls::Text(root);
 	Frame_Stats->SetPos(5, 5);
 	Frame_Stats->SetColor(MY_UI::Utilities::White);
-	UICamera = new UI_Camera(new Base_Camera());
+
+	UICamera = new UI_Camera(new Base_Camera());//ui camera will delete the base camera
 	// set the camera up
 	UICamera->Camera->Position = vec3(0, 0.0f, -170);
 	float x, y;
@@ -32,22 +34,22 @@ D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, un
 
 	UICamera->Camera->OnResize(y, x); 
 	UICamera->Camera->SetLens(.25f*Pi, y, x , 1.0f, 1500.0f);
+	MeshContainer = new Mesh_Container();// make a new container for the mesh
 
-	MeshUI = new Mesh_UI();//pass the add mesh function. The UI does not manage the lifetime, just acts as a middle man
-	MeshUI->Set_AddMesh_Func(std::bind(&D3DApp::AddMesh, this, std::placeholders::_1));
+	MeshUI = new Mesh_UI();
+	//pass the load function. The UI does not manage the lifetime, just acts as a middle man
+	MeshUI->Set_AddMesh_Func(std::bind(&Mesh_Container::Load_Mesh, MeshContainer, std::placeholders::_1));//pass load mesh function
 	aiString sz;
-	aiGetExtensionList(&sz);
+	aiGetExtensionList(&sz);// get the extensions that assimp is able to load
 	MeshUI->SetFileExts(std::string(sz.C_Str()));
+
+	//not working yet
+	//UIWorldSelector = new UI_WorldSelector(&UICamera->Camera->View, &UICamera->Camera->Proj, std::bind(&Mesh_Container::Check_Hit, MeshContainer, std::placeholders::_1, std::placeholders::_2));
 }
 D3DApp::~D3DApp(){
-	for(size_t i =0 ; i< Mesh_Container.size(); i++) delete Mesh_Container[i];
-
+	SAFE_DELETE(MeshContainer);
 	SAFE_DELETE(Input);
 }
-void D3DApp::AddMesh(Base_Mesh* m){
-	Mesh_Container.push_back(m);
-}
-
 
 LRESULT D3DApp::msgProc(UINT msg, WPARAM wParam, LPARAM lParam){
 	if(Input->ProcessMessage(MainWnd, msg,  wParam, lParam)) return 0;
@@ -64,9 +66,8 @@ void D3DApp::run(){
 		FrameTimer.Per_Loop();
 		UICamera->Camera->PerFrame(FrameTimer.DT);
 
-		for(size_t i =0 ; i< Mesh_Container.size(); i++) {
-			Mesh_Container[i]->Draw(UICamera->Camera->View, UICamera->Camera->Proj);
-		}
+		MeshContainer->Draw(UICamera->Camera->View, UICamera->Camera->Proj);
+		
 		UpdateStats();
 		MY_UI::Internal::RootWidget->Draw();	
 		end();

@@ -1,3 +1,15 @@
+#hlsl compiled shaders 
+*.cso
+
+# Build directories
+
+Intermediate/
+lib/
+_Debug_Win32/
+_Release_Win32/
+_Debug_x64/
+_Release_x64/
+
 #################
 ## Eclipse
 #################
@@ -7,12 +19,6 @@
 .metadata
 bin/
 tmp/
-Intermediate/
-lib/
-_Debug_Win32/
-_Release_Win32/
-_Debug_x64/
-_Release_x64/
 *.tmp
 *.bak
 *.swp

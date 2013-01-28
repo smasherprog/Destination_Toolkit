@@ -24,7 +24,7 @@
 #ifndef DELETE_ARRAY
 #define DELETE_ARRAY(x) { delete[] (x);  x=NULL; } 
 #endif
-
+// not really safe because delete is already safe, but saves me an extra line of code :P
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(x) { delete (x);  x=NULL; } 
 #endif

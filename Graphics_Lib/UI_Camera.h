@@ -14,6 +14,7 @@ public:
 	virtual void MouseMoved() override;
 	virtual void KeyDown() override;
 	virtual void KeyUp() override;
+	void Set_Camera(Base_Camera* c);
 
 	Base_Camera* Camera;
 

@@ -3,7 +3,6 @@
 #include "../MY_UI/Window.h"
 #include "../MY_UI/Button.h"
 #include "../MY_UI/File_Selector.h"
-#include "../Graphics_Lib/Static_Mesh.h"
 
 Mesh_UI::Mesh_UI(){
 	FileExtentions = "*.*";// all files
@@ -22,9 +21,7 @@ Mesh_UI::Mesh_UI(){
 		MY_UI::Controls::File_Selector* f = new MY_UI::Controls::File_Selector(window);
 		f->SetPos(50, 50);
 		f->OnSelected.Add([=](){
-			Static_Mesh* b = new Static_Mesh();
-			b->Load(f->GetPathToSelectedFile() + "\\"+ f->GetSelectedFile());
-			AddMesh(b);
+			AddMesh(f->GetPathToSelectedFile() + "\\"+ f->GetSelectedFile());
 		});
 		f->SetSearchFilter(FileExtentions);
 	});

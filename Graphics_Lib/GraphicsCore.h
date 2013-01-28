@@ -283,7 +283,7 @@ namespace Graphics{
 		void UnMap(unsigned int subresourceindex=0){ 
 			Internal::DeviceContext->Unmap(Data, subresourceindex); 
 		}
-		void BindAsVertexBuffer(unsigned int slot =0){
+		void BindAsVertexBuffer(unsigned int slot =0) const{
 			assert(Data != 0);
 			if((Current_Vertex_Buffer == Data) ) return;// allready bound or doesnt exist
 			unsigned int stride  = (unsigned int)Stride;
@@ -298,7 +298,7 @@ namespace Graphics{
 			Internal::DeviceContext->IASetVertexBuffers(0, 1, d, &stride, &offset);
 			Current_Vertex_Buffer = NULL;
 		}
-		void BindAsIndexBuffer(unsigned int offset =0){
+		void BindAsIndexBuffer(unsigned int offset =0) const{
 			assert(Data != 0);
 			if(Current_Index_Buffer == Data) return;// allready bound
 			DXGI_FORMAT type = Stride == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
@@ -309,7 +309,7 @@ namespace Graphics{
 			Internal::DeviceContext->IASetIndexBuffer(0, DXGI_FORMAT_R16_UINT, 0);
 			Current_Index_Buffer = NULL;
 		}
-		void BindAsSOBuffer(){
+		void BindAsSOBuffer()const{
 			assert(Data != 0);
 			if(Current_SO_Buffer == Data) return;// allready bound
 			unsigned int off[1]= {0};
@@ -360,10 +360,10 @@ namespace Graphics{
 		void CompileShaderFromMemory(std::string str, std::string functionname = "VS", std::string shadermodel = "vs_4_0", Shader_Macro* defines = 0 );
 		void CreateInputLayout(const FormatDesc* formatDesc, const unsigned int nAttribs);
 
-		void SetResource(Texture* tex, unsigned int slot=0) ;
-		void SetResource(Buffer* tex, unsigned int slot=0) ;
-		void SetSampler(const SamplerState& sampler, unsigned int slot=0);
-		void SetConstantBuffer(Buffer& buffer, unsigned int slot =0) const;
+		void SetResource(const Texture* tex, unsigned int slot=0) const;
+		void SetResource(const Buffer* tex, unsigned int slot=0) const;
+		void SetSampler(const SamplerState& sampler, unsigned int slot=0) const;
+		void SetConstantBuffer(const Buffer& buffer, unsigned int slot =0) const;
 		void Bind() const ;
 		static void UnBind();
 		void Destroy();
@@ -389,10 +389,10 @@ namespace Graphics{
 		void CompileShaderFromFile(std::string file, FormatDesc_SO* fd, unsigned int num, std::string functionname = "GS", std::string shadermodel = "gs_4_0",  Shader_Macro* defines = 0);
 		void CompileShaderFromMemory(std::string str, std::string functionname = "GS", std::string shadermodel = "gs_4_0", Shader_Macro* defines = 0 );
 		void CompileShaderFromMemory(std::string str, FormatDesc_SO* fd, unsigned int num, std::string functionname = "GS", std::string shadermodel = "gs_4_0", Shader_Macro* defines = 0 );
-		void SetResource(Texture* tex, unsigned int slot=0) ;
-		void SetResource(Buffer* tex, unsigned int slot=0) ;
-		void SetSampler(const SamplerState& sampler, unsigned int slot=0);
-		void SetConstantBuffer(Buffer& buffer, unsigned int slot =0) const;
+		void SetResource(const Texture* tex, unsigned int slot=0) const;
+		void SetResource(const Buffer* tex, unsigned int slot=0) const;
+		void SetSampler(const SamplerState& sampler, unsigned int slot=0) const;
+		void SetConstantBuffer(const Buffer& buffer, unsigned int slot =0) const;
 		void Bind() const ;
 		static void UnBind();
 		void Destroy();
@@ -413,10 +413,10 @@ namespace Graphics{
 		~HullShader() { Destroy(); }
 		void CompileShaderFromFile(std::string file, std::string functionname = "HS", std::string shadermodel = "hs_5_0",  Shader_Macro* defines = 0);
 		void CompileShaderFromMemory(std::string str, std::string functionname = "HS", std::string shadermodel = "hs_5_0", Shader_Macro* defines = 0 );
-		void SetResource(Texture* tex, unsigned int slot=0) ;
-		void SetResource(Buffer* tex, unsigned int slot=0) ;
-		void SetSampler(const SamplerState& sampler, unsigned int slot=0);
-		void SetConstantBuffer(Buffer& buffer, unsigned int slot =0) const;
+		void SetResource(const Texture* tex, unsigned int slot=0) const;
+		void SetResource(const Buffer* tex, unsigned int slot=0) const;
+		void SetSampler(const SamplerState& sampler, unsigned int slot=0) const;
+		void SetConstantBuffer(const Buffer& buffer, unsigned int slot =0) const;
 		void Bind() const ;
 		static void UnBind() ;
 		void Destroy();
@@ -436,10 +436,10 @@ namespace Graphics{
 		~DomainShader() { Destroy(); }
 		void CompileShaderFromFile(std::string file, std::string functionname = "DS", std::string shadermodel = "ds_5_0",  Shader_Macro* defines = 0);
 		void CompileShaderFromMemory(std::string str, std::string functionname = "DS", std::string shadermodel = "ds_5_0", Shader_Macro* defines = 0 );
-		void SetResource(Texture* tex, unsigned int slot=0) ;
-		void SetResource(Buffer* tex, unsigned int slot=0) ;
-		void SetSampler(const SamplerState& sampler, unsigned int slot=0);
-		void SetConstantBuffer(Buffer& buffer, unsigned int slot =0) const;
+		void SetResource(const Texture* tex, unsigned int slot=0) const;
+		void SetResource(const Buffer* tex, unsigned int slot=0) const;
+		void SetSampler(const SamplerState& sampler, unsigned int slot=0) const;
+		void SetConstantBuffer(const Buffer& buffer, unsigned int slot =0) const;
 		void Bind() const ;
 		static void UnBind() ;
 		void Destroy();
@@ -461,10 +461,10 @@ namespace Graphics{
 
 		void CompileShaderFromFile(std::string file, std::string functionname = "PS", std::string shadermodel = "ps_4_0",  Shader_Macro* defines = 0);
 		void CompileShaderFromMemory(std::string str, std::string functionname = "PS", std::string shadermodel = "ps_4_0", Shader_Macro* defines = 0 );
-		void SetResource(Texture* tex, unsigned int slot=0);
-		void SetResource(Buffer* tex, unsigned int slot=0) ;
-		void SetSampler(const SamplerState& sampler, unsigned int slot=0) ;
-		void SetConstantBuffer(Buffer& buffer, unsigned int slot =0) const;
+		void SetResource(const Texture* tex, unsigned int slot=0) const;
+		void SetResource(const Buffer* tex, unsigned int slot=0) const;
+		void SetSampler(const SamplerState& sampler, unsigned int slot=0) const;
+		void SetConstantBuffer(const Buffer& buffer, unsigned int slot =0) const;
 		void Bind() const;
 		static void UnBind();
 		void Destroy();
@@ -588,9 +588,9 @@ namespace Graphics{
 
 
 	namespace Shaders {
-		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough;
-		extern PixelShader PS_NormalBumpConverter, PS_Blur;
-
+		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough, VS_BV;
+		extern PixelShader PS_NormalBumpConverter, PS_Blur, PS_BV;
+		extern Buffer VS_BV_Cbuffer0, VS_BV_VB, VS_BV_IB;
 	};
 	namespace Samplers{
 		extern SamplerState Nearest, Linear, BiLinear, TriLinear, Anisotropic;
@@ -611,5 +611,12 @@ namespace Graphics{
 
 	inline void GetBackBufferSize(unsigned int& x, unsigned int& y) { x = (unsigned int)Textures::RT_BackBufferTexture.Width; y = (unsigned int)Textures::RT_BackBufferTexture.Height;   }
 	inline void GetBackBufferSize(float& x, float& y) { x = (float)Textures::RT_BackBufferTexture.Width; y = (float)Textures::RT_BackBufferTexture.Height;   }
+	/*
+		Graphics Utility functions below
+	*/
+
+	void CreateAABVBuffers();
+	void DestroyAABBBuffers();
+	void Draw_AABV(const mat4& view, const mat4& proj, const mat4& world);
 };
 #endif

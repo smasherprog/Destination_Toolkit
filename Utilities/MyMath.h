@@ -392,8 +392,6 @@ inline bool Intersect(const vec3& raydir, const vec3& rayorigin, const Plane& pl
 }
 inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayOrg, const vec3& rayDelta){
 	// check for point inside box, trivial reject
-	const float kNoIntersection = INFINITY;
-
 	// Check for point inside box, trivial reject, and determine parametric
 	// distance to each front face
 
@@ -402,13 +400,13 @@ inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayO
 	float xt, xn;
 	if (rayOrg.x < min.x) {
 		xt = min.x - rayOrg.x;
-		if (xt > rayDelta.x) return kNoIntersection;
+		if (xt > rayDelta.x) return INFINITY;
 		xt /= rayDelta.x;
 		inside = false;
 		xn = -1.0f;
 	} else if (rayOrg.x > max.x) {
 		xt = max.x - rayOrg.x;
-		if (xt < rayDelta.x) return kNoIntersection;
+		if (xt < rayDelta.x) return INFINITY;
 		xt /= rayDelta.x;
 		inside = false;
 		xn = 1.0f;
@@ -419,13 +417,13 @@ inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayO
 	float yt, yn;
 	if (rayOrg.y < min.y) {
 		yt = min.y - rayOrg.y;
-		if (yt > rayDelta.y) return kNoIntersection;
+		if (yt > rayDelta.y) return INFINITY;
 		yt /= rayDelta.y;
 		inside = false;
 		yn = -1.0f;
 	} else if (rayOrg.y > max.y) {
 		yt = max.y - rayOrg.y;
-		if (yt < rayDelta.y) return kNoIntersection;
+		if (yt < rayDelta.y) return INFINITY;
 		yt /= rayDelta.y;
 		inside = false;
 		yn = 1.0f;
@@ -436,13 +434,13 @@ inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayO
 	float zt, zn;
 	if (rayOrg.z < min.z) {
 		zt = min.z - rayOrg.z;
-		if (zt > rayDelta.z) return kNoIntersection;
+		if (zt > rayDelta.z) return INFINITY;
 		zt /= rayDelta.z;
 		inside = false;
 		zn = -1.0f;
 	} else if (rayOrg.z > max.z) {
 		zt = max.z - rayOrg.z;
-		if (zt < rayDelta.z) return kNoIntersection;
+		if (zt < rayDelta.z) return INFINITY;
 		zt /= rayDelta.z;
 		inside = false;
 		zn = 1.0f;
@@ -475,25 +473,25 @@ inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayO
 	case 0: // intersect with yz plane
 		{
 			float y = rayOrg.y + rayDelta.y*t;
-			if (y < min.y || y > max.y) return kNoIntersection;
+			if (y < min.y || y > max.y) return INFINITY;
 			float z = rayOrg.z + rayDelta.z*t;
-			if (z < min.z || z > max.z) return kNoIntersection;
+			if (z < min.z || z > max.z) return INFINITY;
 		} break;
 
 	case 1: // intersect with xz plane
 		{
 			float x = rayOrg.x + rayDelta.x*t;
-			if (x < min.x || x > max.x) return kNoIntersection;
+			if (x < min.x || x > max.x) return INFINITY;
 			float z = rayOrg.z + rayDelta.z*t;
-			if (z < min.z || z > max.z) return kNoIntersection;
+			if (z < min.z || z > max.z) return INFINITY;
 		} break;
 
 	case 2: // intersect with xy plane
 		{
 			float x = rayOrg.x + rayDelta.x*t;
-			if (x < min.x || x > max.x) return kNoIntersection;
+			if (x < min.x || x > max.x) return INFINITY;
 			float y = rayOrg.y + rayDelta.y*t;
-			if (y < min.y || y > max.y) return kNoIntersection;
+			if (y < min.y || y > max.y) return INFINITY;
 
 		} break;
 	}

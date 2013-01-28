@@ -58,7 +58,7 @@ void InitDemo(){
 
 	button = collapsible->Insert("Scrollers");
 	button->SetPopup("Press this to see Scroll Bar examples");
-	//button->OnLeftClicked.Add(Scrollers);
+	button->OnLeftClicked.Add(Scrollers);
 
 	button = collapsible->Insert("Tabs");
 	button->SetPopup("Press this to see tabbed examples");
