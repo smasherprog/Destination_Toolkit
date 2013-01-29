@@ -41,7 +41,7 @@ protected:
 
 	std::vector<vec3> Vertices;// this is used to calculate intersections
 	std::vector<uint16_t> Indices;
-	cAABB Bounding_Volume;
+	AABB Bounding_Volume;
 };
 
 #endif

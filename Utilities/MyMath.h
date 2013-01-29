@@ -989,6 +989,7 @@ public:
 		row2_v = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 		row3_v = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	}
+
 	void	zeroTranslation() { row3_v = vec4(0.0f, 0.0f, 0.0f, 1.0f);}
 	void	setupTranslation(const vec3 &d) {
 		row0_v = vec4(1.0f, 0.0f, 0.0f, 0.0f);
@@ -996,9 +997,13 @@ public:
 		row2_v = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 		row3_v = vec4(d, 1.0f);
 	}
+	vec3 getTranslation() const { return vec3(_41, _42, _43); }
 	void	setupTranslation(float x, float y, float z) { setupTranslation(vec3(x, y, z)); }
 	void	setTranslation(const vec3 &d) { row3_v = vec4(d, 1.0f);}
 	void	setTranslation(float x, float y, float z){ setTranslation(vec3(x, y, z)); }
+	void clearRotation(){
+		_12 = _13 = _14 = _21 = _23 = _24 = _31 = _32 = _34 =0.0f;
+	}
 	// The axis of rotation is specified using a 1-based index:	1 => rotate about the x-axis	2 => rotate about the y-axis	3 => rotate about the z-axis
 	// theta is the amount of rotation, in radians.  The left-hand rule is used to define "positive" rotation. The translation portion is reset.
 	void	setupRotateX(float theta) {
@@ -1059,7 +1064,7 @@ public:
 	}
 
 
-
+	vec3 getScaling() const { return vec3(_11, _22, _23); }
 	void	setupScale(const vec3 &s) { setupScale(s.x, s.y, s.z); }// Setup the matrix to perform scale on each axis.  For uniform scale by k, use a std::vector of the form vec3(k,k,k)
 	void	setupScale(float x, float y, float z){ 
 		row0_v = vec4(x,    0.0f, 0.0f, 0.0f);
@@ -1629,6 +1634,22 @@ inline float Screen_y_Pixels_To_Radians(int dy_pixels, float fov, float screen_y
 inline float Screen_x_Pixels_To_Radians(int dx_pixels, float fov, float screen_x_size, float aspect){
 	return ((fov/screen_x_size)*(float)dx_pixels)/aspect;
 }
+
+
+
+inline float Sphere_RayIntersect(const vec3 center, const float radius, const vec3& rayOrigin, const vec3& rayDir){
+	vec3 l(center - rayOrigin);
+	float s(Dot(l, rayDir));// Lengthance
+	float lsq(Dot(l, l));
+	if((s < 0.0f) & (lsq > radius*radius)) return INFINITY;// missed the sphere
+	float msq(lsq - s*s);
+	if(msq > radius*radius) return INFINITY;// missed the sphere
+	return s;
+}
+
+
+
+
 
 
 #endif

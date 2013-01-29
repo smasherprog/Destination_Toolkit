@@ -6,7 +6,7 @@
 #include "../BV_Lib/cSphere.h"
 
 using namespace std;
-class cOBB;
+class OBB;
 
 class cSpring : public cPhysicsObject{
 public:
@@ -14,7 +14,7 @@ public:
 	void Update(float deltaTime){}
 	void Render();
 	void AddForces(){}
-	void SatisfyConstraints(std::vector<cOBB*> &obstacles);
+	void SatisfyConstraints(std::vector<OBB*> &obstacles);
 
 	Particle *m_pParticle1;
 	Particle *m_pParticle2;

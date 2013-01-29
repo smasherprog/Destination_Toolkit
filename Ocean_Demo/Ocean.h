@@ -7,7 +7,7 @@
 #define PASSES 8
 #define FFT_SIZE (1<<PASSES)
 
-class cAABB;
+class AABB;
 
 class Ocean: public Base_Ocean {
 public:
@@ -20,7 +20,7 @@ public:
 
 	virtual void GridAdded(const vec3& tlpos) { OUTPUT_DEBUG_MSG("adding grid at pos"<<tlpos); Grids.push_back(tlpos); }
 	virtual void Add_Ocean_Grid(char* data, unsigned int size, size_t channel);
-	void CullObjectsOutside(const cAABB& aabb);// this should be called at regular intervals to ensure the removal of items outside the drawing/staging area
+	void CullObjectsOutside(const AABB& aabb);// this should be called at regular intervals to ensure the removal of items outside the drawing/staging area
 
 	float spectrum12[FFT_SIZE * FFT_SIZE * 4];
 	float spectrum34[FFT_SIZE * FFT_SIZE * 4];

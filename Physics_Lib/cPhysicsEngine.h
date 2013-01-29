@@ -4,7 +4,7 @@
 #include "../Utilities/MyMath.h"
 #include <random>
 
-class cOBB;
+class OBB;
 using namespace std;
 
 #define GRAVITY  -9.82f
@@ -18,7 +18,7 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	virtual void Render() = 0;
 	virtual void AddForces() = 0;
-	virtual void SatisfyConstraints(std::vector<cOBB*> &obstacles) = 0;
+	virtual void SatisfyConstraints(std::vector<OBB*> &obstacles) = 0;
 };	
 
 class cPhysicsEngine{
@@ -35,7 +35,7 @@ public:
 	void Reset();
 
 	std::vector<cPhysicsObject*> m_physicsObjects;
-	std::vector<cOBB*> m_obstacles;
+	std::vector<OBB*> m_obstacles;
 	float m_time;
 	std::random_device Rand_Seeder;
 	std::mt19937 Rand_Generator;

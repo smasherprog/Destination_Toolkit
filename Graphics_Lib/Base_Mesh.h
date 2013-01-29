@@ -5,7 +5,7 @@
 #include <vector>
 #include "../Graphics_Lib/GraphicsCore.h"
 #include "../Utilities/My_Timer.h"
-#include "../BV_Lib/cAABB.h"
+#include "../BV_Lib/AABB.h"
 #include "MeshTypes.h"
 
 class mat4;

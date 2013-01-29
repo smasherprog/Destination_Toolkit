@@ -1,6 +1,6 @@
 #include "cPhysicsEngine.h"
 #include "cParticle.h"
-#include "../BV_Lib/cOBB.h"
+#include "../BV_Lib/OBB.h"
 #include "../Utilities/MyMath.h"
 #include "../Utilities/My_Timer.h"
 #include "cSpring.h"
@@ -11,30 +11,30 @@ void cPhysicsEngine::Init(){
 	
 	//Add Obstacles
 	
-	//cOBB *obb = new cOBB(vec3(5.0f, 0.2f, 5.0f));
+	//OBB *obb = new OBB(vec3(5.0f, 0.2f, 5.0f));
 	//obb->Center = vec3(0.0f, -1.0f, 0.0f) + vec3(-150, 85, 235);
 	//obb->Init();
 	//m_obstacles.push_back(obb);
 	
-	cOBB* obb = new cOBB(vec3(0.8f, 0.1f, 2.0f));
+	OBB* obb = new OBB(vec3(0.8f, 0.1f, 2.0f));
 	obb->Center = vec3(-0.5f, 1.0f, 0.0f)  + vec3(-150, 85, 235);
 	obb->Rot.SetupRotation(euler(0.0f, -0.1f, -0.5f));
 	obb->Init();
 	m_obstacles.push_back(obb);
 
-	obb = new cOBB(vec3(0.8f, 0.1f, 2.0f));
+	obb = new OBB(vec3(0.8f, 0.1f, 2.0f));
 	obb->Center = vec3(0.5f, 2.0f, 0.0f)  + vec3(-150, 85, 235);
 	obb->Rot.SetupRotation(euler( 0.1f, 0.0f, 0.4f));
 	obb->Init();
 	m_obstacles.push_back(obb);
 
-	obb = new cOBB(vec3(1.0f, 0.1f, 2.0f));
+	obb = new OBB(vec3(1.0f, 0.1f, 2.0f));
 	obb->Center = vec3(-0.5f, 3.0f, 0.0f)  + vec3(-150, 85, 235);
 	obb->Rot.SetupRotation(euler( 0.0f, -0.1f, -0.3f));
 	obb->Init();
 	m_obstacles.push_back(obb);
 
-	obb = new cOBB(vec3(0.5f, 0.1f, 1.0f));
+	obb = new OBB(vec3(0.5f, 0.1f, 1.0f));
 	obb->Center = vec3(0.8f, 4.0f, 0.0f)  + vec3(-150, 85, 235);
 	obb->Rot.SetupRotation(euler(0.1f, 0.0f, 0.2f));
 	obb->Init();

@@ -6,7 +6,7 @@
 #include "../BV_Lib/cSphere.h"
 
 using namespace std;
-class cOBB;
+class OBB;
 
 class Particle : public cPhysicsObject
 {
@@ -17,7 +17,7 @@ class Particle : public cPhysicsObject
 		void Update(float deltaTime);
 		void Render();
 		void AddForces();
-		void SatisfyConstraints(std::vector<cOBB*> &obstacles);
+		void SatisfyConstraints(std::vector<OBB*> &obstacles);
 
 		cSphere Sphere;
 		float m_bounce;

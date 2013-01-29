@@ -1,6 +1,6 @@
 #ifndef CCHARACTER_H
 #define CCHARACTER_H
-#include "../BV_Lib/cAABB.h"
+#include "../BV_Lib/AABB.h"
 #include "cGoal.h"
 #include "cInvintory.h"
 #include "cCursor.h"

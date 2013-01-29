@@ -61,7 +61,7 @@ bool Static_Mesh::Init(){
 void Static_Mesh::DeInit(){
 	OUTPUT_DEBUG_MSG("Shutting down Static Mesh");
 	Base_Mesh::DeInit();
-	Bounding_Volume.CreateDefault();
+	Bounding_Volume.clear();
 	for(int i=0; i<MAX_VERTEXSTREAM; i++) VB[i].Destroy();
 	IB.Destroy();
 	for(size_t i =0; i< Batches.size(); i++) delete Batches[i];
@@ -70,10 +70,9 @@ void Static_Mesh::DeInit(){
 	CBuffer1.Destroy();
 }
 void Static_Mesh::Generate_BV(){
-	if(Vertices.empty()) return Bounding_Volume.CreateDefault();// create a small bounding volume to test against
+	if(Vertices.empty()) return Bounding_Volume.clear();// create a small bounding volume to test against
 	size_t i(0);
 	do{	Bounding_Volume.Add(Vertices[i]); } while(++i!=Vertices.size());
-	Bounding_Volume.Init();
 }
 float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const {
 	mat4 inverseW(GetWorld());
@@ -290,13 +289,7 @@ bool Static_Mesh::Save(const std::string& file){
 	return true;
 }
 void Static_Mesh::Draw_BV(const mat4& view, const mat4& proj) {
-	mat4 bvscal, bvtrans;
-	vec3 maxbv(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize());
-	bvscal.setupScale(maxbv);
-
-	vec3 offset = Bounding_Volume.Max - (maxbv/2.0f);
-	bvtrans.setupTranslation(offset);
-	mat4 w = bvscal *bvtrans*Scaling*Rotation * Translation;
+	mat4 w = Scaling*Rotation * Translation;
 	Graphics::Draw_AABV(view, proj, w);
 }
 void Static_Mesh::Draw(const mat4& view, const mat4& proj){

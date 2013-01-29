@@ -1,5 +1,5 @@
 #include "cParticle.h"
-#include "../BV_Lib/cOBB.h"
+#include "../BV_Lib/OBB.h"
 
 Particle::Particle(){
 	m_pos = vec3(0.0f, 0.0f, 0.0f);
@@ -34,7 +34,7 @@ void Particle::AddForces(){
 	m_forces = vec3(0.0f, GRAVITY, 0.0f);
 }
 
-void Particle::SatisfyConstraints(std::vector<cOBB*> &obstacles){
+void Particle::SatisfyConstraints(std::vector<OBB*> &obstacles){
 	for(size_t i=0; i<obstacles.size(); i++){
 		if(obstacles[i]->Intersect(m_pos)){//Collision
 			//Calculate Velocity
