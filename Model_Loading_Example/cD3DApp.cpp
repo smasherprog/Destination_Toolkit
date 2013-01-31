@@ -44,6 +44,7 @@ D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, un
 	MeshUI->SetFileExts(std::string(sz.C_Str()));
 
 	//not working yet
+	//testing more again
 	//UIWorldSelector = new UI_WorldSelector(&UICamera->Camera->View, &UICamera->Camera->Proj, std::bind(&Mesh_Container::Check_Hit, MeshContainer, std::placeholders::_1, std::placeholders::_2));
 }
 D3DApp::~D3DApp(){
