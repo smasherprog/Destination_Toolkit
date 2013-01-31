@@ -2038,8 +2038,19 @@ void Graphics::DestroyAABBBuffers(){
 	Shaders::VS_BV_VB.Destroy();
 }
 
-void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world){
+/*
+world is the matrix of the object the AABV is holding. 
+View and Proj are the cameras
+center is the center point of the BV in ITS space
+size_of_each_axis hold the TOTAL SIZE of each axis
+*/
+void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const vec3& size_of_each_axis){
 	Graphics::SetTopology(PRIM_LINE_STRIP);
+
+
+	mat4 bvscale, bvtrans;
+	bvscale.setupScale(size_of_each_axis);
+	bvtrans.setupTranslation(center);
 
 	Graphics::DepthStates::DepthTest.Bind();
 	Graphics::RasterizerStates::CullNone.Bind();
@@ -2053,7 +2064,7 @@ void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world){
 		vec4 color;
 	};
 	tempstruct t;
-	t.vp = world*view*proj;
+	t.vp = bvscale*bvtrans*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
 	t.vp.Transpose();
 	t.color = vec4(1.0f, 0, 0, 1);//red
 	Shaders::VS_BV_Cbuffer0.Update(&t);
@@ -2062,7 +2073,6 @@ void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world){
 	Shaders::VS_BV_IB.BindAsIndexBuffer();
 	Shaders::VS_BV_VB.BindAsVertexBuffer();
 	
-
 	DrawIndexed(0, Shaders::VS_BV_IB.Size);
 	
 }

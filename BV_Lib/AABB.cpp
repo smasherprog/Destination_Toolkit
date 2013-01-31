@@ -5,7 +5,7 @@
 
 void AABB::Init(const Sphere& shp) { Max = vec3(shp.Radius, shp.Radius, shp.Radius); Min = -Max;} 
 void AABB::Init(const AABB& shp) { Max = shp.Max; Min = shp.Min;}
-void AABB::Init(const OBB& shp) {	Max = vec3(shp.XSize(), shp.YSize(), shp.ZSize()); Min = -Max;}
+void AABB::Init(const OBB& shp) { Max = vec3(shp.XSize(), shp.YSize(), shp.ZSize()); Min = -Max;}
 
 void AABB::Add(const vec3& p){ // caller should call Init when done inserting points... 
 	if(p.x < Min.x) Min.x = p.x;
@@ -19,6 +19,7 @@ void AABB::SetSize(const vec3& p){// this will not move the box, only scale it
 	vec3 scalar(p.x/XSize(), p.y/YSize(), p.z/ZSize());
 	Max*=scalar;
 	Min*=scalar;
+
 }
 
 bool AABB::Intersect(const AABB& A) const{

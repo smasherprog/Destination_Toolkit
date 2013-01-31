@@ -289,8 +289,7 @@ bool Static_Mesh::Save(const std::string& file){
 	return true;
 }
 void Static_Mesh::Draw_BV(const mat4& view, const mat4& proj) {
-	mat4 w = Scaling*Rotation * Translation;
-	Graphics::Draw_AABV(view, proj, w);
+	Graphics::Draw_AABV(view, proj, GetWorld(), Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
 }
 void Static_Mesh::Draw(const mat4& view, const mat4& proj){
 	Graphics::SetTopology(PRIM_TRIANGLELIST);
@@ -327,4 +326,5 @@ void Static_Mesh::Draw(const mat4& view, const mat4& proj){
 
 		Graphics::DrawIndexed((*beg)->StartIndex, (*beg)->NumIndices);
 	}
+	Draw_BV(view, proj);
 }

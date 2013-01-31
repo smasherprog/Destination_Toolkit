@@ -33,16 +33,16 @@ public:
 
 	virtual float RayIntersect(const vec3& rayOrg, const vec3& rayDir)const override{ return Sphere_RayIntersect(Center, Radius, rayOrg, rayDir);}
 
-	virtual bool Intersect(const Plane& n) const override{}
+	virtual bool Intersect(const Plane& n) const override{return false;}
 	virtual bool Intersect(const Sphere& n) const override;
 	virtual bool Intersect(const AABB& n) const override;
-	virtual bool Intersect(const OBB& n) const override{}
+	virtual bool Intersect(const OBB& n) const override{return false;}
 	virtual bool Intersect(const vec3& n) const override;
 
-	virtual bool InsideOf(const Plane& n) const override{}
+	virtual bool InsideOf(const Plane& n) const override{return false;}
 	virtual bool InsideOf(const Sphere& n) const override{ return !Intersect(n);}
-	virtual bool InsideOf(const AABB& n) const override{}
-	virtual bool InsideOf(const OBB& n) const override{}
+	virtual bool InsideOf(const AABB& n) const override{return false;}
+	virtual bool InsideOf(const OBB& n) const override{return false;}
 	virtual bool InsideOf(const vec3& n) const override { return Intersect(n);}
 
 };

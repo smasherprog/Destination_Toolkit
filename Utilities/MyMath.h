@@ -394,7 +394,6 @@ inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayO
 	// check for point inside box, trivial reject
 	// Check for point inside box, trivial reject, and determine parametric
 	// distance to each front face
-
 	bool inside = true;
 
 	float xt, xn;
@@ -502,7 +501,7 @@ inline float RayAABBIntersect(const vec3& min, const vec3& max, const vec3& rayO
 }
 // this function will find the intersection of ray1 with ray two.  ray1 is assumed infinit length, ray2 however, is of finite length
 // I use this for testing whether my mouse click hits a line segment in the world. 
-inline vec2 RayRayIntersect(vec3& ray1, const vec3& origin1, float lengthof2, vec3& ray2, const vec3& origin2){
+inline vec2 RayRayIntersect(const vec3& ray1, const vec3& origin1,const  float lengthof2, const vec3& ray2, const vec3& origin2){
 	vec3 temp(Cross(ray1, ray2));// cross product of the normalized std::vectors
 	float det = temp.LengthSq();// magnitude squared
 	if(abs(det) < .01f) return vec2(INFINITY, INFINITY);// if det ==0.0f, but there might be floating point precision error, so make sure.. mmkay? this means the two rays are basically parallel
@@ -516,7 +515,7 @@ inline vec2 RayRayIntersect(vec3& ray1, const vec3& origin1, float lengthof2, ve
 	return vec2(t1, t2);// returns the distance each ray needs to be scaled to hit each other
 }
 // find the intersection of two rays given a direction and starting position for each
-inline vec2 RayRayIntersect(vec3& ray1, const vec3& origin1, vec3& ray2, const vec3& origin2){
+inline vec2 RayRayIntersect(const vec3& ray1, const vec3& origin1,const vec3& ray2, const vec3& origin2){
 	vec3 temp(Cross(ray1, ray2));// cross product of the normalized std::vectors
 	float det = temp.LengthSq();// magnitude squared
 	if(abs(det) < .01f) return vec2(INFINITY, INFINITY);// if det ==0.0f, but there might be floating point precision error, so make sure.. mmkay? this means the two rays are basically parallel

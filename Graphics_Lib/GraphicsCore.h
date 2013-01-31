@@ -617,6 +617,6 @@ namespace Graphics{
 
 	void CreateAABVBuffers();
 	void DestroyAABBBuffers();
-	void Draw_AABV(const mat4& view, const mat4& proj, const mat4& world);
+	void Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const vec3& size_of_each_axis);
 };
 #endif

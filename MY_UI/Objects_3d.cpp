@@ -3,8 +3,8 @@
 #include "cWidgetSkin.h"
 
 MY_UI::Controls::Translator::Translator(cWidgetBase *parent)  : cWidgetBase(parent) {
-	SetControlBounds(Utilities::Rect(0, 0, 100, 100));
-	SetClientBounds(Utilities::Rect(0, 0, 100, 100));
+	SetControlBounds(Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
+	SetClientBounds(Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
 	 Scaling=Rotation=Translation=0;
 	Projection=View=0;
 	 MY_UI::Internal::RootWidget->CheckForUpdate(this);
@@ -23,9 +23,9 @@ void MY_UI::Controls::Translator::Update(){
 	} else {
 		world=*Scaling**Rotation**Translation;// looks funny doesnt it?
 	}
-	vec3 zaxis(0.0f, 0.0f, 1.0f);
-	vec3 yaxis(0.0f, 1.0f, 0.0f);
-	vec3 xaxis(1.0f, 0.0f, 0.0f);
+	vec3 zaxis(0.0f, 0.0f, Obj_z_size/2.0f);
+	vec3 yaxis(0.0f, Obj_y_size/2.0f, 0.0f);
+	vec3 xaxis(Obj_x_size/2.0f, 0.0f, 0.0f);
 	vec3 center(0.0f, 0.0f, 0.0f);
 	// transform the points into world space
 	
@@ -90,6 +90,7 @@ MY_UI::Controls::cWidgetBase* MY_UI::Controls::Translator::Hit(){
 		vec3 temp1 = origin2 + (DistToIntersection.y*ray2);// same as above
 		if(CloseTo(temp, temp1)){
 			AxisHit = vec3(1.0f, 0.0f, 0.0f);
+			OUTPUT_DEBUG_MSG("Hit x");
 			return this;
 		}
 
@@ -102,6 +103,7 @@ MY_UI::Controls::cWidgetBase* MY_UI::Controls::Translator::Hit(){
 		vec3 temp1 = origin2 + (DistToIntersection.y*ray2);// same as above
 		if(CloseTo(temp, temp1)){
 			AxisHit= vec3(0.0f, 1.0f, 0.0f);
+			OUTPUT_DEBUG_MSG("Hit y");
 			return this;
 		}
 	}
@@ -113,6 +115,7 @@ MY_UI::Controls::cWidgetBase* MY_UI::Controls::Translator::Hit(){
 		vec3 temp1 = origin2 + (DistToIntersection.y*ray2);// same as above
 		if(CloseTo(temp, temp1)){
 			AxisHit = vec3(0.0f, 0.0f, 1.0f);
+			OUTPUT_DEBUG_MSG("Hit z");
 			return this;
 		}
 	}
@@ -189,8 +192,8 @@ void MY_UI::Controls::Translator::Dragging(){
 
 
 MY_UI::Controls::Rotator::Rotator(cWidgetBase *parent)  : cWidgetBase(parent) {
-	SetControlBounds(Utilities::Rect(0, 0, 100, 100));
-	SetClientBounds(Utilities::Rect(0, 0, 100, 100));
+	SetControlBounds(Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
+	SetClientBounds(Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
 	 Scaling=Rotation=Translation=Projection=View=0;
 	 MY_UI::Internal::RootWidget->CheckForUpdate(this);
 	 SetDraggable(true);// allow the widget to be dragged
@@ -220,9 +223,9 @@ void MY_UI::Controls::Rotator::Update(){
 	mat4 world(*Scaling**Rotation**Translation);// looks funny doesnt it?
 	
 	for(int i =0; i< 9; i++){
-		LastYRot[i]=YRot[i]*world;
-		LastXRot[i]=XRot[i]*world;
-		LastZRot[i]=ZRot[i]*world;
+		LastYRot[i]=(Obj_y_size/2.0f)*YRot[i]*world;
+		LastXRot[i]=(Obj_x_size/2.0f)*XRot[i]*world;
+		LastZRot[i]=(Obj_z_size/2.0f)*ZRot[i]*world;
 	}
 	
 	Utilities::Point screensize = MY_UI::Internal::RootWidget->GetSize();
@@ -273,17 +276,17 @@ void MY_UI::Controls::Rotator::DrawLine(vec2& screens, vec3* arr, MY_UI::Utiliti
 		beg = end;
 	}
 }
-bool MY_UI::Controls::Rotator::CheckforHit(vec3& ray1, vec3& origin1, vec3* arr){
+bool MY_UI::Controls::Rotator::CheckforHit(const vec3& ray1, const vec3& origin1, const vec3* arr, const float scale){
 	for(int i=0; i <MAX_POINTS-1; i++){// run once for each pair so one less run
 		vec3 origin2 = arr[i];// beginning point
 		vec3 ray2 = arr[i + 1] - arr[i];// ray between begin and end points
 		float length = ray2.Length();// need to the length of the ray
 		float invlength = 1.0f/length;
 		ray2*=invlength;// normalize the ray
-		vec2 DistToIntersection = RayRayIntersect(ray1, origin1, length, ray2, origin2 );
+		vec2 DistToIntersection = RayRayIntersect(ray1, scale*origin1, length, ray2, scale*origin2 );
 		if( DistToIntersection.x != INFINITY ){
-			vec3 temp = origin1 + (DistToIntersection.x*ray1);// the closest point of intersection
-			vec3 temp1 = origin2 + (DistToIntersection.y*ray2);// same as above
+			vec3 temp = scale*origin1 + (DistToIntersection.x*ray1);// the closest point of intersection
+			vec3 temp1 = scale*origin2 + (DistToIntersection.y*ray2);// same as above
 			if(CloseTo(temp, temp1)){
 				return true;
 			}
@@ -303,17 +306,17 @@ MY_UI::Controls::cWidgetBase* MY_UI::Controls::Rotator::Hit(){
 	mat4 world(*Scaling**Rotation**Translation);// looks funny doesnt it?
 	
 
-	if(CheckforHit(ray1, origin1, LastXRot)) {
+	if(CheckforHit(ray1, origin1, LastXRot, Obj_x_size/2.0f)) {
 		AxisHit = 1;// 1 for x!!
 		return this;
 	}
 	
-	if(CheckforHit(ray1, origin1, LastYRot)) {
+	if(CheckforHit(ray1, origin1, LastYRot, Obj_y_size/2.0f)) {
 		AxisHit = 2;
 		return this;
 	}
 	
-	if(CheckforHit(ray1, origin1, LastZRot)) {
+	if(CheckforHit(ray1, origin1, LastZRot, Obj_z_size/2.0f)) {
 		AxisHit = 3 ;
 		return this;
 	}
@@ -415,8 +418,8 @@ void MY_UI::Controls::Rotator::Dragging(){
 
 
 MY_UI::Controls::Scaler::Scaler(cWidgetBase *parent)  : cWidgetBase(parent) {
-	SetControlBounds(Utilities::Rect(0, 0, 100, 100));
-	SetClientBounds(Utilities::Rect(0, 0, 100, 100));
+	SetControlBounds(Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
+	SetClientBounds(Utilities::Rect(0, 0, MAX_WINDOWSIZE, MAX_WINDOWSIZE));
 	 Scaling=Rotation=Translation=Projection=View=0;
 	 MY_UI::Internal::RootWidget->CheckForUpdate(this);
 	 SetDraggable(true);// allow the widget to be dragged
@@ -427,9 +430,9 @@ MY_UI::Controls::Scaler::Scaler(cWidgetBase *parent)  : cWidgetBase(parent) {
 void MY_UI::Controls::Scaler::Update(){
 	if(GetHidden()) return;
 	mat4 world(*Scaling**Rotation**Translation);// looks funny doesnt it?
-	vec3 zaxis(0.0f, 0.0f, 1.0f);
-	vec3 yaxis(0.0f, 1.0f, 0.0f);
-	vec3 xaxis(1.0f, 0.0f, 0.0f);
+	vec3 zaxis(0.0f, 0.0f,  Obj_z_size);
+	vec3 yaxis(0.0f, Obj_y_size, 0.0);
+	vec3 xaxis(Obj_x_size, 0.0f, 0.0f);
 	vec3 center(0.0f, 0.0f, 0.0f);
 	// transform the points into world space
 	

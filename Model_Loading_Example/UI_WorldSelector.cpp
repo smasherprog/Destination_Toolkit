@@ -18,6 +18,7 @@ UI_WorldSelector::UI_WorldSelector(mat4* camera_view, mat4* camera_proj, std::fu
 	SetDraggable(true);
 	SetName("UI_WorldSelector");
 	OnLeftClicked.Add(std::bind(&UI_WorldSelector::OpenWindow, this));
+
 	Trans_Checkbox=0;
 	ObjectTranslation=0;
 	ObjectRotator=0;
@@ -29,9 +30,18 @@ UI_WorldSelector::UI_WorldSelector(mat4* camera_view, mat4* camera_proj, std::fu
 
 }
 void UI_WorldSelector::OpenWindow(){
+	OUTPUT_DEBUG_MSG("Trying to open new window");
+	// get what the target is
+	MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
+	vec3 ray, origin;
+	UnProject(vec2((float)New_MousePosx, (float)New_MousePosy), *View, *Proj, (float)p.x, (float)p.y, ray, origin);
+	//unproject will take the mouse coords in screen space and return a normalize ray and origin
+	Selected = HitChecker(ray, origin);
+
 	if(Selected==0) return;
 	// something is selected, only open the window if its NOT the same as what was last selected
 	if(Selected == Last_Selected) return;
+	Last_Selected = Selected;
 	MY_UI::Safe_Delete(Window);// make sure to delete the window which will delete all of its children as well. Then recreate it
 	Window = new MY_UI::Controls::Simple_Window(this);
 	Window->SetPos((rand()% 900), (rand()% 500));
@@ -96,21 +106,24 @@ void UI_WorldSelector::MouseMoved(){
 MY_UI::Controls::cWidgetBase* UI_WorldSelector::Hit_And_SetFocus(){
 	cWidgetBase* b = cWidgetBase::Hit_And_SetFocus();// see if the window controls were hit
 	if(b!=0 && b!= this) return b;// the windows are above the world, so return if its hit
-	MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
+		MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
 	vec3 ray, origin;
 	UnProject(vec2((float)New_MousePosx, (float)New_MousePosy), *View, *Proj, (float)p.x, (float)p.y, ray, origin);
 	//unproject will take the mouse coords in screen space and return a normalize ray and origin
-	Selected = HitChecker(ray, origin);
-	if(Selected != 0) {
-		OUTPUT_DEBUG_MSG("hit and set focus" + Selected->GetName());
-		return this;
-	}
+	Base_Mesh* temp = HitChecker(ray, origin);
+	if(temp != 0) return this;
 	return 0;
 }
 
 MY_UI::Controls::cWidgetBase* UI_WorldSelector::Hit(){
 	cWidgetBase* b = cWidgetBase::Hit();// see if the window controls were hit
 	if(b!=0 && b!= this) return b;// the windows are above the world, so return if its hit
+	MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
+	vec3 ray, origin;
+	UnProject(vec2((float)New_MousePosx, (float)New_MousePosy), *View, *Proj, (float)p.x, (float)p.y, ray, origin);
+	//unproject will take the mouse coords in screen space and return a normalize ray and origin
+	Base_Mesh* temp = HitChecker(ray, origin);
+	if(temp != 0) return this;
 	return 0;
 }
 

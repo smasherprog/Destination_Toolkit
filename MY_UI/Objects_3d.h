@@ -53,7 +53,7 @@ namespace MY_UI{
 
 			//helper functions to reduce code
 			void DrawLine(vec2& screens, vec3* arr, MY_UI::Utilities::Color col);
-			bool CheckforHit(vec3& ray1, vec3& origin1, vec3* arr);
+			bool CheckforHit(const vec3& ray1,const  vec3& origin1, const vec3* arr,const  float scale);
 
 			float Obj_x_size, Obj_y_size, Obj_z_size;// the size of the object before any transformations take effect
 			quat* QRotation;
