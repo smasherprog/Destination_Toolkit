@@ -65,9 +65,19 @@ unsigned int Graphics::BlendState::CurrentMask=0;
 //rasterizerstates
 ID3D11RasterizerState* Graphics::RasterizerState::CurrentState=0;
 
-Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough, Graphics::Shaders::VS_BV;
-Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur, Graphics::Shaders::PS_BV;
-Graphics::Buffer Graphics::Shaders::VS_BV_Cbuffer0, Graphics::Shaders::VS_BV_VB, Graphics::Shaders::VS_BV_IB;
+Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough;
+Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur;
+
+// stuff for an AABB, and a OBB
+Graphics::Buffer Graphics::Internal_Components::VS_BV_Cbuffer0,  Graphics::Internal_Components::VS_BV_VB,  Graphics::Internal_Components::VS_BV_IB;
+Graphics::VertexShader  Graphics::Internal_Components::VS_BV;
+Graphics::PixelShader  Graphics::Internal_Components::PS_BV;
+
+// stuff for an Translator tool
+Graphics::Buffer Graphics::Internal_Components::VS_Trans_Cbuffer0, Graphics::Internal_Components::VS_Trans_VB, Graphics::Internal_Components::VS_Trans_IB;
+Graphics::VertexShader Graphics::Internal_Components::VS_Trans;
+Graphics::PixelShader Graphics::Internal_Components::PS_Trans;
+
 
 Graphics::SamplerState Graphics::Samplers::Nearest, Graphics::Samplers::Linear, Graphics::Samplers::BiLinear, Graphics::Samplers::TriLinear, Graphics::Samplers::Anisotropic;
 Graphics::SamplerState Graphics::Samplers::NearestClampUVW, Graphics::Samplers::LinearClampUVW, Graphics::Samplers::BiLinearClampUVW, Graphics::Samplers::TriLinearClampUVW, Graphics::Samplers::AnisotropicClampUVW;
@@ -1862,7 +1872,6 @@ void Graphics::Internal::Init(int x, int y, HWND wnd){
 	Shaders::VS_BV.CompileShaderFromMemory(Shader_Defines::BV_VS);
 	Shaders::VS_BV.CreateInputLayout(layers, 1);
 
-	Shaders::VS_BV_Cbuffer0.Create(1, sizeof(mat4) + sizeof(vec4), CONSTANT_BUFFER);
 	CreateAABVBuffers();
 
 	Shaders::PS_NormalBumpConverter.CompileShaderFromMemory(Shader_Defines::NormalBumpConverterPS);
@@ -1931,8 +1940,6 @@ void Graphics::Internal::DeInit(){
 	Shaders::VS_FullScreenQuadWOne.Destroy();
 	Shaders::VS_PreHSPassThrough.Destroy();
 	Shaders::VS_BV.Destroy();
-
-	Shaders::VS_BV_Cbuffer0.Destroy();
 
 	Shaders::PS_NormalBumpConverter.Destroy();
 	Shaders::PS_Blur.Destroy();
@@ -2030,12 +2037,14 @@ void Graphics::CreateAABVBuffers(){
 		vec3(-.5f, .5f, -.5f)
 	};
 	uint16_t inds[] = {0,1,2,3,0,4,5,6, 7,4, 0, 5, 1, 6, 2, 7, 3,4};
-	Shaders::VS_BV_VB.Create(sizeof(points)/sizeof(vec3), sizeof(vec3), BufferType::VERTEX_BUFFER, DEFAULT, CPU_NONE, points);
-	Shaders::VS_BV_IB.Create(sizeof(inds)/sizeof(uint16_t), sizeof(uint16_t), BufferType::INDEX_BUFFER, DEFAULT, CPU_NONE, inds);
+	Internal_Components::VS_BV_VB.Create(sizeof(points)/sizeof(vec3), sizeof(vec3), BufferType::VERTEX_BUFFER, DEFAULT, CPU_NONE, points);
+	Internal_Components::VS_BV_IB.Create(sizeof(inds)/sizeof(uint16_t), sizeof(uint16_t), BufferType::INDEX_BUFFER, DEFAULT, CPU_NONE, inds);
+	Internal_Components::VS_BV_Cbuffer0.Create(1, sizeof(mat4) + sizeof(vec4), CONSTANT_BUFFER);
 }
 void Graphics::DestroyAABBBuffers(){
-	Shaders::VS_BV_IB.Destroy();
-	Shaders::VS_BV_VB.Destroy();
+	Internal_Components::VS_BV_IB.Destroy();
+	Internal_Components::VS_BV_VB.Destroy();
+	Internal_Components::VS_BV_Cbuffer0.Destroy();
 }
 
 /*
@@ -2067,12 +2076,38 @@ void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, 
 	t.vp = bvscale*bvtrans*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
 	t.vp.Transpose();
 	t.color = vec4(1.0f, 0, 0, 1);//red
-	Shaders::VS_BV_Cbuffer0.Update(&t);
-	Shaders::VS_BV.SetConstantBuffer(Shaders::VS_BV_Cbuffer0);
+	Internal_Components::VS_BV_Cbuffer0.Update(&t);
+	Internal_Components::VS_BV.SetConstantBuffer(Internal_Components::VS_BV_Cbuffer0);
 
-	Shaders::VS_BV_IB.BindAsIndexBuffer();
-	Shaders::VS_BV_VB.BindAsVertexBuffer();
+	Internal_Components::VS_BV_IB.BindAsIndexBuffer();
+	Internal_Components::VS_BV_VB.BindAsVertexBuffer();
 	
-	DrawIndexed(0, Shaders::VS_BV_IB.Size);
+	DrawIndexed(0, Internal_Components::VS_BV_IB.Size);
 	
+}
+
+void Graphics::CreateTrans_ToolBuffers(){
+	std::vector<vec3> points;
+	std::vector<uint16_t> indices;
+	points.push_back(vec3(1.0f, 0.0f, 0.0f));
+	const float split=16.0f;
+	for(float i=0.0f; i<2*Pi; i+=Pi/split){
+		vec3 p;
+		p.x=0.0f;
+		p.y=sinf(i);
+		p.z=cosf(i);
+		points.push_back(p);
+	}
+	uint16_t index=1;
+	for(float i=0.0f; i<2*Pi; i+=Pi/(split/2.0f)){
+		indices.push_back(0);
+		indices.push_back(index++);
+		indices.push_back(index+1);
+	}
+}
+void Graphics::DestroyTrans_ToolBuffers(){
+
+}
+void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const float scale){
+
 }

@@ -586,11 +586,22 @@ namespace Graphics{
 		ID3D11Query *Query_;
 	};
 
+	namespace Internal_Components{
+		// stuff for an AABB, and a OBB
+		extern Buffer VS_BV_Cbuffer0, VS_BV_VB, VS_BV_IB;
+		extern VertexShader VS_BV;
+		extern PixelShader PS_BV;
 
+		// stuff for an Translator tool
+		extern Buffer VS_Trans_Cbuffer0, VS_Trans_VB, VS_Trans_IB;
+		extern VertexShader VS_Trans;
+		extern PixelShader PS_Trans;
+
+	}
 	namespace Shaders {
 		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough, VS_BV;
 		extern PixelShader PS_NormalBumpConverter, PS_Blur, PS_BV;
-		extern Buffer VS_BV_Cbuffer0, VS_BV_VB, VS_BV_IB;
+
 	};
 	namespace Samplers{
 		extern SamplerState Nearest, Linear, BiLinear, TriLinear, Anisotropic;
@@ -618,5 +629,10 @@ namespace Graphics{
 	void CreateAABVBuffers();
 	void DestroyAABBBuffers();
 	void Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const vec3& size_of_each_axis);
+
+	void CreateTrans_ToolBuffers();
+	void DestroyTrans_ToolBuffers();
+	void Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const float scale);
+
 };
 #endif
