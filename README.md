@@ -1,7 +1,7 @@
-Destination_Toolkit
+﻿Destination_Toolkit
 ===================
 
-A tookit for video game development
+A toolkit for video game development
 
 Destination is an free to use Game Programming Toolkit. The libraries that I make are free to use for any purpose.
 
