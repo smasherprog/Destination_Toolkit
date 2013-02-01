@@ -74,9 +74,8 @@ Graphics::VertexShader  Graphics::Internal_Components::VS_BV;
 Graphics::PixelShader  Graphics::Internal_Components::PS_BV;
 
 // stuff for an Translator tool
-Graphics::Buffer Graphics::Internal_Components::VS_Trans_Cbuffer0, Graphics::Internal_Components::VS_Trans_VB, Graphics::Internal_Components::VS_Trans_IB;
-Graphics::VertexShader Graphics::Internal_Components::VS_Trans;
-Graphics::PixelShader Graphics::Internal_Components::PS_Trans;
+Graphics::Buffer Graphics::Internal_Components::VS_Trans_VB, Graphics::Internal_Components::VS_Trans_IB;
+
 
 
 Graphics::SamplerState Graphics::Samplers::Nearest, Graphics::Samplers::Linear, Graphics::Samplers::BiLinear, Graphics::Samplers::TriLinear, Graphics::Samplers::Anisotropic;
@@ -1873,6 +1872,7 @@ void Graphics::Internal::Init(int x, int y, HWND wnd){
 	Shaders::VS_BV.CreateInputLayout(layers, 1);
 
 	CreateAABVBuffers();
+	CreateTrans_ToolBuffers();
 
 	Shaders::PS_NormalBumpConverter.CompileShaderFromMemory(Shader_Defines::NormalBumpConverterPS);
 	Shaders::PS_Blur.CompileShaderFromMemory(Shader_Defines::Blur_PS);
@@ -1945,8 +1945,10 @@ void Graphics::Internal::DeInit(){
 	Shaders::PS_Blur.Destroy();
 	Shaders::PS_BV.Destroy();
 
+	DestroyTrans_ToolBuffers();
 	DestroyAABBBuffers();
 	//destroy the textures
+
 	Textures::RT_Base.Destroy();
 	Textures::RT_Normal.Destroy();
 	Textures::RT_DepthStencil.Destroy();
@@ -2091,6 +2093,8 @@ void Graphics::CreateTrans_ToolBuffers(){
 	std::vector<uint16_t> indices;
 	points.push_back(vec3(1.0f, 0.0f, 0.0f));
 	const float split=16.0f;
+	//note: all of these shapes will have to be scaled to correctly in the draw function, but its not something the user will do. that will be done in the draw function below
+	// first create the cone pointer
 	for(float i=0.0f; i<2*Pi; i+=Pi/split){
 		vec3 p;
 		p.x=0.0f;
@@ -2104,10 +2108,81 @@ void Graphics::CreateTrans_ToolBuffers(){
 		indices.push_back(index++);
 		indices.push_back(index+1);
 	}
+	// now create the rod to connect to it 
+	// a long triangle looks the same as a rod
+	points.push_back(vec3(0.0f, 1.0f, 0.0f));//0
+	points.push_back(vec3(1.0f, 0.0f, 0.0f));//1
+	points.push_back(vec3(0.0f, 0.0f, 1.0f));//2
+
+	points.push_back(vec3(0.0f, -1.0f, 0.0f));//3
+	points.push_back(vec3(-1.0f, 0.0f, 0.0f));//4
+	points.push_back(vec3(0.0f, 0.0f, -1.0f));//5
+	Internal_Components::Trans_Ind_Cone_Start =0;
+	Internal_Components::Trans_Ind_Cone_Start_Count = index;
+	Internal_Components::Trans_Ind_Rod_Start =index-1;
+
+	index=indices.size()-1;// get the index
+	indices.push_back(index+0);
+	indices.push_back(index+3);
+	indices.push_back(index+1);
+
+	indices.push_back(index+1);
+	indices.push_back(index+4);
+	indices.push_back(index+3);
+
+	indices.push_back(index+1);
+	indices.push_back(index+4);
+	indices.push_back(index+2);
+
+	indices.push_back(index+2);
+	indices.push_back(index+5);
+	indices.push_back(index+4);
+
+	indices.push_back(index+2);
+	indices.push_back(index+5);
+	indices.push_back(index+0);
+
+	indices.push_back(index+0);
+	indices.push_back(index+5);
+	indices.push_back(index+3);
+	Internal_Components::Trans_Ind_Rod_Start_Count = index - Internal_Components::Trans_Ind_Cone_Start_Count;
+
+	Internal_Components::VS_Trans_VB.Create(points.size(), sizeof(vec3), BufferType::VERTEX_BUFFER, DEFAULT, CPU_NONE, &points[0]);
+	Internal_Components::VS_Trans_IB.Create(indices.size(), sizeof(uint16_t), BufferType::INDEX_BUFFER, DEFAULT, CPU_NONE, &indices[0]);
 }
 void Graphics::DestroyTrans_ToolBuffers(){
-
+	Internal_Components::VS_Trans_VB.Destroy();
+	Internal_Components::VS_Trans_IB.Destroy();
 }
 void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const float scale){
+	/*
+	Graphics::SetTopology(PRIM_LINE_STRIP);
 
+	mat4 bvscale, bvtrans;
+	bvscale.setupScale(scale);
+	bvtrans.setupTranslation(center);
+
+	Graphics::DepthStates::NoDepthTest.Bind();
+	Graphics::RasterizerStates::CullBack.Bind();
+	Graphics::BlendStates::No_Blend.Bind();
+
+	Shaders::VS_BV.Bind();
+	Shaders::PS_BV.Bind();
+
+	struct tempstruct{
+		mat4 vp;
+		vec4 color;
+	};
+	tempstruct t;
+	t.vp = bvscale*bvtrans*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
+	t.vp.Transpose();
+	t.color = vec4(1.0f, 0, 0, 1);//red
+	Internal_Components::VS_BV_Cbuffer0.Update(&t);
+	Internal_Components::VS_BV.SetConstantBuffer(Internal_Components::VS_BV_Cbuffer0);
+
+	Internal_Components::VS_BV_IB.BindAsIndexBuffer();
+	Internal_Components::VS_BV_VB.BindAsVertexBuffer();
+	
+	DrawIndexed(0, Internal_Components::VS_BV_IB.Size);
+	*/
 }

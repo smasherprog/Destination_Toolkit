@@ -593,9 +593,8 @@ namespace Graphics{
 		extern PixelShader PS_BV;
 
 		// stuff for an Translator tool
-		extern Buffer VS_Trans_Cbuffer0, VS_Trans_VB, VS_Trans_IB;
-		extern VertexShader VS_Trans;
-		extern PixelShader PS_Trans;
+		extern Buffer VS_Trans_VB, VS_Trans_IB;
+		extern uint16_t Trans_Ind_Cone_Start, Trans_Ind_Cone_Start_Count, Trans_Ind_Rod_Start, Trans_Ind_Rod_Start_Count;
 
 	}
 	namespace Shaders {
