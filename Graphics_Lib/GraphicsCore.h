@@ -631,7 +631,7 @@ namespace Graphics{
 
 	void CreateTrans_ToolBuffers();
 	void DestroyTrans_ToolBuffers();
-	void Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const float scale);
+	void Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world);
 
 };
 #endif

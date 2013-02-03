@@ -2,7 +2,9 @@
 #include "Base_Mesh.h"
 #include "MeshTypes.h"
 
-Base_Mesh::~Base_Mesh(){ Query.Destroy(); }
+Base_Mesh::~Base_Mesh(){ 
+	Query.Destroy();
+}
 void Base_Mesh::DeInit(){
 	Visible = true;
 	FileName = Name="";

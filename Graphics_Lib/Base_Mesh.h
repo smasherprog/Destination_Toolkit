@@ -7,6 +7,7 @@
 #include "../Utilities/My_Timer.h"
 #include "../BV_Lib/AABB.h"
 #include "MeshTypes.h"
+#include "../Utilities/Signal.h"
 
 class mat4;
 
@@ -26,7 +27,7 @@ public:
 
 	virtual mat4 GetWorld() const{ return Scaling * Rotation * Translation; }
 
-	virtual void SetVisibility(bool v){ LastQueryTime=My_Timer::tick_count::now(); }
+	virtual void SetVisibility() const{ }
 
 	virtual float Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const =0;// more expensive test checks all triangles
 	virtual float Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) const =0;// just does a BV check, cheap but fast

@@ -69,9 +69,6 @@
     <ClInclude Include="cWidgetBase.h">
       <Filter>Widgets\Core</Filter>
     </ClInclude>
-    <ClInclude Include="cWidgetEvents.h">
-      <Filter>Widgets\Core</Filter>
-    </ClInclude>
     <ClInclude Include="cWidgetInternals.h">
       <Filter>Widgets\Core</Filter>
     </ClInclude>
@@ -87,6 +84,9 @@
     <ClInclude Include="PCH.h" />
     <ClInclude Include="Objects_3d.h">
       <Filter>Widgets\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="cWidgetEvents.h">
+      <Filter>Widgets\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -144,9 +144,6 @@
     <ClCompile Include="cWidgetBase.cpp">
       <Filter>Widgets\Core</Filter>
     </ClCompile>
-    <ClCompile Include="cWidgetEvents.cpp">
-      <Filter>Widgets\Core</Filter>
-    </ClCompile>
     <ClCompile Include="cWidgetInternals.cpp">
       <Filter>Widgets\Core</Filter>
     </ClCompile>
@@ -156,6 +153,9 @@
     <ClCompile Include="PCH.cpp" />
     <ClCompile Include="Objects_3d.cpp">
       <Filter>Widgets\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="cWidgetEvents.cpp">
+      <Filter>Widgets\Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

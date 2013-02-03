@@ -2154,13 +2154,12 @@ void Graphics::DestroyTrans_ToolBuffers(){
 	Internal_Components::VS_Trans_VB.Destroy();
 	Internal_Components::VS_Trans_IB.Destroy();
 }
-void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const float scale){
-	/*
-	Graphics::SetTopology(PRIM_LINE_STRIP);
-
-	mat4 bvscale, bvtrans;
-	bvscale.setupScale(scale);
-	bvtrans.setupTranslation(center);
+void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world){
+	
+	Graphics::SetTopology(PRIM_TRIANGLELIST);
+	float avgaxis = (world._11 + world._22 + world._33)/3.0f;
+	mat4 bvscale;
+	bvscale.setupScale(avgaxis);
 
 	Graphics::DepthStates::NoDepthTest.Bind();
 	Graphics::RasterizerStates::CullBack.Bind();
@@ -2174,15 +2173,15 @@ void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& w
 		vec4 color;
 	};
 	tempstruct t;
-	t.vp = bvscale*bvtrans*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
+	t.vp = bvscale*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
 	t.vp.Transpose();
 	t.color = vec4(1.0f, 0, 0, 1);//red
 	Internal_Components::VS_BV_Cbuffer0.Update(&t);
 	Internal_Components::VS_BV.SetConstantBuffer(Internal_Components::VS_BV_Cbuffer0);
 
-	Internal_Components::VS_BV_IB.BindAsIndexBuffer();
-	Internal_Components::VS_BV_VB.BindAsVertexBuffer();
+	Internal_Components::VS_Trans_VB.BindAsVertexBuffer();
+	Internal_Components::VS_Trans_IB.BindAsVertexBuffer();
 	
-	DrawIndexed(0, Internal_Components::VS_BV_IB.Size);
-	*/
+	DrawIndexed(Internal_Components::Trans_Ind_Cone_Start, Internal_Components::Trans_Ind_Cone_Start_Count);
+	
 }
