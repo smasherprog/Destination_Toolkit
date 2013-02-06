@@ -6,6 +6,7 @@ Base_Mesh::~Base_Mesh(){
 	Query.Destroy();
 }
 void Base_Mesh::DeInit(){
+
 	Visible = true;
 	FileName = Name="";
 	Angles.identity();

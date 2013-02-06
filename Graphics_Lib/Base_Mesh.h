@@ -72,6 +72,9 @@ protected:
 	vec3 MovementDelta;	
 	My_Timer::tick_count LastQueryTime;
 	Graphics::Query Query;
+
 };
+
+
 
 #endif
