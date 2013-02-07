@@ -10,12 +10,7 @@ namespace MY_Utilities{
 	template <typename rettype, typename... T> class Signal_st{
 	public:
 		Signal_st(): _Is_Calling(false){}
-		~Signal_st(){ 
-			for(auto i=Slots.begin(); i != Slots.end(); i++){
-				if((*i).first == 0) continue;
-				(*i).first->Disconnect(this); 
-			}
-		}
+		~Signal_st(){ for(auto i=Slots.begin(); i != Slots.end(); i++) (*i).first->Disconnect(this); }
 
 		void Connect(Signal_st<rettype, T...>* othersig){  Slots[othersig] = std::vector<std::function<rettype(T...)>>(0);  } 
 		void Connect(Signal_st<rettype, T...>* othersig, std::function<rettype(T...)> f){  
@@ -29,9 +24,9 @@ namespace MY_Utilities{
 			if(_Is_Calling) return;//avoid infinite recursion
 			_Is_Calling = true;
 			for(auto i=Slots.begin(); i!= Slots.end(); i++){
-				if((*i).first !=0){
-					if((*i).first->Is_Calling()) continue;
-				}
+
+				if((*i).first->Is_Calling()) continue;
+
 				auto& cont = (*i).second;
 				for(size_t j =0; j < cont.size(); j++){
 					cont[j](params...);
@@ -69,9 +64,7 @@ namespace MY_Utilities{
 			_Is_Calling.store(true, std::memory_order::memory_order_release);
 			_Lock.lock();
 			for(auto i=Slots.begin(); i!= Slots.end(); i++){
-				if((*i).first !=0){
-					if((*i).first->Is_Calling()) continue;
-				}
+				if((*i).first->Is_Calling()) continue;
 				auto& cont = (*i).second;
 				for(size_t j =0; j < cont.size(); j++){
 					cont[j](params...);
