@@ -7,6 +7,7 @@
 #include "../MY_UI/cWidgetSkin.h"
 #include "../MY_UI/Text.h"
 #include "../Graphics_Lib/UI_Camera.h"
+#include "../Graphics_Lib/Base_Camera.h"
 
 D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, unsigned int width) : cBaseD3D(hInstance, appname, height, width) {
 
@@ -20,15 +21,16 @@ D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, un
 	Frame_Stats = new MY_UI::Controls::Text(root);
 	Frame_Stats->SetPos(5, 5);
 	Frame_Stats->SetColor(MY_UI::Utilities::White);
-	UICamera = new UI_Camera();
+
+	UICamera = new UI_Camera(new Base_Camera());
 	// set the camera up
-	UICamera->Camera.Position = vec3(0, 0.0f, -170);
+	UICamera->Camera->Position = vec3(0, 50.0f, 0);
 	float x, y;
 	Graphics::GetBackBufferSize(x, y);
-	
-	UICamera->Camera.OnResize(y, x); 
-	UICamera->Camera.setLens(.25f*Pi, y, x , 1.0f, 1500.0f);
 
+	UICamera->Camera->OnResize(y, x); 
+	UICamera->Camera->SetLens(.25f*Pi, y, x , 1.0f, 15000.0f);
+	
 	/*
 	 *
 	 *Standard UI initialization code above
@@ -59,7 +61,8 @@ void D3DApp::run(){
 		Graphics::Textures::RT_BackBufferTexture.ClearRenderTargets();
 
 		FrameTimer.Per_Loop();
-		UICamera->Camera.PerFrame(FrameTimer.DT);
+
+		UICamera->Camera->PerFrame(FrameTimer.DT);
 		/*
 
 

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "cD3DApp.h"
+#include "../Utilities/Signal.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd) {
 

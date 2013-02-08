@@ -86,6 +86,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ocean_Demo", "Ocean_Demo\Oc
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Template_Project", "Template_Project\Template_Project.vcxproj", "{00498EC6-B43C-47B4-A3FF-923017ECE631}"
+	ProjectSection(ProjectDependencies) = postProject
+		{94AEC603-4456-4AA3-BF33-3AF22C092131} = {94AEC603-4456-4AA3-BF33-3AF22C092131}
+		{7C931053-CF6E-6790-BDDF-D71215744090} = {7C931053-CF6E-6790-BDDF-D71215744090}
+		{97F8D958-DB4A-8705-918D-E3091C87AE3A} = {97F8D958-DB4A-8705-918D-E3091C87AE3A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MY_UI_DX_Renderer_Lib", "MY_UI\MY_UI_DX_Renderer_Lib.vcxproj", "{94AEC603-4456-4AA3-BF33-3AF22C092131}"
 	ProjectSection(ProjectDependencies) = postProject

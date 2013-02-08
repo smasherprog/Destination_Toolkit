@@ -76,7 +76,7 @@ Graphics::PixelShader  Graphics::Internal_Components::PS_BV;
 // stuff for an Translator tool
 Graphics::Buffer Graphics::Internal_Components::VS_Trans_VB, Graphics::Internal_Components::VS_Trans_IB;
 
-
+uint16_t Graphics::Internal_Components::Trans_Ind_Cone_Start(0), Graphics::Internal_Components::Trans_Ind_Cone_Start_Count(0), Graphics::Internal_Components::Trans_Ind_Rod_Start(0), Graphics::Internal_Components::Trans_Ind_Rod_Start_Count(0);
 
 Graphics::SamplerState Graphics::Samplers::Nearest, Graphics::Samplers::Linear, Graphics::Samplers::BiLinear, Graphics::Samplers::TriLinear, Graphics::Samplers::Anisotropic;
 Graphics::SamplerState Graphics::Samplers::NearestClampUVW, Graphics::Samplers::LinearClampUVW, Graphics::Samplers::BiLinearClampUVW, Graphics::Samplers::TriLinearClampUVW, Graphics::Samplers::AnisotropicClampUVW;
@@ -1868,15 +1868,15 @@ void Graphics::Internal::Init(int x, int y, HWND wnd){
 	Shaders::VS_PreHSPassThrough.CreateInputLayout(layers, 1);
 	Shaders::VS_FullScreenQuadWOne.CompileShaderFromMemory(Shader_Defines::FullScreenQuadWOneVS);
 	Shaders::VS_FullScreenQuadWOne.CreateInputLayout(layers, 1);
-	Shaders::VS_BV.CompileShaderFromMemory(Shader_Defines::BV_VS);
-	Shaders::VS_BV.CreateInputLayout(layers, 1);
+	Internal_Components::VS_BV.CompileShaderFromMemory(Shader_Defines::BV_VS);
+	Internal_Components::VS_BV.CreateInputLayout(layers, 1);
 
 	CreateAABVBuffers();
 	CreateTrans_ToolBuffers();
 
 	Shaders::PS_NormalBumpConverter.CompileShaderFromMemory(Shader_Defines::NormalBumpConverterPS);
 	Shaders::PS_Blur.CompileShaderFromMemory(Shader_Defines::Blur_PS);
-	Shaders::PS_BV.CompileShaderFromMemory(Shader_Defines::BV_PS);
+	Internal_Components::PS_BV.CompileShaderFromMemory(Shader_Defines::BV_PS);
 
 	//init the standard render targets
 	unsigned int width(x), height(y);
@@ -1939,11 +1939,11 @@ void Graphics::Internal::DeInit(){
 	Shaders::VS_FullScreenQuad.Destroy();
 	Shaders::VS_FullScreenQuadWOne.Destroy();
 	Shaders::VS_PreHSPassThrough.Destroy();
-	Shaders::VS_BV.Destroy();
+	Internal_Components::VS_BV.Destroy();
 
 	Shaders::PS_NormalBumpConverter.Destroy();
 	Shaders::PS_Blur.Destroy();
-	Shaders::PS_BV.Destroy();
+	Internal_Components::PS_BV.Destroy();
 
 	DestroyTrans_ToolBuffers();
 	DestroyAABBBuffers();
@@ -2067,8 +2067,8 @@ void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, 
 	Graphics::RasterizerStates::CullNone.Bind();
 	Graphics::BlendStates::No_Blend.Bind();
 
-	Shaders::VS_BV.Bind();
-	Shaders::PS_BV.Bind();
+	Internal_Components::VS_BV.Bind();
+	Internal_Components::PS_BV.Bind();
 
 	struct tempstruct{
 		mat4 vp;
@@ -2165,8 +2165,8 @@ void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& w
 	Graphics::RasterizerStates::CullBack.Bind();
 	Graphics::BlendStates::No_Blend.Bind();
 
-	Shaders::VS_BV.Bind();
-	Shaders::PS_BV.Bind();
+	Internal_Components::VS_BV.Bind();
+	Internal_Components::PS_BV.Bind();
 
 	struct tempstruct{
 		mat4 vp;

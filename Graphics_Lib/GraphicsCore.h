@@ -598,8 +598,8 @@ namespace Graphics{
 
 	}
 	namespace Shaders {
-		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough, VS_BV;
-		extern PixelShader PS_NormalBumpConverter, PS_Blur, PS_BV;
+		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough;
+		extern PixelShader PS_NormalBumpConverter, PS_Blur;
 
 	};
 	namespace Samplers{
