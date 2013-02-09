@@ -42,3 +42,4 @@ void Base_Mesh::Save(std::ofstream& stream){
 	stream.write((char*)&Rot[0], sizeof(quat));
 	stream.write((char*)&Angles.heading, sizeof(euler));
 }
+

@@ -13,6 +13,7 @@
 #include "../Utilities/Utilities.h"
 #include "../Utilities/My_Timer.h"
 
+class Base_Mesh;
 namespace Graphics{
 	struct Shader_Macro{// this is castable to a D3D10_SHADER_MACRO 
 		const char* Name;
@@ -587,16 +588,8 @@ namespace Graphics{
 	};
 
 	namespace Internal_Components{
-		// stuff for an AABB, and a OBB
-		extern Buffer VS_BV_Cbuffer0, VS_BV_VB, VS_BV_IB;
-		extern VertexShader VS_BV;
-		extern PixelShader PS_BV;
-
-		// stuff for an Translator tool
-		extern Buffer VS_Trans_VB, VS_Trans_IB;
-		extern uint16_t Trans_Ind_Cone_Start, Trans_Ind_Cone_Start_Count, Trans_Ind_Rod_Start, Trans_Ind_Rod_Start_Count;
-
-	}
+		extern Base_Mesh *BV, *Trans;
+	};
 	namespace Shaders {
 		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough;
 		extern PixelShader PS_NormalBumpConverter, PS_Blur;
@@ -625,13 +618,8 @@ namespace Graphics{
 		Graphics Utility functions below
 	*/
 
-	void CreateAABVBuffers();
-	void DestroyAABBBuffers();
-	void Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const vec3& size_of_each_axis);
-
-	void CreateTrans_ToolBuffers();
-	void DestroyTrans_ToolBuffers();
-	void Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world);
+	void Draw_AABV(const mat4& view, const mat4& proj, const vec3& center, const vec3& size_of_each_axis);
+	void Draw_Trans_Tool(const mat4& view, const mat4& proj,  const vec3& center, const vec3& size_of_each_axis);
 
 };
 #endif

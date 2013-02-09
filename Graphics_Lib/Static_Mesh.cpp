@@ -74,6 +74,10 @@ void Static_Mesh::Generate_BV(){
 	size_t i(0);
 	do{	Bounding_Volume.Add(Vertices[i]); } while(++i!=Vertices.size());
 }
+void Static_Mesh::Draw_BV(const mat4& view, const mat4& proj) {
+	Graphics::Draw_AABV(view, proj, GetPosition() + Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
+	Graphics::Draw_Trans_Tool(view, proj, GetPosition() + Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
+}
 float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const {
 	mat4 inverseW(GetWorld());
 	inverseW.inverse();
@@ -288,9 +292,7 @@ bool Static_Mesh::Save(const std::string& file){
 	FileName = file;
 	return true;
 }
-void Static_Mesh::Draw_BV(const mat4& view, const mat4& proj) {
-	Graphics::Draw_AABV(view, proj, GetWorld(), Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
-}
+
 void Static_Mesh::Draw(const mat4& view, const mat4& proj){
 	Graphics::SetTopology(PRIM_TRIANGLELIST);
 

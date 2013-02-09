@@ -65,6 +65,12 @@
     <ClInclude Include="Base_Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BV_Mesh.h">
+      <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Trans_Mesh.h">
+      <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsCore.cpp">
@@ -105,6 +111,12 @@
     </ClCompile>
     <ClCompile Include="Base_Camera.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BV_Mesh.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Trans_Mesh.cpp">
+      <Filter>Source Files\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

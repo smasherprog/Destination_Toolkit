@@ -23,7 +23,7 @@ public:
 	virtual bool Load(const std::string& file)=0;
 
 	virtual void Draw(const mat4& view, const mat4& proj) =0;
-	virtual void Draw_BV(const mat4& view, const mat4& proj) =0;
+	virtual void Draw_BV(const mat4& view, const mat4& proj)=0;
 
 	virtual mat4 GetWorld() const{ return Scaling * Rotation * Translation; }
 

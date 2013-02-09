@@ -59,7 +59,7 @@ namespace MY_Utilities{
 			else Slots[othersig]=f;
 			_Lock.unlock();
 		}
-		void Disconnect(Signal_mt<rettype, T...>* othersig){ _Lock.lock();  Connections.erase(othersig); Slots.erase(othersig);  _Lock.unlock(); othersig->_Lock.lock(); othersig->Connections.erase(this); othersig->Slots.erase(this); othersig->_Lock.unlock(); }
+		void Disconnect(Signal_mt<rettype, T...>* othersig){ othersig->_Lock.lock(); othersig->Connections.erase(this); othersig->Slots.erase(this); othersig->_Lock.unlock();  _Lock.lock();  Connections.erase(othersig); Slots.erase(othersig);  _Lock.unlock(); }
 
 		void Call(T... params){
 			if(_Is_Calling.load(std::memory_order::memory_order_acquire)) return;//avoid infinite recursion

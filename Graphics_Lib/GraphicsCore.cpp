@@ -4,7 +4,8 @@
 #include "Shaders.h"
 #include "../Utilities/My_Timer.h"
 #include "D3Dcompiler.h"
-
+#include "BV_Mesh.h"
+#include "Trans_Mesh.h"
 
 //Internals
 std::vector<Graphics::Internal::OnResizeCB_S> Graphics::Internal::OnResizeCallBacks;
@@ -65,18 +66,11 @@ unsigned int Graphics::BlendState::CurrentMask=0;
 //rasterizerstates
 ID3D11RasterizerState* Graphics::RasterizerState::CurrentState=0;
 
+Base_Mesh* Graphics::Internal_Components::BV=0;
+Base_Mesh* Graphics::Internal_Components::Trans=0;
+
 Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough;
 Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur;
-
-// stuff for an AABB, and a OBB
-Graphics::Buffer Graphics::Internal_Components::VS_BV_Cbuffer0,  Graphics::Internal_Components::VS_BV_VB,  Graphics::Internal_Components::VS_BV_IB;
-Graphics::VertexShader  Graphics::Internal_Components::VS_BV;
-Graphics::PixelShader  Graphics::Internal_Components::PS_BV;
-
-// stuff for an Translator tool
-Graphics::Buffer Graphics::Internal_Components::VS_Trans_VB, Graphics::Internal_Components::VS_Trans_IB;
-
-uint16_t Graphics::Internal_Components::Trans_Ind_Cone_Start(0), Graphics::Internal_Components::Trans_Ind_Cone_Start_Count(0), Graphics::Internal_Components::Trans_Ind_Rod_Start(0), Graphics::Internal_Components::Trans_Ind_Rod_Start_Count(0);
 
 Graphics::SamplerState Graphics::Samplers::Nearest, Graphics::Samplers::Linear, Graphics::Samplers::BiLinear, Graphics::Samplers::TriLinear, Graphics::Samplers::Anisotropic;
 Graphics::SamplerState Graphics::Samplers::NearestClampUVW, Graphics::Samplers::LinearClampUVW, Graphics::Samplers::BiLinearClampUVW, Graphics::Samplers::TriLinearClampUVW, Graphics::Samplers::AnisotropicClampUVW;
@@ -1868,15 +1862,15 @@ void Graphics::Internal::Init(int x, int y, HWND wnd){
 	Shaders::VS_PreHSPassThrough.CreateInputLayout(layers, 1);
 	Shaders::VS_FullScreenQuadWOne.CompileShaderFromMemory(Shader_Defines::FullScreenQuadWOneVS);
 	Shaders::VS_FullScreenQuadWOne.CreateInputLayout(layers, 1);
-	Internal_Components::VS_BV.CompileShaderFromMemory(Shader_Defines::BV_VS);
-	Internal_Components::VS_BV.CreateInputLayout(layers, 1);
 
-	CreateAABVBuffers();
-	CreateTrans_ToolBuffers();
+	Internal_Components::BV = new BV_Mesh();
+	Internal_Components::BV->Init();
+	Internal_Components::Trans = new Trans_Mesh();
+	Internal_Components::Trans->Init();
 
 	Shaders::PS_NormalBumpConverter.CompileShaderFromMemory(Shader_Defines::NormalBumpConverterPS);
 	Shaders::PS_Blur.CompileShaderFromMemory(Shader_Defines::Blur_PS);
-	Internal_Components::PS_BV.CompileShaderFromMemory(Shader_Defines::BV_PS);
+	
 
 	//init the standard render targets
 	unsigned int width(x), height(y);
@@ -1939,14 +1933,17 @@ void Graphics::Internal::DeInit(){
 	Shaders::VS_FullScreenQuad.Destroy();
 	Shaders::VS_FullScreenQuadWOne.Destroy();
 	Shaders::VS_PreHSPassThrough.Destroy();
-	Internal_Components::VS_BV.Destroy();
+	
+	delete Internal_Components::BV;
+	Internal_Components::BV =0;
+
+	delete Internal_Components::Trans;
+	Internal_Components::Trans =0;
 
 	Shaders::PS_NormalBumpConverter.Destroy();
 	Shaders::PS_Blur.Destroy();
-	Internal_Components::PS_BV.Destroy();
 
-	DestroyTrans_ToolBuffers();
-	DestroyAABBBuffers();
+
 	//destroy the textures
 
 	Textures::RT_Base.Destroy();
@@ -2024,164 +2021,20 @@ void Graphics::Internal::OnResize(int x, int y){
 	}
 }
 
-
-void Graphics::CreateAABVBuffers(){
-	vec3 points[] = {
-		vec3(.5f, .5f, .5f),
-		vec3(.5f,-.5f,.5f),
-		vec3(.5f, -.5f, -.5f),
-		vec3(.5f, .5f, -.5f),
-
-		vec3(-.5f, .5f, .5f),
-		vec3(-.5f,-.5f, .5f),
-		vec3(-.5f, -.5f, -.5f),
-		vec3(-.5f, .5f, -.5f),
-		vec3(-.5f, .5f, -.5f)
-	};
-	uint16_t inds[] = {0,1,2,3,0,4,5,6, 7,4, 0, 5, 1, 6, 2, 7, 3,4};
-	Internal_Components::VS_BV_VB.Create(sizeof(points)/sizeof(vec3), sizeof(vec3), BufferType::VERTEX_BUFFER, DEFAULT, CPU_NONE, points);
-	Internal_Components::VS_BV_IB.Create(sizeof(inds)/sizeof(uint16_t), sizeof(uint16_t), BufferType::INDEX_BUFFER, DEFAULT, CPU_NONE, inds);
-	Internal_Components::VS_BV_Cbuffer0.Create(1, sizeof(mat4) + sizeof(vec4), CONSTANT_BUFFER);
-}
-void Graphics::DestroyAABBBuffers(){
-	Internal_Components::VS_BV_IB.Destroy();
-	Internal_Components::VS_BV_VB.Destroy();
-	Internal_Components::VS_BV_Cbuffer0.Destroy();
-}
-
 /*
 world is the matrix of the object the AABV is holding. 
 View and Proj are the cameras
 center is the center point of the BV in ITS space
 size_of_each_axis hold the TOTAL SIZE of each axis
 */
-void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const mat4& world, const vec3& center, const vec3& size_of_each_axis){
-	Graphics::SetTopology(PRIM_LINE_STRIP);
-
-
-	mat4 bvscale, bvtrans;
-	bvscale.setupScale(size_of_each_axis);
-	bvtrans.setupTranslation(center);
-
-	Graphics::DepthStates::DepthTest.Bind();
-	Graphics::RasterizerStates::CullNone.Bind();
-	Graphics::BlendStates::No_Blend.Bind();
-
-	Internal_Components::VS_BV.Bind();
-	Internal_Components::PS_BV.Bind();
-
-	struct tempstruct{
-		mat4 vp;
-		vec4 color;
-	};
-	tempstruct t;
-	t.vp = bvscale*bvtrans*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
-	t.vp.Transpose();
-	t.color = vec4(1.0f, 0, 0, 1);//red
-	Internal_Components::VS_BV_Cbuffer0.Update(&t);
-	Internal_Components::VS_BV.SetConstantBuffer(Internal_Components::VS_BV_Cbuffer0);
-
-	Internal_Components::VS_BV_IB.BindAsIndexBuffer();
-	Internal_Components::VS_BV_VB.BindAsVertexBuffer();
-	
-	DrawIndexed(0, Internal_Components::VS_BV_IB.Size);
-	
+void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const vec3& center, const vec3& size_of_each_axis){
+	Internal_Components::BV->SetScaling(size_of_each_axis);
+	Internal_Components::BV->SetPosition(center);
+	Internal_Components::BV->Draw(view, proj);
 }
+void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const vec3& center, const vec3& size_of_each_axis){
+	Internal_Components::Trans->SetScaling(size_of_each_axis);
+	Internal_Components::Trans->SetPosition(center);
+	Internal_Components::Trans->Draw(view, proj);
 
-void Graphics::CreateTrans_ToolBuffers(){
-	std::vector<vec3> points;
-	std::vector<uint16_t> indices;
-	points.push_back(vec3(1.0f, 0.0f, 0.0f));
-	const float split=16.0f;
-	//note: all of these shapes will have to be scaled to correctly in the draw function, but its not something the user will do. that will be done in the draw function below
-	// first create the cone pointer
-	for(float i=0.0f; i<2*Pi; i+=Pi/split){
-		vec3 p;
-		p.x=0.0f;
-		p.y=sinf(i);
-		p.z=cosf(i);
-		points.push_back(p);
-	}
-	uint16_t index=1;
-	for(float i=0.0f; i<2*Pi; i+=Pi/(split/2.0f)){
-		indices.push_back(0);
-		indices.push_back(index++);
-		indices.push_back(index+1);
-	}
-	// now create the rod to connect to it 
-	// a long triangle looks the same as a rod
-	points.push_back(vec3(0.0f, 1.0f, 0.0f));//0
-	points.push_back(vec3(1.0f, 0.0f, 0.0f));//1
-	points.push_back(vec3(0.0f, 0.0f, 1.0f));//2
-
-	points.push_back(vec3(0.0f, -1.0f, 0.0f));//3
-	points.push_back(vec3(-1.0f, 0.0f, 0.0f));//4
-	points.push_back(vec3(0.0f, 0.0f, -1.0f));//5
-	Internal_Components::Trans_Ind_Cone_Start =0;
-	Internal_Components::Trans_Ind_Cone_Start_Count = index;
-	Internal_Components::Trans_Ind_Rod_Start =index-1;
-
-	index=indices.size()-1;// get the index
-	indices.push_back(index+0);
-	indices.push_back(index+3);
-	indices.push_back(index+1);
-
-	indices.push_back(index+1);
-	indices.push_back(index+4);
-	indices.push_back(index+3);
-
-	indices.push_back(index+1);
-	indices.push_back(index+4);
-	indices.push_back(index+2);
-
-	indices.push_back(index+2);
-	indices.push_back(index+5);
-	indices.push_back(index+4);
-
-	indices.push_back(index+2);
-	indices.push_back(index+5);
-	indices.push_back(index+0);
-
-	indices.push_back(index+0);
-	indices.push_back(index+5);
-	indices.push_back(index+3);
-	Internal_Components::Trans_Ind_Rod_Start_Count = index - Internal_Components::Trans_Ind_Cone_Start_Count;
-
-	Internal_Components::VS_Trans_VB.Create(points.size(), sizeof(vec3), BufferType::VERTEX_BUFFER, DEFAULT, CPU_NONE, &points[0]);
-	Internal_Components::VS_Trans_IB.Create(indices.size(), sizeof(uint16_t), BufferType::INDEX_BUFFER, DEFAULT, CPU_NONE, &indices[0]);
-}
-void Graphics::DestroyTrans_ToolBuffers(){
-	Internal_Components::VS_Trans_VB.Destroy();
-	Internal_Components::VS_Trans_IB.Destroy();
-}
-void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const mat4& world){
-	
-	Graphics::SetTopology(PRIM_TRIANGLELIST);
-	float avgaxis = (world._11 + world._22 + world._33)/3.0f;
-	mat4 bvscale;
-	bvscale.setupScale(avgaxis);
-
-	Graphics::DepthStates::NoDepthTest.Bind();
-	Graphics::RasterizerStates::CullBack.Bind();
-	Graphics::BlendStates::No_Blend.Bind();
-
-	Internal_Components::VS_BV.Bind();
-	Internal_Components::PS_BV.Bind();
-
-	struct tempstruct{
-		mat4 vp;
-		vec4 color;
-	};
-	tempstruct t;
-	t.vp = bvscale*world*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
-	t.vp.Transpose();
-	t.color = vec4(1.0f, 0, 0, 1);//red
-	Internal_Components::VS_BV_Cbuffer0.Update(&t);
-	Internal_Components::VS_BV.SetConstantBuffer(Internal_Components::VS_BV_Cbuffer0);
-
-	Internal_Components::VS_Trans_VB.BindAsVertexBuffer();
-	Internal_Components::VS_Trans_IB.BindAsVertexBuffer();
-	
-	DrawIndexed(Internal_Components::Trans_Ind_Cone_Start, Internal_Components::Trans_Ind_Cone_Start_Count);
-	
 }
