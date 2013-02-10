@@ -4,8 +4,8 @@
 #include "Shaders.h"
 #include "../Utilities/My_Timer.h"
 #include "D3Dcompiler.h"
-#include "BV_Mesh.h"
 #include "Trans_Mesh.h"
+#include "BV_Mesh.h"
 
 //Internals
 std::vector<Graphics::Internal::OnResizeCB_S> Graphics::Internal::OnResizeCallBacks;
@@ -67,7 +67,7 @@ unsigned int Graphics::BlendState::CurrentMask=0;
 ID3D11RasterizerState* Graphics::RasterizerState::CurrentState=0;
 
 Base_Mesh* Graphics::Internal_Components::BV=0;
-Base_Mesh* Graphics::Internal_Components::Trans=0;
+Trans_Mesh* Graphics::Internal_Components::Trans=0;
 
 Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough;
 Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur;
@@ -2027,14 +2027,13 @@ View and Proj are the cameras
 center is the center point of the BV in ITS space
 size_of_each_axis hold the TOTAL SIZE of each axis
 */
-void Graphics::Draw_AABV(const mat4& view, const mat4& proj, const vec3& center, const vec3& size_of_each_axis){
+void Graphics::Draw_AABV(const Base_Camera* camera, const vec3& center, const vec3& size_of_each_axis){
 	Internal_Components::BV->SetScaling(size_of_each_axis);
 	Internal_Components::BV->SetPosition(center);
-	Internal_Components::BV->Draw(view, proj);
+	Internal_Components::BV->Draw(camera);
 }
-void Graphics::Draw_Trans_Tool(const mat4& view, const mat4& proj, const vec3& center, const vec3& size_of_each_axis){
-	Internal_Components::Trans->SetScaling(size_of_each_axis);
+void Graphics::Draw_Trans_Tool(const Base_Camera* camera, const vec3& center){
 	Internal_Components::Trans->SetPosition(center);
-	Internal_Components::Trans->Draw(view, proj);
+	Internal_Components::Trans->Draw(camera);
 
 }

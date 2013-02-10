@@ -15,7 +15,7 @@ namespace MY_UI{
 class UI_Camera;
 class Mesh_UI;
 class Mesh_Container;
-class UI_WorldSelector;
+class UI_Mesh_3D_Tool;
 
 class D3DApp: public cBaseD3D {
 public:
@@ -28,7 +28,7 @@ public:
 
 
 	Mesh_Container *MeshContainer;
-	UI_WorldSelector* UIWorldSelector;
+	UI_Mesh_3D_Tool* UIMesh_3D_Tool;
 	My_Timer::Frame_Timer FrameTimer;
 	Mesh_UI* MeshUI;
 	std::string FrameStats;

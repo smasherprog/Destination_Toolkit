@@ -10,7 +10,7 @@
 #include "../Utilities/Signal.h"
 
 class mat4;
-
+class Base_Camera;
 class Base_Mesh{
 public:
 
@@ -22,8 +22,8 @@ public:
 	virtual bool Save(const std::string& file)=0;
 	virtual bool Load(const std::string& file)=0;
 
-	virtual void Draw(const mat4& view, const mat4& proj) =0;
-	virtual void Draw_BV(const mat4& view, const mat4& proj)=0;
+	virtual void Draw(const Base_Camera* camera) =0;
+	virtual void Draw_BV(const Base_Camera* camera)=0;
 
 	virtual mat4 GetWorld() const{ return Scaling * Rotation * Translation; }
 

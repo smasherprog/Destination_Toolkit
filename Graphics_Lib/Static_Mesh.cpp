@@ -3,6 +3,7 @@
 #include "../Assimp/include/assimp/Scene.h"
 #include "../Assimp/include/assimp/PostProcess.h"
 #include "../Assimp/include/assimp/cimport.h"
+#include "Base_Camera.h"
 
 void Static_Mesh::ExtractMaterials(Batch& batch, const aiMaterial* pcMat){
 	Material* mat = batch.GetMaterial();
@@ -74,9 +75,9 @@ void Static_Mesh::Generate_BV(){
 	size_t i(0);
 	do{	Bounding_Volume.Add(Vertices[i]); } while(++i!=Vertices.size());
 }
-void Static_Mesh::Draw_BV(const mat4& view, const mat4& proj) {
-	Graphics::Draw_AABV(view, proj, GetPosition() + Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
-	Graphics::Draw_Trans_Tool(view, proj, GetPosition() + Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
+void Static_Mesh::Draw_BV(const Base_Camera* camera) {
+	Graphics::Draw_AABV(camera, GetPosition() + Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
+	Graphics::Draw_Trans_Tool(camera, GetPosition() + Bounding_Volume.GetCenter());
 }
 float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const {
 	mat4 inverseW(GetWorld());
@@ -293,7 +294,7 @@ bool Static_Mesh::Save(const std::string& file){
 	return true;
 }
 
-void Static_Mesh::Draw(const mat4& view, const mat4& proj){
+void Static_Mesh::Draw(const Base_Camera* camera){
 	Graphics::SetTopology(PRIM_TRIANGLELIST);
 
 	Graphics::DepthStates::DepthTest.Bind();
@@ -301,8 +302,7 @@ void Static_Mesh::Draw(const mat4& view, const mat4& proj){
 	Graphics::BlendStates::No_Blend.Bind();
 	Object_Transform cb;
 	cb.Inv_Trans_World = cb.World = GetWorld();
-	cb.View_Proj= view*proj;
-	cb.View_Proj.Transpose();
+	cb.View_Proj= camera->Trans_VP;
 	cb.World.Transpose();
 	cb.Inv_Trans_World.inverse();
 	cb.Inv_Trans_World.Transpose();
@@ -328,5 +328,5 @@ void Static_Mesh::Draw(const mat4& view, const mat4& proj){
 
 		Graphics::DrawIndexed((*beg)->StartIndex, (*beg)->NumIndices);
 	}
-	Draw_BV(view, proj);
+	Draw_BV(camera);
 }

@@ -5,7 +5,7 @@
 
 class Base_Mesh;
 class vec3;
-class mat4;
+class Base_Camera;
 class Mesh_Container{
 public:
 
@@ -14,7 +14,7 @@ public:
 
 	bool Load_Mesh(std::string file);
 	Base_Mesh* Check_Hit(vec3& ray, vec3& origin);
-	void Draw(mat4& view, mat4& proj);
+	void Draw(const Base_Camera* camera);
 
 
 protected:

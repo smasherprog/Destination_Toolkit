@@ -18,9 +18,9 @@ public:
 
 	virtual bool Save(const std::string& file);
 	virtual bool Load(const std::string& file);
-
-	virtual void Draw(const mat4& view, const mat4& proj) override;
-	virtual void Draw_BV(const mat4& view, const mat4& proj) override;
+	
+	virtual void Draw(const Base_Camera* camera) override;
+	virtual void Draw_BV(const Base_Camera* camera) override;
 
 	virtual float Get_Max_x_Size()override{ return Bounding_Volume.XSize(); }
 	virtual float Get_Max_y_Size()override{ return Bounding_Volume.YSize(); }

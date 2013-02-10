@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BV_Mesh.h"
 #include "Shaders.h"
+#include "Base_Camera.h"
 
 bool BV_Mesh::Init(){
 	Vertices.push_back(vec3(.5f, .5f, .5f));
@@ -32,7 +33,7 @@ bool BV_Mesh::Init(){
 	return true;
 }
 
-void BV_Mesh::Draw(const mat4& view, const mat4& proj){
+void BV_Mesh::Draw(const Base_Camera* camera){
 
 	Graphics::SetTopology(PRIM_LINE_STRIP);
 	Graphics::DepthStates::DepthTest.Bind();
@@ -44,7 +45,7 @@ void BV_Mesh::Draw(const mat4& view, const mat4& proj){
 		vec4 color;
 	};
 	tempstruct t;
-	t.vp = GetWorld()*view*proj;// we have to move the BV that was pregenerated into the correct position and scale it 
+	t.vp = GetWorld()*camera->VP;// we have to move the BV that was pregenerated into the correct position and scale it 
 	t.vp.Transpose();
 	t.color = vec4(1.0f, 0, 0, 1);//red
 	CBuffer0.Update(&t);

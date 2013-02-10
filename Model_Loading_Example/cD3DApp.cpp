@@ -7,7 +7,7 @@
 #include "../MY_UI/cWidgetSkin.h"
 #include "../MY_UI/Text.h"
 #include "../Graphics_Lib/UI_Camera.h"
-#include "UI_WorldSelector.h"
+#include "UI_Mesh_3D_Tool.h"
 #include "Mesh_UI.h"
 #include "../assimp/include/assimp/cimport.h"
 
@@ -44,7 +44,7 @@ D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, un
 	MeshUI->SetFileExts(std::string(sz.C_Str()));
 
 	//not working yet
-	//UIWorldSelector = new UI_WorldSelector(&UICamera->Camera->View, &UICamera->Camera->Proj, std::bind(&Mesh_Container::Check_Hit, MeshContainer, std::placeholders::_1, std::placeholders::_2));
+	UIMesh_3D_Tool = new UI_Mesh_3D_Tool(&UICamera->Camera->View, &UICamera->Camera->Proj, std::bind(&Mesh_Container::Check_Hit, MeshContainer, std::placeholders::_1, std::placeholders::_2));
 }
 D3DApp::~D3DApp(){
 	SAFE_DELETE(MeshContainer);
@@ -66,7 +66,7 @@ void D3DApp::run(){
 		FrameTimer.Per_Loop();
 		UICamera->Camera->PerFrame(FrameTimer.DT);
 
-		MeshContainer->Draw(UICamera->Camera->View, UICamera->Camera->Proj);
+		MeshContainer->Draw(UICamera->Camera);
 		
 		UpdateStats();
 		MY_UI::Internal::RootWidget->Draw();	
