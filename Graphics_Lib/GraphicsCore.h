@@ -13,9 +13,6 @@
 #include "../Utilities/Utilities.h"
 #include "../Utilities/My_Timer.h"
 
-class Trans_Mesh;
-class Base_Mesh;
-class Base_Camera;
 namespace Graphics{
 	struct Shader_Macro{// this is castable to a D3D10_SHADER_MACRO 
 		const char* Name;
@@ -589,10 +586,6 @@ namespace Graphics{
 		ID3D11Query *Query_;
 	};
 
-	namespace Internal_Components{
-		extern Trans_Mesh *Trans;
-		extern Base_Mesh *BV;
-	};
 	namespace Shaders {
 		extern VertexShader VS_FullScreenQuad, VS_FullScreenQuadWOne, VS_PreHSPassThrough;
 		extern PixelShader PS_NormalBumpConverter, PS_Blur;
@@ -620,9 +613,6 @@ namespace Graphics{
 	/*
 		Graphics Utility functions below
 	*/
-
-	void Draw_AABV(const Base_Camera* camera, const vec3& center, const vec3& size_of_each_axis);
-	void Draw_Trans_Tool(const Base_Camera* camera, const vec3& center);
 
 };
 #endif

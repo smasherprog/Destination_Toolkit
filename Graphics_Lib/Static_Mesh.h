@@ -2,6 +2,7 @@
 #define STATIC_MESH_H
 
 #include "Base_Mesh.h"
+
 struct aiMesh;
 struct aiMaterial;
 
@@ -13,18 +14,18 @@ public:
 
 	virtual bool Init();
 	virtual void DeInit();
-	virtual float Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const override;
-	virtual float Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) const override;
+	virtual float Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) override;
+	virtual float Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) override;
 
 	virtual bool Save(const std::string& file);
 	virtual bool Load(const std::string& file);
 	
 	virtual void Draw(const Base_Camera* camera) override;
-	virtual void Draw_BV(const Base_Camera* camera) override;
 
-	virtual float Get_Max_x_Size()override{ return Bounding_Volume.XSize(); }
-	virtual float Get_Max_y_Size()override{ return Bounding_Volume.YSize(); }
-	virtual float Get_Max_z_Size()override{ return Bounding_Volume.ZSize(); }
+	virtual float Get_Max_x_Size() const override{ return Bounding_Volume.XSize(); }
+	virtual float Get_Max_y_Size()const override{ return Bounding_Volume.YSize(); }
+	virtual float Get_Max_z_Size()const override{ return Bounding_Volume.ZSize(); }
+	virtual vec3 Get_Center() const override{ return GetPosition() + Bounding_Volume.GetCenter(); }
 
 	std::vector<Batch*> Batches;
 protected:
@@ -42,6 +43,7 @@ protected:
 	std::vector<vec3> Vertices;// this is used to calculate intersections
 	std::vector<uint16_t> Indices;
 	AABB Bounding_Volume;
+
 };
 
 #endif

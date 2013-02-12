@@ -10,10 +10,13 @@ namespace MY_Utilities{
 	template <typename rettype, typename... T> class Signal_st{
 	public:
 		Signal_st(): _Is_Calling(false){}
-		~Signal_st(){ 
+		~Signal_st(){ clear(); }
+
+		void clear(){//disconnects ALL!!
 			for(auto i=Connections.begin(); i != Connections.end(); i++) {
 				(*i)->Connections.erase(this); (*i)->Slots.erase(this); 
-			}
+			}  
+			Connections.clear(); Slots.clear(); 
 		}
 		void Disconnect(Signal_st<rettype, T...>* othersig){  othersig->Connections.erase(this); othersig->Slots.erase(this);  Connections.erase(othersig); Slots.erase(othersig);  } 
 		void Connect(Signal_st<rettype, T...>* othersig, std::function<rettype(T...)> f){  
@@ -45,13 +48,17 @@ namespace MY_Utilities{
 	template <typename rettype, typename... T> class Signal_mt{
 	public:
 		Signal_mt(): _Is_Calling(false){}
-		~Signal_mt(){ 
+		~Signal_mt(){ clear(); }
+	
+		void clear(){//disconnects ALL!!
 			for(auto i=Connections.begin(); i != Connections.end(); i++) {
 				(*i)->_Lock.lock(); 
 				(*i)->Connections.erase(this); (*i)->Slots.erase(this); 
 				(*i)->_Lock.unlock(); 
-			}
+			}  
+			Connections.clear(); Slots.clear(); 
 		}
+
 		void Connect(Signal_mt<rettype, T...>* othersig, std::function<rettype(T...)> f){  
 			_Lock.lock();
 			auto i = Slots.find(othersig);

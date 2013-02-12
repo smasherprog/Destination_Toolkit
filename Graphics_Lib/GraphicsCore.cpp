@@ -4,8 +4,6 @@
 #include "Shaders.h"
 #include "../Utilities/My_Timer.h"
 #include "D3Dcompiler.h"
-#include "Trans_Mesh.h"
-#include "BV_Mesh.h"
 
 //Internals
 std::vector<Graphics::Internal::OnResizeCB_S> Graphics::Internal::OnResizeCallBacks;
@@ -66,8 +64,6 @@ unsigned int Graphics::BlendState::CurrentMask=0;
 //rasterizerstates
 ID3D11RasterizerState* Graphics::RasterizerState::CurrentState=0;
 
-Base_Mesh* Graphics::Internal_Components::BV=0;
-Trans_Mesh* Graphics::Internal_Components::Trans=0;
 
 Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough;
 Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur;
@@ -1863,11 +1859,6 @@ void Graphics::Internal::Init(int x, int y, HWND wnd){
 	Shaders::VS_FullScreenQuadWOne.CompileShaderFromMemory(Shader_Defines::FullScreenQuadWOneVS);
 	Shaders::VS_FullScreenQuadWOne.CreateInputLayout(layers, 1);
 
-	Internal_Components::BV = new BV_Mesh();
-	Internal_Components::BV->Init();
-	Internal_Components::Trans = new Trans_Mesh();
-	Internal_Components::Trans->Init();
-
 	Shaders::PS_NormalBumpConverter.CompileShaderFromMemory(Shader_Defines::NormalBumpConverterPS);
 	Shaders::PS_Blur.CompileShaderFromMemory(Shader_Defines::Blur_PS);
 	
@@ -1934,12 +1925,6 @@ void Graphics::Internal::DeInit(){
 	Shaders::VS_FullScreenQuadWOne.Destroy();
 	Shaders::VS_PreHSPassThrough.Destroy();
 	
-	delete Internal_Components::BV;
-	Internal_Components::BV =0;
-
-	delete Internal_Components::Trans;
-	Internal_Components::Trans =0;
-
 	Shaders::PS_NormalBumpConverter.Destroy();
 	Shaders::PS_Blur.Destroy();
 
@@ -2027,13 +2012,4 @@ View and Proj are the cameras
 center is the center point of the BV in ITS space
 size_of_each_axis hold the TOTAL SIZE of each axis
 */
-void Graphics::Draw_AABV(const Base_Camera* camera, const vec3& center, const vec3& size_of_each_axis){
-	Internal_Components::BV->SetScaling(size_of_each_axis);
-	Internal_Components::BV->SetPosition(center);
-	Internal_Components::BV->Draw(camera);
-}
-void Graphics::Draw_Trans_Tool(const Base_Camera* camera, const vec3& center){
-	Internal_Components::Trans->SetPosition(center);
-	Internal_Components::Trans->Draw(camera);
 
-}

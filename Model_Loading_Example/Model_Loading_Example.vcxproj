@@ -157,15 +157,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="cD3DApp.h" />
-    <ClInclude Include="Mesh_Container.h" />
+    <ClInclude Include="Mesh_Container_Presentation.h" />
+    <ClInclude Include="Mesh_Container_Service.h" />
     <ClInclude Include="Mesh_UI.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UI_Mesh_3D_Tool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cD3DApp.cpp" />
     <ClCompile Include=".\Demo.cpp" />
-    <ClCompile Include="Mesh_Container.cpp" />
+    <ClCompile Include="Mesh_Container_Presentation.cpp" />
+    <ClCompile Include="Mesh_Container_Service.cpp" />
     <ClCompile Include="Mesh_UI.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -173,7 +174,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UI_Mesh_3D_Tool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

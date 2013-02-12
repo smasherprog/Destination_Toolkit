@@ -5,10 +5,10 @@
 
 bool Trans_Mesh::Init(){
 	XAxis_Color=vec3(1, 0, 0);
-	YAxis_Color=vec3(0, 0, 1);
-	ZAxis_Color=vec3(0, 1, 0);
+	YAxis_Color=vec3(0, 1,0);
+	ZAxis_Color=vec3(0, 0, 1);
 	Hit_Axis_Color = vec3(1, 1, 1);
-
+	HitAxis = vec3(0,0,0);
 	Vertices.push_back(vec3(1.0f, 0.0f, 0.0f));
 	const float split=16.0f;
 	//note: all of these shapes will have to be scaled to correctly in the draw function, but its not something the user will do. that will be done in the draw function below
@@ -100,22 +100,21 @@ bool Trans_Mesh::Init(){
 	return true;
 }
 float Trans_Mesh::HighLight_Hit_Axis(const vec3& rayorig, const vec3& raydir){
-	int axishit=0;
-	float dist = Ray_Tri_Intersect(rayorig, raydir,axishit);
+	float dist = Ray_Tri_Intersect(rayorig, raydir);
 	if(dist!=INFINITY){
-		if(axishit==0) XAxis_Color = Hit_Axis_Color;
-		else if(axishit==1) ZAxis_Color = Hit_Axis_Color;
-		else if(axishit==2) YAxis_Color = Hit_Axis_Color;
+		if(HitAxis.x==1.0f) XAxis_Color = Hit_Axis_Color;
+		else if(HitAxis.y==1.0f) YAxis_Color = Hit_Axis_Color;
+		else if(HitAxis.z==1.0f) ZAxis_Color = Hit_Axis_Color;
 	} else{
 		XAxis_Color=vec3(1, 0, 0);
-		YAxis_Color=vec3(0, 0, 1);
-		ZAxis_Color=vec3(0, 1, 0);
+		YAxis_Color=vec3(0, 1, 0);
+		ZAxis_Color=vec3(0, 0, 1);
 	}
 	return dist;
 }
 
 
-float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, int& axishit) const {
+float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir)  {
 
 	Batch* cone_batch = Batches[0];
 	Batch* rod_batch = Batches[1];
@@ -133,7 +132,7 @@ float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, int
 	world = bvaxis*bvtrans;
 	float dist = Ray_Tri_Intersect(rayorig, raydir, world, cone_batch->StartIndex, cone_batch->NumIndices);
 	if(dist != INFINITY) {
-		axishit=0;
+		HitAxis= vec3(1.0, 0.0f, 0.0f);
 		return dist;
 	}
 	bvtrans.setupTranslation((transpost*distaway) + LastCamPosition);
@@ -141,11 +140,11 @@ float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, int
 	world = rodtrans*rodscale*bvtrans;
 	dist = Ray_Tri_Intersect(rayorig, raydir, world, rod_batch->StartIndex, rod_batch->NumIndices);
 	if(dist != INFINITY) {
-		axishit=0;
+		HitAxis=vec3(1.0, 0.0f, 0.0f);
 		return dist;
 	}
 
-	//SECOND AXIS. .. GREEN AND Z
+	//SECOND AXIS. .. BLUE AND Z
 	mat4 rot;
 	rot.setupRotateY(-Pi/2.0f);
 
@@ -155,18 +154,18 @@ float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, int
 	world = bvaxis*rot*bvtrans;
 	dist = Ray_Tri_Intersect(rayorig, raydir, world, cone_batch->StartIndex, cone_batch->NumIndices);
 	if(dist != INFINITY) {
-		axishit=1;
+		HitAxis= vec3(0.0, 0.0f, 1.0f);
 		return dist;
 	}
 	bvtrans.setupTranslation((transpost*distaway) + LastCamPosition+ vec3(1.0f, 0, offaxis/2.0f));
 	world  = rodscale*rot*bvtrans;
 	dist = Ray_Tri_Intersect(rayorig, raydir, world, rod_batch->StartIndex, rod_batch->NumIndices);
 	if(dist != INFINITY) {
-		axishit=1;
+		HitAxis=vec3(0.0, 0.0f, 1.0f);
 		return dist;
 	}
 
-	//THIRD AXIS . . . . BLUE AND Y
+	//THIRD AXIS . . . . GREEEN AND Y
 	rot.setupRotateZ(Pi/2.0f);
 	bvtrans.setupTranslation((transpost*distaway) + LastCamPosition + vec3(0.0f, offaxis, 0.0f));
 	bvaxis.setupTranslation(0.0f, -1.0f, 0.0f);
@@ -174,7 +173,7 @@ float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, int
 	world= bvaxis*rot*bvtrans;
 	dist = Ray_Tri_Intersect(rayorig, raydir, world, cone_batch->StartIndex, cone_batch->NumIndices);
 	if(dist != INFINITY) {
-		axishit=2;
+		HitAxis=vec3(0.0, 1.0f, 0.0f);
 		return dist;
 	}
 	bvtrans.setupTranslation((transpost*distaway) + LastCamPosition+ vec3(1.0f, offaxis/2.0f, 0.0f));
@@ -182,7 +181,7 @@ float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, int
 	world = rodtrans*rodscale*rot*bvtrans;
 	dist = Ray_Tri_Intersect(rayorig, raydir, world, cone_batch->StartIndex, cone_batch->NumIndices);
 	if(dist != INFINITY) {
-		axishit=2;
+		HitAxis=vec3(0.0, 1.0f, 0.0f);
 		return dist;
 	}
 	return dist;
@@ -248,7 +247,7 @@ void Trans_Mesh::Draw(const Base_Camera* camera){
 	Graphics::DrawIndexed(rod_batch->StartIndex, rod_batch->NumIndices);
 
 
-	//SECOND AXIS. .. GREEN AND Z
+	//SECOND AXIS. .. BLUE AND Z
 	mat4 rot;
 	rot.setupRotateY(-Pi/2.0f);
 	bvaxis.setupTranslation( 0.0f,  0.0f, -1.0f);
@@ -256,7 +255,7 @@ void Trans_Mesh::Draw(const Base_Camera* camera){
 
 	t.vp = bvaxis*rot*bvtrans*camera->VP;
 	t.vp.Transpose();
-	t.color = vec4(ZAxis_Color, 1);//green  = z
+	t.color = vec4(ZAxis_Color, 1);
 	CBuffer0.Update(&t);
 	cone_batch->GetVS()->SetConstantBuffer(CBuffer0, 0);
 
@@ -271,14 +270,14 @@ void Trans_Mesh::Draw(const Base_Camera* camera){
 	cone_batch->GetVS()->SetConstantBuffer(CBuffer0, 0);
 	Graphics::DrawIndexed(rod_batch->StartIndex, rod_batch->NumIndices);
 
-	//THIRD AXIS . . . . BLUE AND Y
+	//THIRD AXIS . . . . GREEN AND Y
 	rot.setupRotateZ(Pi/2.0f);
 	bvtrans.setupTranslation((transpost*distaway) + LastCamPosition + vec3(0.0f, offaxis, 0.0f));
 	bvaxis.setupTranslation(0.0f, -1.0f, 0.0f);
 
 	t.vp = bvaxis*rot*bvtrans*camera->VP;
 	t.vp.Transpose();
-	t.color = vec4(YAxis_Color, 1);//blue   = y
+	t.color = vec4(YAxis_Color, 1);
 	CBuffer0.Update(&t);
 	cone_batch->GetVS()->SetConstantBuffer(CBuffer0, 0);
 

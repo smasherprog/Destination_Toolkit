@@ -10,6 +10,7 @@
 #include "../Utilities/Signal.h"
 
 class mat4;
+class vec3;
 class Base_Camera;
 class Base_Mesh{
 public:
@@ -23,14 +24,13 @@ public:
 	virtual bool Load(const std::string& file)=0;
 
 	virtual void Draw(const Base_Camera* camera) =0;
-	virtual void Draw_BV(const Base_Camera* camera)=0;
 
 	virtual mat4 GetWorld() const{ return Scaling * Rotation * Translation; }
 
 	virtual void SetVisibility() const{ }
 
-	virtual float Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const =0;// more expensive test checks all triangles
-	virtual float Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) const =0;// just does a BV check, cheap but fast
+	virtual float Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) =0;// more expensive test checks all triangles
+	virtual float Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) =0;// just does a BV check, cheap but fast
 
 	virtual vec3 GetScaling() const { return vec3(Scaling._11,Scaling._22,Scaling._33);  }
 	virtual void SetScaling(const vec3& v) {Scaling._11=v.x; Scaling._22=v.y; Scaling._33=v.z; }
@@ -44,19 +44,24 @@ public:
 	virtual void SetRotation(const euler& e){ Rot.SetupRotation(e); Rotation.setupfromquat(Rot); }
 
 	virtual vec3 GetPosition() const { return vec3(Translation._41,Translation._42,Translation._43);  }
-	virtual void SetPosition(const vec3& v){ Translation._41=v.x; Translation._42=v.y; Translation._43=v.z;  }
+	virtual void SetPosition(const vec3& newpos) { Translation._41=newpos.x; Translation._42=newpos.y; Translation._43=newpos.z; On_SetPosition.Call(newpos); }
+	virtual void Translate_By_Offset(const vec3& offset){ Translation._41+=offset.x; Translation._42+=offset.y; Translation._43+=offset.z; On_Translate_By_Offset.Call(offset); }
 
 	void GetScaling(mat4** m) { *m=&Scaling; }
 	void GetRotation(mat4** m) { *m=&Rotation; }
 	void GetRotation(quat** m) { *m=&Rot; }
 	void GetTranslation(mat4** m) { *m=&Translation; }
 
-	virtual float Get_Max_x_Size() =0;
-	virtual float Get_Max_y_Size() =0;
-	virtual float Get_Max_z_Size() =0;
+	virtual float Get_Max_x_Size()const =0 ;
+	virtual float Get_Max_y_Size()const =0 ;
+	virtual float Get_Max_z_Size()const =0 ;
+	virtual vec3 Get_Center()const =0 ;
 
 	virtual std::string GetName() const{ return Name;}
 	virtual void SetName(std::string& n) {Name = n;}
+
+	MY_Utilities::Signal_st<void, vec3> On_SetPosition;
+	MY_Utilities::Signal_st<void, vec3> On_Translate_By_Offset;
 
 protected:
 

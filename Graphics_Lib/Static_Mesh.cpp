@@ -75,11 +75,8 @@ void Static_Mesh::Generate_BV(){
 	size_t i(0);
 	do{	Bounding_Volume.Add(Vertices[i]); } while(++i!=Vertices.size());
 }
-void Static_Mesh::Draw_BV(const Base_Camera* camera) {
-	Graphics::Draw_AABV(camera, GetPosition() + Bounding_Volume.GetCenter(), vec3(Bounding_Volume.XSize(), Bounding_Volume.YSize(), Bounding_Volume.ZSize()));
-	Graphics::Draw_Trans_Tool(camera, GetPosition() + Bounding_Volume.GetCenter());
-}
-float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) const {
+
+float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) {
 	mat4 inverseW(GetWorld());
 	inverseW.inverse();
 	vec3 org(rayorig*inverseW), di(raydir);// transform these to the mesh's space so the checks are in object space, not world space
@@ -93,7 +90,7 @@ float Static_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir) co
 		return RayTriangleIntersect(org, di, &Vertices[0],&Indices[0],Indices.size());
 	}
 }
-float Static_Mesh::Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) const {
+float Static_Mesh::Ray_BV_Intersect(const vec3& rayorig, const vec3& raydir) {
 	mat4 inverseW(GetWorld());
 	inverseW.inverse();
 	vec3 org(rayorig*inverseW), di(raydir);// transform these to the mesh's space so the checks are in object space, not world space
@@ -328,5 +325,4 @@ void Static_Mesh::Draw(const Base_Camera* camera){
 
 		Graphics::DrawIndexed((*beg)->StartIndex, (*beg)->NumIndices);
 	}
-	Draw_BV(camera);
 }

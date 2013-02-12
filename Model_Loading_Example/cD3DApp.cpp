@@ -7,11 +7,7 @@
 #include "../MY_UI/cWidgetSkin.h"
 #include "../MY_UI/Text.h"
 #include "../Graphics_Lib/UI_Camera.h"
-#include "UI_Mesh_3D_Tool.h"
-#include "Mesh_UI.h"
-#include "../assimp/include/assimp/cimport.h"
-
-#include "Mesh_Container.h"
+#include "Mesh_Container_Presentation.h"
 
 D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, unsigned int width) : cBaseD3D(hInstance, appname, height, width) {
 
@@ -34,20 +30,11 @@ D3DApp::D3DApp(HINSTANCE hInstance, std::string appname, unsigned int height, un
 
 	UICamera->Camera->OnResize(y, x); 
 	UICamera->Camera->SetLens(.25f*Pi, y, x , 1.0f, 1500.0f);
-	MeshContainer = new Mesh_Container();// make a new container for the mesh
+	MeshContainer = new Mesh_Container_Presentation(UICamera->Camera);// make a new container for the mesh
 
-	MeshUI = new Mesh_UI();
-	//pass the load function. The UI does not manage the lifetime, just acts as a middle man
-	MeshUI->Set_AddMesh_Func(std::bind(&Mesh_Container::Load_Mesh, MeshContainer, std::placeholders::_1));//pass load mesh function
-	aiString sz;
-	aiGetExtensionList(&sz);// get the extensions that assimp is able to load
-	MeshUI->SetFileExts(std::string(sz.C_Str()));
-
-	//not working yet
-	UIMesh_3D_Tool = new UI_Mesh_3D_Tool(&UICamera->Camera->View, &UICamera->Camera->Proj, std::bind(&Mesh_Container::Check_Hit, MeshContainer, std::placeholders::_1, std::placeholders::_2));
 }
 D3DApp::~D3DApp(){
-	SAFE_DELETE(MeshContainer);
+	//no need to delete MeshContainer.... MY_UI calls delete on it
 	SAFE_DELETE(Input);
 }
 
@@ -66,7 +53,7 @@ void D3DApp::run(){
 		FrameTimer.Per_Loop();
 		UICamera->Camera->PerFrame(FrameTimer.DT);
 
-		MeshContainer->Draw(UICamera->Camera);
+		MeshContainer->Draw();
 		
 		UpdateStats();
 		MY_UI::Internal::RootWidget->Draw();	

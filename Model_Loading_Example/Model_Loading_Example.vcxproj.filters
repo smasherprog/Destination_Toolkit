@@ -10,14 +10,14 @@
     <ClCompile Include=".\Demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh_Container_Presentation.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh_Container_Service.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
     <ClCompile Include="Mesh_UI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh_Container.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI_Mesh_3D_Tool.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -27,14 +27,14 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh_Container_Presentation.h">
+      <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh_Container_Service.h">
+      <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
     <ClInclude Include="Mesh_UI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh_Container.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI_Mesh_3D_Tool.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +43,12 @@
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{3c01f9ff-6ea8-4ce0-99e6-2886e9b4bf46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Mesh">
+      <UniqueIdentifier>{8b87ac1a-72be-4fab-ab83-4c586f4d754f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Mesh">
+      <UniqueIdentifier>{4a3800e7-f139-48a3-91c8-2c952dc16c2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

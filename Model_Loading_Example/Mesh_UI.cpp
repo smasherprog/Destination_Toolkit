@@ -6,23 +6,23 @@
 
 Mesh_UI::Mesh_UI(){
 	FileExtentions = "*.*";// all files
-	window = new MY_UI::Controls::Window(MY_UI::Internal::RootWidget);
-	window->SetPos(300, 150);
-	window->SetSize(100, 200);
-	window->SetTitle("Mesh UI");
-	window->SetCloseable(false);// dont allow the window to close
 
-	MY_UI::Controls::Button* pbutton = new MY_UI::Controls::Button(window);
-	pbutton->SetPos(10, 10);
-	pbutton->SetText("Files", CENTER);
-	pbutton->SetPopup("Create file Selector");
-	// the lambda takes copies of the pointers, but this is safe since each of these are children and they cannot exist without their parents.
-	pbutton->OnLeftClicked.Add([=](){
-		MY_UI::Controls::File_Selector* f = new MY_UI::Controls::File_Selector(window);
-		f->SetPos(50, 50);
-		f->OnSelected.Add([=](){
-			AddMesh(f->GetPathToSelectedFile() + "\\"+ f->GetSelectedFile());
-		});
-		f->SetSearchFilter(FileExtentions);
+	MY_UI::Controls::Button* Button = new MY_UI::Controls::Button(MY_UI::Internal::RootWidget);
+	Button->SetPos(10, 60);
+	Button->SetText("Load Mesh", CENTER);
+	Button->SetPopup("Click here to load a static mesh");
+	//capture the button by copy and the class as a reference
+	Button->OnLeftClicked.Add(std::bind(&Mesh_UI::buttonclicked, this));
+}
+Mesh_UI::~Mesh_UI(){
+	MY_UI::Safe_Delete(FileSelector);
+}
+void Mesh_UI::buttonclicked(){
+	MY_UI::Safe_Delete(FileSelector);
+	FileSelector = new MY_UI::Controls::File_Selector(MY_UI::Internal::RootWidget);
+	FileSelector->SetPos(50, 50);
+	FileSelector->OnSelected.Add([this](){
+		AddMesh(FileSelector->GetPathToSelectedFile() + "\\"+ FileSelector->GetSelectedFile());
 	});
+	FileSelector->SetSearchFilter(FileExtentions);
 }

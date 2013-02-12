@@ -13,9 +13,8 @@ namespace MY_UI{
 	};
 };
 class UI_Camera;
-class Mesh_UI;
-class Mesh_Container;
-class UI_Mesh_3D_Tool;
+class Mesh_Container_Presentation;
+
 
 class D3DApp: public cBaseD3D {
 public:
@@ -27,10 +26,9 @@ public:
 	virtual LRESULT msgProc(unsigned int msg, WPARAM wParam, LPARAM lParam);
 
 
-	Mesh_Container *MeshContainer;
-	UI_Mesh_3D_Tool* UIMesh_3D_Tool;
+	Mesh_Container_Presentation *MeshContainer;
 	My_Timer::Frame_Timer FrameTimer;
-	Mesh_UI* MeshUI;
+
 	std::string FrameStats;
 	UI_Camera* UICamera;
 	MY_UI::Utilities::cInput *Input;

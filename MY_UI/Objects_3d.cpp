@@ -166,7 +166,7 @@ void MY_UI::Controls::Translator::Dragging(){
 	TransformNormal(ray2, world);
 
 	vec2 intersectiondist = RayRayIntersect(ray1, origin1, ray2, origin2);
-	if(intersectiondist.y ==INFINITY)intersectiondist.y =0;// dont get all crazy now!
+	if(intersectiondist.y ==INFINITY) intersectiondist.y =0;// dont get all crazy now!
 	vec3 ray = ray2 *intersectiondist.y;// scale the ray
 	ray += origin2;// now we have the new point 
 

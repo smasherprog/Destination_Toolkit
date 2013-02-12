@@ -6,19 +6,23 @@
 class Base_Mesh;
 class vec3;
 class Base_Camera;
-class Mesh_Container{
+class Trans_Mesh;
+
+
+class Mesh_Container_Service{
 public:
 
-	Mesh_Container(){}
-	~Mesh_Container();
+	Mesh_Container_Service();
+	virtual ~Mesh_Container_Service();
 
 	bool Load_Mesh(std::string file);
 	Base_Mesh* Check_Hit(vec3& ray, vec3& origin);
-	void Draw(const Base_Camera* camera);
 
 
-protected:
 	std::vector<Base_Mesh*> Mesh;
+	Trans_Mesh *Trans;
+	Base_Mesh *BV;
+
 };
 
 
