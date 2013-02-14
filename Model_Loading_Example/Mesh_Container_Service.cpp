@@ -22,6 +22,7 @@ bool Mesh_Container_Service::Load_Mesh(std::string file){
 	Static_Mesh* m = new Static_Mesh();
 	if(m->Load(file)){
 		Mesh.push_back(m);
+	
 		return true;
 	} else {
 		delete m;
@@ -31,8 +32,9 @@ bool Mesh_Container_Service::Load_Mesh(std::string file){
 Base_Mesh* Mesh_Container_Service::Check_Hit(vec3& ray, vec3& origin){
 
 	for(size_t i=0; i< Mesh.size(); i++) {
-		float f =Mesh[i]->Ray_Tri_Intersect( origin,ray);
+		float f =Mesh[i]->Ray_Tri_Intersect(origin, ray);
 		if(f!=INFINITY) return Mesh[i];
 	}
+
 	return 0;
 }

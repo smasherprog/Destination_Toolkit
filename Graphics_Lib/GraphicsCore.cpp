@@ -64,6 +64,7 @@ unsigned int Graphics::BlendState::CurrentMask=0;
 //rasterizerstates
 ID3D11RasterizerState* Graphics::RasterizerState::CurrentState=0;
 
+std::map<std::string, Graphics::Texture*> Graphics::Textures::TextureMap;
 
 Graphics::VertexShader Graphics::Shaders::VS_FullScreenQuad, Graphics::Shaders::VS_FullScreenQuadWOne, Graphics::Shaders::VS_PreHSPassThrough;
 Graphics::PixelShader Graphics::Shaders::PS_NormalBumpConverter, Graphics::Shaders::PS_Blur;
@@ -820,9 +821,6 @@ void Graphics::ClearRenderTargets(bool clearColor, bool clearDepth, bool clearSt
 }
 
 
-//static declare
-std::map<std::string, Graphics::Texture*> Graphics::Texture::TextureMap;
-
 Graphics::Texture& Graphics::Texture::operator=(const Texture& cp){
 	Texture_ = cp.Texture_;
 	Srv = cp.Srv;
@@ -874,12 +872,13 @@ Graphics::Texture& Graphics::Texture::operator=(const Texture& cp){
 	return *this;
 }
 void Graphics::Texture::Destroy(){ 
-
+	OUTPUT_DEBUG_MSG("destroying texture");
 	if(Texture_ != 0){
 		unsigned int count =Texture_->Release();
-		if(count ==0){// the last of the textures have been released.. subtract texture resources
+		if(count ==1){// the last of the textures have been released.. subtract texture resources
 			Internal::SubTexMemory(Width, Height, ArraySize, TexFormat, (Flags & USE_MIPGEN)!=0);
-			TextureMap.erase(FileName);// erase from the map too 
+			delete Textures::TextureMap[FileName];
+			Textures::TextureMap.erase(FileName);// erase from the map too 
 		}
 		Texture_=0;
 	}
@@ -911,18 +910,10 @@ bool Graphics::Texture::Create(std::string fname){
 	if(!ContainsPath(fname)){// no path.. append the asset directory
 		fname = Asset_Dir + fname;
 	}
-	Texture* te=0;
-	auto ret = TextureMap.insert(std::map<std::string, Texture*>::value_type(fname, te));
+	Texture* te =0;
+	auto ret = Textures::TextureMap.insert(std::map<std::string, Texture*>::value_type(fname, te));
 	if(!ret.second){// allready inserted in the map.. increment the ref counters of the texture by one for this
-		Texture* t = ret.first->second;
-		Height=t->Height;
-		Width=t->Width;
-		TexFormat = t->TexFormat;
-		FileName = fname;	
-		Srv = t->Srv;
-		Texture_=t->Texture_;
-		Texture_->AddRef();// incrment the ref count
-		Srv->AddRef();// same
+		*this = *ret.first->second;
 		return true;
 	}
 
@@ -940,12 +931,16 @@ bool Graphics::Texture::Create(std::string fname){
 	ID3D11Texture2D *t;
 	resource->GetResource(reinterpret_cast<ID3D11Resource**>(&t));
 	t->GetDesc(&tex);
+		
 	Height=tex.Height;
 	Width=tex.Width;
 	TexFormat = tex.Format;
 	FileName = fname;	
 	Srv = resource;
 	Texture_=t;
+	te = new Texture();
+	*te = *this;
+	ret.first->second = te;
 
 	Internal::AddTexMemory(tex.Width, tex.Height, tex.ArraySize, tex.Format, true);
 	return true;

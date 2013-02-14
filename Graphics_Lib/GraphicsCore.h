@@ -111,8 +111,8 @@ namespace Graphics{
 	class Texture {
 	public:
 
-		Texture() : Texture_(0), Srv(0), Rtv(0), Dsv(0), SrvArray(0), RtvArray(0), DsvArray(0), Width(0), Height(0), Depth(0), ArraySize(0), Flags(0), MapType(Not_Set) {}
-		~Texture() { Destroy(); }
+		Texture() : Texture_(0), Srv(0), Rtv(0), Dsv(0), SrvArray(0), RtvArray(0), DsvArray(0), Width(0), Height(0), Depth(0), ArraySize(0), Flags(0), MapType(Not_Set) {OUTPUT_DEBUG_MSG("creating texture");}
+		~Texture() { Destroy(); }	
 		Texture(const Texture& cp){ operator=(cp); } 
 		Texture& operator=(const Texture& rhs);
 
@@ -211,7 +211,7 @@ namespace Graphics{
 		void Set_MapType(Map_Type t){ MapType = t;}
 		Map_Type Get_MapType(){ return MapType;}
 
-		static std::map<std::string, Texture*> TextureMap;// all textures are stored here
+		
 		Map_Type MapType;
 		ID3D11Resource *Texture_;
 		ID3D11ShaderResourceView *Srv;
@@ -597,6 +597,7 @@ namespace Graphics{
 	};
 	namespace Textures{
 		extern Texture RT_Base, RT_Normal, RT_DepthStencil, RT_Depth, RT_BackBufferTexture;
+		extern std::map<std::string, Texture*> TextureMap;// all textures are stored here
 	};
 	namespace RasterizerStates{
 		extern RasterizerState CullNone, CullBack, CullFront, WireBack, WireFront, WireNoCull, CullNone_NoDepthClip;

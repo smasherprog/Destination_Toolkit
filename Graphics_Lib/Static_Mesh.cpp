@@ -60,7 +60,7 @@ bool Static_Mesh::Init(){
 	return true;
 }
 void Static_Mesh::DeInit(){
-	OUTPUT_DEBUG_MSG("Shutting down Static Mesh");
+	OUTPUT_DEBUG_MSG("Static_Mesh::DeInit");
 	Base_Mesh::DeInit();
 	Bounding_Volume.clear();
 	for(int i=0; i<MAX_VERTEXSTREAM; i++) VB[i].Destroy();
