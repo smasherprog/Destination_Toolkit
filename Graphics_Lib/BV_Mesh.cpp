@@ -2,6 +2,7 @@
 #include "BV_Mesh.h"
 #include "Shaders.h"
 #include "Base_Camera.h"
+#include "Batch.h"
 
 bool BV_Mesh::Init(){
 	Vertices.push_back(vec3(.5f, .5f, .5f));
@@ -33,7 +34,7 @@ bool BV_Mesh::Init(){
 	return true;
 }
 
-void BV_Mesh::Draw(const Base_Camera* camera){
+void BV_Mesh::Draw(const Base_Camera* camera, float dt){
 
 	Graphics::SetTopology(PRIM_LINE_STRIP);
 	Graphics::DepthStates::DepthTest.Bind();

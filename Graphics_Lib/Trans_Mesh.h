@@ -21,7 +21,7 @@ public:
 	virtual void SetRotation(const quat& q) { }
 	virtual void SetRotation(const euler& e)override{ }
 
-	virtual void Draw(const Base_Camera* camera) override;
+	virtual void Draw(const Base_Camera* camera, float dt=0) override;
 	vec3 HitAxis;
 
 protected:

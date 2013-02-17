@@ -10,7 +10,7 @@ public:
 	virtual ~BV_Mesh(){ DeInit();}
 
 	virtual bool Init();
-	virtual void Draw(const Base_Camera* camera)override;
+	virtual void Draw(const Base_Camera* camera, float dt=0)override;
 
 };
 

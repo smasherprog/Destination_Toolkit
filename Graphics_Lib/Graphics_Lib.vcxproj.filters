@@ -15,6 +15,9 @@
     <Filter Include="Source Files\Mesh">
       <UniqueIdentifier>{2dc959a2-b273-4f0e-894e-c4d7f43ca8eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Assimp_Helpers">
+      <UniqueIdentifier>{acba1a34-4fe9-4a89-97ef-3fcbcb6207ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shaders.h">
@@ -50,9 +53,6 @@
     <ClInclude Include="cAnimationController.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="cMeshLoader.h">
-      <Filter>Header Files\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="MeshTypes.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
@@ -69,6 +69,15 @@
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Trans_Mesh.h">
+      <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Animated_Mesh.h">
+      <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Assimp_Helper.h">
+      <Filter>Header Files\Assimp_Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Batch.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
@@ -118,9 +127,18 @@
     <ClCompile Include="Trans_Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Animated_Mesh.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Batch.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Assets\Shaders\Static_Mesh.fx">
+      <Filter>Source Files\Mesh</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Assets\Shaders\Animated_Mesh.fx">
       <Filter>Source Files\Mesh</Filter>
     </FxCompile>
   </ItemGroup>

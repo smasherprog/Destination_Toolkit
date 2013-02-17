@@ -51,9 +51,9 @@ void D3DApp::run(){
 		Graphics::Textures::RT_BackBufferTexture.ClearRenderTargets();
 
 		FrameTimer.Per_Loop();
-		UICamera->Camera->PerFrame(FrameTimer.DT);
+		UICamera->Camera->PerFrame((float)FrameTimer.DT);
 
-		MeshContainer->Draw();
+		MeshContainer->Draw((float)FrameTimer.DT);
 		
 		UpdateStats();
 		MY_UI::Internal::RootWidget->Draw();	

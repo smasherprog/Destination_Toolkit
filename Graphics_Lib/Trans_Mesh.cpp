@@ -2,6 +2,7 @@
 #include "Trans_Mesh.h"
 #include "Shaders.h"
 #include "Base_Camera.h"
+#include "Batch.h"
 
 bool Trans_Mesh::Init(){
 	XAxis_Color=vec3(1, 0, 0);
@@ -194,7 +195,7 @@ float Trans_Mesh::Ray_Tri_Intersect(const vec3& rayorig, const vec3& raydir, mat
 	di*=20000.0f;//make sure the ray is long enough
 	return RayTriangleIntersect(org, di, &Vertices[0], &Indices[startindex],numindices);
 }
-void Trans_Mesh::Draw(const Base_Camera* camera){
+void Trans_Mesh::Draw(const Base_Camera* camera, float dt){
 
 	Graphics::SetTopology(PRIM_TRIANGLELIST);
 	Graphics::DepthStates::NoDepthTest.Bind();

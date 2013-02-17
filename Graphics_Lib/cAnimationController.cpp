@@ -29,7 +29,8 @@ cAnimEvaluator::cAnimEvaluator( const aiAnimation* pAnim) {
 	mLastTime = 0.0;
 	TicksPerSecond = static_cast<float>(pAnim->mTicksPerSecond != 0.0f ? pAnim->mTicksPerSecond : 100.0f);
 	Duration = static_cast<float>(pAnim->mDuration);
-	Name = pAnim->mName.data;
+	Name = std::string(pAnim->mName.data, pAnim->mName.length);
+	if(Name.size()==0) Name ="Animation" + std::to_string(Animation_Indexer);
 	//OUTPUT_DEBUG_MSG("Creating Animation named: "<<Name);
 	Channels.resize(pAnim->mNumChannels);
 	for( unsigned int a = 0; a < pAnim->mNumChannels; a++){		
@@ -39,7 +40,7 @@ cAnimEvaluator::cAnimEvaluator( const aiAnimation* pAnim) {
 		for(unsigned int i(0); i< pAnim->mChannels[a]->mNumScalingKeys; i++) Channels[a].mScalingKeys.push_back(pAnim->mChannels[a]->mScalingKeys[i]);
 	}
 	mLastPositions.resize( pAnim->mNumChannels, std::make_tuple( 0, 0, 0));
-	//OUTPUT_DEBUG_MSG("Finished Creating Animation named: "<<Name);
+	OUTPUT_DEBUG_MSG("Finished Creating Animation named: "<<Name);
 }
 
 unsigned int cAnimEvaluator::GetFrameIndexAt(float ptime){

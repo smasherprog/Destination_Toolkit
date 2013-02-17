@@ -153,17 +153,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animated_Mesh.h" />
     <ClInclude Include="Animated_Mesh_Shader.h" />
     <ClInclude Include="Base_Camera.h" />
     <ClInclude Include="Base_Mesh.h" />
+    <ClInclude Include="Batch.h" />
     <ClInclude Include="BV_Mesh.h" />
     <ClInclude Include="cAnimationController.h" />
     <ClInclude Include="cBaseD3D.h" />
-    <ClInclude Include="cMeshLoader.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="FXAA.h" />
     <ClInclude Include="Globals_GraphicsCore.h" />
     <ClInclude Include="GraphicsCore.h" />
+    <ClInclude Include="Assimp_Helper.h" />
     <ClInclude Include="MeshTypes.h" />
     <ClInclude Include="Post_Pass.h" />
     <ClInclude Include="Shaders.h" />
@@ -173,9 +175,11 @@
     <ClInclude Include="UI_Camera.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animated_Mesh.cpp" />
     <ClCompile Include="Animated_Mesh_Shader.cpp" />
     <ClCompile Include="Base_Camera.cpp" />
     <ClCompile Include="Base_Mesh.cpp" />
+    <ClCompile Include="Batch.cpp" />
     <ClCompile Include="BV_Mesh.cpp" />
     <ClCompile Include="cAnimationController.cpp" />
     <ClCompile Include="cBaseD3D.cpp" />
@@ -195,6 +199,9 @@
     <ClCompile Include="UI_Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Assets\Shaders\Animated_Mesh.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="..\Assets\Shaders\Static_Mesh.fx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DisableOptimizations>

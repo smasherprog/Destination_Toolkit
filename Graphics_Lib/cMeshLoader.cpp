@@ -1,20 +1,15 @@
 #include "stdafx.h"
-#include "cMeshLoader.h"
-#include "cMesh.h"
+#include "Assimp_Helper.h"
 #include <iostream>
 
 /*
-bool cBaseMeshLoader::Load(const std::string& xfile, cMesh& basemesh){// add an lod check for a mesh with a poly count less than 400-500. there isnt a point in reducing it
+bool Load(const std::string& xfile, cMesh& basemesh){// add an lod check for a mesh with a poly count less than 400-500. there isnt a point in reducing it
 	//OUTPUT_DEBUG_MSG("Attempting to Load Static mesh");
 
 	std::string ext = GetFileExtention(xfile);
-	if(ext == ".dsm") return cDSMLoader::Load(xfile, basemesh);
 	
 	const aiScene* load =aiImportFile(xfile.c_str(), aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded );
-	if(load==NULL) {
-		cout<<"Could not load file using aiImportFile"<<endl;
-		return false;
-	}
+
 	bool hasbones =false;
 	size_t numverts(0), currentvertex(0), currentindex(0), numindices(0);
 	for (unsigned int i = 0; i < load->mNumMeshes;++i) {
@@ -27,8 +22,7 @@ bool cBaseMeshLoader::Load(const std::string& xfile, cMesh& basemesh){// add an 
 	uint16_t indexstride=2;
 	if(numverts >= 65536) indexstride=4;// the indecies index vertices, so if there are more verts than a 16 bit numbder can hold goto 32 bit indices
 	
-	std::vector<TexNorm> texnorm(numverts);
-	std::vector<vec3> tang(numverts);
+	
 	basemesh.Vertices.resize(numverts);
 	std::vector<uint16_t>& indices(basemesh.Lod1.Indices);
 
@@ -182,91 +176,6 @@ bool cBaseMeshLoader::Load(const std::string& xfile, cMesh& basemesh){// add an 
 	return true;
 }
 
-void cBaseMeshLoader::LoadMaterials(const aiMesh* mesh, aiMaterial** mMaterials, Graphics::Texture& diffuse, Graphics::Texture& normal, std::string& path){
-	aiString szPath;
-///////////////////DIFFUSE TEXTURE
-
-	if( AI_SUCCESS == aiGetMaterialString(mMaterials[mesh->mMaterialIndex], AI_MATKEY_TEXTURE_DIFFUSE(0), &szPath) ){
-		std::string fe(StripPath(szPath.data));// sometimes the textures are stored with their full path, which is not correct, strip it
-		std::string tes = path + szPath.data;
-		ifstream fchecker(tes.c_str());
-		if(!fchecker){// if the image cannot be found, prompt the user to find it, or a replacement
-			OUTPUT_DEBUG_MSG("Unable to find the diffuse texture "<<tes<<"   Please, Provide a valid texture HOOK GUI CODE HERE!!");
-			//Renderer.FindImage(tes);
-			fe = StripPath(tes);// in case the name changed,
-		} else fchecker.close();
-		
-		OUTPUT_DEBUG_MSG("diffuse texture ="<<tes);
-		if(GetFileExtention(fe) == ".dds"){// file extention correct, copy it to the mesh directory
-			
-			OUTPUT_DEBUG_MSG("Copying "<<fe<<" To "<<Asset_Dir);
-			CopyFileA(tes.c_str(), (Asset_Dir + "Mesh\\" + fe).c_str(), true);
-			diffuse.Create(Asset_Dir + "Mesh\\" + fe);// now load the texture
-		} else {// convert it to a dds file
-			OUTPUT_DEBUG_MSG("Converting to  "+ Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-			Graphics::Texture::ConvertToDDS(tes, Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-			diffuse.Create(Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-		}
-		if(diffuse.Empty()){
-			OUTPUT_DEBUG_MSG("failure loading the texture 1"<<szPath.length);
-			return;
-		}
-	}  else {
-		OUTPUT_DEBUG_MSG("failure loading the texture 2"<<szPath.length);
-		return;
-	}
-/////////////////////// BUMP MAP
-	if( AI_SUCCESS == aiGetMaterialString(mMaterials[mesh->mMaterialIndex], AI_MATKEY_TEXTURE_HEIGHT(0),&szPath) ){
-		std::string fe(StripPath(szPath.data));// sometimes the textures are stored with their full path, which is not correct, strip it
-		std::string tes = path + szPath.data;
-		ifstream fchecker(tes.c_str());
-		if(!fchecker){// if the image cannot be found, prompt the user to find it, or a replacement
-			OUTPUT_DEBUG_MSG("Unable to find the bump texture "<<tes<<"   Please, Provide a valid texture HOOK GUI CODE HERE!!");
-			//Renderer.FindImage(tes);
-			fe = StripPath(tes);// in case the name changed,
-		} else fchecker.close();
-		OUTPUT_DEBUG_MSG("bump texture ="<<tes);
-		if(GetFileExtention(fe) == ".dds"){// file extention correct, copy it to the mesh directory
-			CopyFileA(tes.c_str(), (Asset_Dir + "Mesh\\" + fe).c_str(), true);
-			normal.Create(Asset_Dir + "Mesh\\" + fe);// now load the texture
-		} else {// convert it to a dds file
-			Graphics::Texture::GenerateNormalBumpFromBump(tes, Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-			normal.Create(Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-		}
-//////////////////NORMAL MAP
-	} else if( AI_SUCCESS == aiGetMaterialString(mMaterials[mesh->mMaterialIndex], AI_MATKEY_TEXTURE_NORMALS(0),&szPath) ){// if there is a bump, I generate a normal map from it, so I dont bother with this
-		std::string fe(StripPath(szPath.data));// sometimes the textures are stored with their full path, which is not correct, strip it
-		std::string tes = path + szPath.data;
-		ifstream fchecker(tes.c_str());
-		if(!fchecker){// if the image cannot be found, prompt the user to find it, or a replacement
-			OUTPUT_DEBUG_MSG("Unable to find the normal texture "<<tes<<"   Please, Provide a valid texture HOOK GUI CODE HERE!!");
-			//Renderer.FindImage(tes);
-			fe = StripPath(tes);// in case the name changed,
-		} else fchecker.close();
-		OUTPUT_DEBUG_MSG("normal texture ="<<tes);
-		if(GetFileExtention(fe) == ".dds"){// file extention correct, copy it to the mesh directory
-			CopyFileA(tes.c_str(), (Asset_Dir + "Mesh\\" + fe).c_str(), true);
-			normal.Create(Asset_Dir + "Mesh\\" + fe);// now load the texture
-		} else {// convert it to a dds file
-			Graphics::Texture::ConvertToDDS(tes, Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-			normal.Create(Asset_Dir + "Mesh\\" + StripFileExtention(fe) + ".dds");
-		}
-	} 
-
-}
-void cBaseMeshLoader::ExtractMaterials(Batch& batch, const aiMaterial* pcMat){
-	batch.Diffuse = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	aiGetMaterialColor(pcMat,AI_MATKEY_COLOR_DIFFUSE, (aiColor4D*)&batch.Diffuse);
-	batch.Specular = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	aiGetMaterialColor(pcMat,AI_MATKEY_COLOR_SPECULAR, (aiColor4D*)&batch.Specular);
-	batch.Ambient = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	aiGetMaterialColor(pcMat,AI_MATKEY_COLOR_AMBIENT,(aiColor4D*)&batch.Ambient);
-	batch.Emissive = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	aiGetMaterialColor(pcMat,AI_MATKEY_COLOR_EMISSIVE, (aiColor4D*)&batch.Emissive);
-	batch.Power =1.0f;
-	aiGetMaterialFloat(pcMat,AI_MATKEY_SHININESS_STRENGTH,&batch.Power);
-}
-
 void cDSMLoader::Save(const std::string& filename, cMesh& mesh){
 	std::string newfile =Asset_Dir+ "Mesh\\" + StripFileExtention(StripPath(filename)) + ".dsm";
 
@@ -344,98 +253,4 @@ bool cDSMLoader::Load(const std::string& filename, cMesh& mesh){
 	mesh.FileName = StripPath(filename);
 	return true;
 }
-void cDSMLoader::SaveBatch(ofstream& file, Mesh_Lod& lod){
-	
-	uint32_t indexstride= static_cast<uint32_t>(lod.IB.Stride);
-	uint32_t numindex = static_cast<uint32_t>(lod.IB.Size);
-
-	file.write(reinterpret_cast<char*>(&numindex), sizeof(uint32_t));// write the number of indices
-	file.write(reinterpret_cast<char*>(&indexstride), sizeof(uint32_t));// write the index stride
-	if(indexstride != 0 && numindex !=0){// only write if there is something to write
-		file.write(reinterpret_cast<char*>(&lod.Indices[0]), indexstride *numindex);// write out the indices
-	}
-	uint32_t numbatches =static_cast<uint32_t>(lod.Batches.size());
-	file.write(reinterpret_cast<char*>(&numbatches), sizeof(uint32_t));// write the  number of batches
-
-	for(uint32_t i(0); i< numbatches; i++){
-		Batch *bt = lod.Batches[i];
-				
-		file.write(reinterpret_cast<char*>(&bt->numVertices), sizeof(bt->numVertices));// num of indices for this particular batch
-		file.write(reinterpret_cast<char*>(&bt->numIndices), sizeof(bt->numIndices));// num of indices for this particular batch
-
-		file.write(reinterpret_cast<char*>(&bt->StartIndex), sizeof(bt->StartIndex));// num of indices for this particular batch
-		file.write(reinterpret_cast<char*>(&bt->StartVertex), sizeof(bt->StartVertex));// num of indices for this particular batch
-
-		file.write(reinterpret_cast<char*>(&bt->Specular), sizeof(bt->Specular));// num of indices for this particular batch
-		file.write(reinterpret_cast<char*>(&bt->Diffuse), sizeof(bt->Diffuse));// num of indices for this particular batch	
-
-		file.write(reinterpret_cast<char*>(&bt->Ambient), sizeof(bt->Ambient));// num of indices for this particular batch
-		file.write(reinterpret_cast<char*>(&bt->Emissive), sizeof(bt->Emissive));// num of indices for this particular batch
-		file.write(reinterpret_cast<char*>(&bt->Power), sizeof(bt->Power));// num of indices for this particular batch
-
-		string temp = StripPath(bt->texture.FileName);
-		uint32_t temp1 = static_cast<uint32_t>(temp.size());
-		file.write(reinterpret_cast<char*>(&temp1), sizeof(uint32_t));// size in bytes of the filename
-		file.write(temp.c_str(), temp1);// write the filename
-
-		temp = StripPath(bt->normal.FileName);
-		temp1 = static_cast<uint32_t>(temp.size());
-		file.write(reinterpret_cast<char*>(&temp1), sizeof(uint32_t));// size in bytes of the filename
-		file.write(temp.c_str(), temp1);// write the filename
-	}
-
-}
-
-void cDSMLoader::LoadBatch(ifstream& file, Mesh_Lod& lod){
-	
-	uint32_t indexstride= 0;
-	uint32_t numindex = 0;
-
-	file.read(reinterpret_cast<char*>(&numindex), sizeof(uint32_t));//  the number of indices
-	file.read(reinterpret_cast<char*>(&indexstride), sizeof(uint32_t));//  the index stride
-	lod.Indices.resize(numindex *indexstride/2);
-	if(indexstride != 0 && numindex !=0){// only read if there is something there
-		file.read(reinterpret_cast<char*>(&lod.Indices[0]), indexstride *numindex);// out the indices
-		lod.IB.Create(numindex, indexstride, INDEX_BUFFER, IMMUTABLE, CPU_NONE, &lod.Indices[0]);
-	}
-	uint32_t numbatches = static_cast<uint32_t>(lod.Batches.size());
-	file.read(reinterpret_cast<char*>(&numbatches), sizeof(uint32_t));//the  number of batches
-
-	for(uint32_t i(0); i< numbatches; i++){
-		Batch *bt = lod.CreateBatch();
-				
-		file.read(reinterpret_cast<char*>(&bt->numVertices), sizeof(bt->numVertices));// num of indices for this particular batch
-		file.read(reinterpret_cast<char*>(&bt->numIndices), sizeof(bt->numIndices));// num of indices for this particular batch
-
-		file.read(reinterpret_cast<char*>(&bt->StartIndex), sizeof(bt->StartIndex));// num of indices for this particular batch
-		file.read(reinterpret_cast<char*>(&bt->StartVertex), sizeof(bt->StartVertex));// num of indices for this particular batch
-
-		file.read(reinterpret_cast<char*>(&bt->Specular), sizeof(bt->Specular));// num of indices for this particular batch
-		file.read(reinterpret_cast<char*>(&bt->Diffuse), sizeof(bt->Diffuse));// num of indices for this particular batch	
-
-		file.read(reinterpret_cast<char*>(&bt->Ambient), sizeof(bt->Ambient));// num of indices for this particular batch
-		file.read(reinterpret_cast<char*>(&bt->Emissive), sizeof(bt->Emissive));// num of indices for this particular batch
-		file.read(reinterpret_cast<char*>(&bt->Power), sizeof(bt->Power));// num of indices for this particular batch
-		char temp[MAX_PATH];
-		uint32_t temp1 =0;
-
-		file.read(reinterpret_cast<char*>(&temp1), sizeof(uint32_t));// size in bytes of the filename
-		file.read(temp, temp1);// the filename
-		temp[temp1]=0;
-		std::string stemp = Asset_Dir +"Mesh\\";
-		stemp+= temp;
-		if(temp1!=0)
-			bt->texture.Create(stemp);
-
-		file.read(reinterpret_cast<char*>(&temp1), sizeof(uint32_t));// size in bytes of the filename
-		file.read(temp, temp1);// the filename
-		temp[temp1]=0;
-		stemp = Asset_Dir + "Mesh\\";
-		stemp+= temp;
-		if(temp1!=0)
-			bt->normal.Create(stemp);
-	}
-
-}
-
 */

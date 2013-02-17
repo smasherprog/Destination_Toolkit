@@ -31,7 +31,7 @@ public:
 class cAnimEvaluator{
 public:
 
-	cAnimEvaluator(): mLastTime(0.0f), TicksPerSecond(0.0f), Duration(0.0f), PlayAnimationForward(true) {}
+	cAnimEvaluator(): mLastTime(0.0f), TicksPerSecond(0.0f), Duration(0.0f), PlayAnimationForward(true), Animation_Indexer(0) {}
 	cAnimEvaluator( const aiAnimation* pAnim);
 	void Evaluate( float pTime, std::map<std::string, cBone*>& bones);
 	void Save(std::ofstream& file);
@@ -40,6 +40,7 @@ public:
 	unsigned int GetFrameIndexAt(float time);
 
 	std::string Name;
+	uint32_t Animation_Indexer;// this is only used if an animation has no name. I assigned it Animation + Animation_Indexer
 	std::vector<cAnimationChannel> Channels;
 	bool PlayAnimationForward;// play forward == true, play backward == false
 	float mLastTime, TicksPerSecond, Duration;	

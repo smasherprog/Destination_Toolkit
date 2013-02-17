@@ -13,10 +13,11 @@ public:
 	Mesh_Container_Presentation(const Base_Camera* camera);
 	virtual ~Mesh_Container_Presentation();
 
-	void Draw();
+	void Draw(float dt);
 
 	virtual void MouseMoved() override;
 	virtual MY_UI::Controls::cWidgetBase* Hit() override;
+	virtual MY_UI::Controls::cWidgetBase* Hit_And_SetFocus() override;
 	virtual void LeftMouseButtonUp()override;
 
 protected:

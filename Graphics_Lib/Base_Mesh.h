@@ -23,7 +23,7 @@ public:
 	virtual bool Save(const std::string& file)=0;
 	virtual bool Load(const std::string& file)=0;
 
-	virtual void Draw(const Base_Camera* camera) =0;
+	virtual void Draw(const Base_Camera* camera, float dt=0) =0;
 
 	virtual mat4 GetWorld() const{ return Scaling * Rotation * Translation; }
 

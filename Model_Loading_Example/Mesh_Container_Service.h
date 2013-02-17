@@ -15,7 +15,7 @@ public:
 	Mesh_Container_Service();
 	virtual ~Mesh_Container_Service();
 
-	bool Load_Mesh(std::string file);
+	bool Load_Mesh(Base_Mesh* m){ Mesh.push_back(m); return true; }
 	Base_Mesh* Check_Hit(vec3& ray, vec3& origin);
 
 

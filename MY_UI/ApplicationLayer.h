@@ -34,7 +34,11 @@ namespace MY_UI{
 				return Camera;
 			}
 			virtual cWidgetBase* Hit_And_SetFocus(){
-				return Hit();
+				for(size_t i(0); i< Internal_Widget.Children.size(); i++){
+					MY_UI::Controls::cWidgetBase* temp = Internal_Widget.Children[i]->Hit_And_SetFocus();
+					if(temp != 0) return temp;// return the hit child
+				}
+				return Camera;
 			}
 
 			// these should do nothing just to save a little extra cpu           

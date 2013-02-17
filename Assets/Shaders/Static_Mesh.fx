@@ -2,8 +2,10 @@ struct PSPTNTIn {
 	float4 position : SV_Position;
 	float2 texcoord : TexCoord0;
 	float3 normal   : Normal;
+#if NORMALMAP ==1
 	float3 tangent  : Tangent;
 	float3 bitangent  : Bitangent;
+#endif
 };
 
 cbuffer CBuffer0{

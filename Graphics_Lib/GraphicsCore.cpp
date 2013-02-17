@@ -274,7 +274,7 @@ void Graphics::VertexShader::CreateInputLayout(const FormatDesc* formatDesc, con
 		sizeof(uint8_t),	sizeof(uint8_t)*2,	sizeof(uint8_t)*3,	sizeof(uint8_t)*4,
 		sizeof(uint8_t),	sizeof(uint8_t)*2,	sizeof(uint8_t)*3,	sizeof(uint8_t)*4
 	};
-	static const char *semantics[] = {"COLOR", "POSITION", "TEXCOORD", "NORMAL", "TANGENT", "BINORMAL", "BLENDWEIGHT", "Bone", "BLENDINDICES", "Matrix"};
+	static const char *semantics[] = {"COLOR", "POSITION", "TEXCOORD", "NORMAL", "TANGENT", "BINORMAL", "BLENDWEIGHT", "BONE", "BLENDINDICES", "MATRIX"};
 	unsigned int index[10];
 	memset(index, 0, sizeof(index));
 	unsigned int vertexsize[MAX_VERTEXSTREAM];
@@ -1976,6 +1976,7 @@ void Graphics::Internal::DeInit(){
 	assert(Graphics::HullShader::CachedShader.size()==0);
 	assert(Graphics::DomainShader::CachedShader.size()==0);
 	assert(Graphics::PixelShader::CachedShader.size()==0);
+	assert(Graphics::Textures::TextureMap.size()==0);
 
 	if(DeviceContext)DeviceContext->OMSetRenderTargets(0, NULL, NULL); 
 	if(SwapChain) SwapChain->SetFullscreenState( FALSE, NULL );// make sure to set to windowed state

@@ -232,13 +232,16 @@ namespace Vertex_Types{
 	};
 	class Bone_Weight{// you cant have bones without weights..
 	public:
-		unsigned char Bones[4];// bone index.. no need to use a float here.
+		
+		float Bones[4];// bone index.. no need to use a float here.
 		vec4 Weights;
+		Bone_Weight() { Weights.zero(); Bones[0]=Bones[1]=Bones[2]=Bones[3]=0;}
 	};
 	class Pos_Tex: public Position, public TexCoord{ };
 	class Tex_Norm: public TexCoord, public Normal{ };
 	class Pos_Tex_Norm: public Position, public TexCoord, public Normal{ };
 	class Pos_Tex_Norm_Tang: public Position, public TexCoord, public Normal, public Tangent{ };
+	class Pos_Tex_Norm_Tang_Bone_Weight: public Position, public TexCoord, public Normal, public Tangent, public Bone_Weight{ };
 };
 
 #endif 

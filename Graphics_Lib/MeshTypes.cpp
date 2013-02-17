@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MeshTypes.h"
-#include "cBaseMesh.h"
 #include "../Utilities/cSetArray.h"
+
 
 template<class T>void ComputeNormals(vec3* Vertices, size_t numverts, T* indices, size_t numindices, vec3* normals){//used for 32 bit indicies
 	size_t i = 0;
@@ -580,51 +580,5 @@ void GenCylinder( float mTopRadius, float mBottomRadius, float mHeight, uint32_t
 		indices.push_back(centerIndex);
 		indices.push_back(baseIndex + i);
 		indices.push_back(baseIndex + i+1);
-	}
-}
-void Batch::Save(std::ofstream& stream){
-	stream.write((char*)&NumIndices, sizeof(unsigned int));
-	stream.write((char*)&StartIndex, sizeof(unsigned int));
-	stream.write((char*)&NumVerts, sizeof(unsigned int));
-	stream.write((char*)&_Material, sizeof(Material));
-
-	unsigned int count =0;
-	for(int i=0; i< MAX_TEXTUREUNIT; i++){
-		if(Maps[i]->Empty()) continue;
-		count+=1;
-	}
-	//write the count
-	stream.write((char*)&count, sizeof(unsigned int));
-	//now write the textures
-	for(int i=0; i< MAX_TEXTUREUNIT; i++){
-		if(Maps[i]->Empty()) continue;
-		std::string name = Maps[i]->FileName;
-		unsigned int temp = (unsigned int)name.size()+1;
-		stream.write((char*)&temp, sizeof(unsigned int));
-		stream.write(name.c_str(), temp);
-		temp = (unsigned int)Maps[i]->Get_MapType();
-		stream.write((char*)&temp, sizeof(unsigned int));
-	}
-}
-void Batch::Load(std::ifstream& stream){
-	stream.read((char*)&NumIndices, sizeof(unsigned int));
-	stream.read((char*)&StartIndex, sizeof(unsigned int));
-	stream.read((char*)&NumVerts, sizeof(unsigned int));
-	stream.read((char*)&_Material, sizeof(Material));
-
-	// diffuse tex
-	std::vector<char> name;
-	unsigned int temp =0;
-	unsigned int count =0;
-	stream.read((char*)&count, sizeof(unsigned int));
-	for(unsigned int i=0; i< count; i++){
-		stream.read((char*)&temp, sizeof(unsigned int));
-		name.resize(temp);
-		stream.read(&name[0], temp);
-		stream.read((char*)&temp, sizeof(unsigned int));
-		Graphics::Texture* t = GetMap((Map_Type)temp);
-		if(t==NULL) continue;
-		t->Create(std::string(&name[0], temp));
-
 	}
 }

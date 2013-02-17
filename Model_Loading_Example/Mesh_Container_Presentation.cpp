@@ -29,10 +29,10 @@ Mesh_Container_Presentation::Mesh_Container_Presentation(const Base_Camera* came
 Mesh_Container_Presentation::~Mesh_Container_Presentation(){
 	delete Mesh_Container;
 }
-void Mesh_Container_Presentation::Draw(){
+void Mesh_Container_Presentation::Draw(float dt){
 	for(size_t i=0; i< Mesh_Container->Mesh.size(); i++) {
 		Base_Mesh* mesh = Mesh_Container->Mesh[i];
-		mesh->Draw(Camera);
+		mesh->Draw(Camera, dt);
 		if(Last_Hit!=0){
 			Mesh_Container->BV->SetPosition(mesh->Get_Center());
 			Mesh_Container->BV->Draw(Camera);
@@ -42,6 +42,7 @@ void Mesh_Container_Presentation::Draw(){
 }
 
 void Mesh_Container_Presentation::MouseMoved(){
+	return;
 	MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
 	vec3 ray, origin;
 	UnProject(vec2((float)New_MousePosx, (float)New_MousePosy), Camera->View, Camera->Proj, (float)p.x, (float)p.y, ray, origin);
@@ -88,7 +89,8 @@ void Mesh_Container_Presentation::LeftMouseButtonUp(){
 	Base_Mesh* mesh=  Mesh_Container->Check_Hit(ray, origin);
 	if(mesh!=NULL) {
 		if(Last_Hit != mesh){
-			mesh->On_SetPosition.clear();//clear any connections to the trans
+			mesh->On_Translate_By_Offset.clear();//clear any connections to the trans
+			Mesh_Container->Trans->On_Translate_By_Offset.clear();
 			Mesh_Container->Trans->SetPosition(mesh->Get_Center());// set up the translation for the new mesh
 			Mesh_Container->BV->SetScaling(vec3(mesh->Get_Max_x_Size(), mesh->Get_Max_y_Size(), mesh->Get_Max_z_Size()));
 			Mesh_Container->BV->SetPosition(mesh->Get_Center());
@@ -102,6 +104,7 @@ void Mesh_Container_Presentation::LeftMouseButtonUp(){
 	Last_Hit=0;
 }
 MY_UI::Controls::cWidgetBase* Mesh_Container_Presentation::Hit(){
+	return 0;
 	MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
 	vec3 ray, origin;
 	UnProject(vec2((float)New_MousePosx, (float)New_MousePosy), Camera->View, Camera->Proj, (float)p.x, (float)p.y, ray, origin);
@@ -110,6 +113,29 @@ MY_UI::Controls::cWidgetBase* Mesh_Container_Presentation::Hit(){
 	if(dist!=INFINITY){
 		return this;
 	}
+	Base_Mesh* mesh=  Mesh_Container->Check_Hit(ray, origin);
+	if(mesh!=NULL) {
+		return this;
+	}
+	return 0;
+}
+MY_UI::Controls::cWidgetBase* Mesh_Container_Presentation::Hit_And_SetFocus() {
+	return 0;
+	MY_UI::Utilities::Point p= MY_UI::Internal::RootWidget->GetSize();// the root widget is the size of the screen
+	vec3 ray, origin;
+	UnProject(vec2((float)New_MousePosx, (float)New_MousePosy), Camera->View, Camera->Proj, (float)p.x, (float)p.y, ray, origin);
+
+	float dist = Mesh_Container->Trans->HighLight_Hit_Axis(origin, ray);
+	if(dist!=INFINITY){
+		return this;
+	}
+	if(Last_Hit != NULL){
+		Last_Hit->On_SetPosition.clear();//clear any connections to the trans
+		Last_Hit->On_Translate_By_Offset.clear();//clear any connections to the trans
+		Mesh_Container->Trans->On_Translate_By_Offset.clear();
+		Last_Hit=0;
+	}
+	
 	Base_Mesh* mesh=  Mesh_Container->Check_Hit(ray, origin);
 	if(mesh!=NULL) {
 		return this;
