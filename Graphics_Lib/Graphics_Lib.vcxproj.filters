@@ -47,9 +47,6 @@
     <ClInclude Include="UI_Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animated_Mesh_Shader.h">
-      <Filter>Header Files\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="cAnimationController.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
@@ -100,13 +97,7 @@
     <ClCompile Include="UI_Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animated_Mesh_Shader.cpp">
-      <Filter>Source Files\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="cAnimationController.cpp">
-      <Filter>Source Files\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="cMeshLoader.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="MeshTypes.cpp">

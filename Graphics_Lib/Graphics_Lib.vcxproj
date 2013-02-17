@@ -154,7 +154,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animated_Mesh.h" />
-    <ClInclude Include="Animated_Mesh_Shader.h" />
     <ClInclude Include="Base_Camera.h" />
     <ClInclude Include="Base_Mesh.h" />
     <ClInclude Include="Batch.h" />
@@ -176,14 +175,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animated_Mesh.cpp" />
-    <ClCompile Include="Animated_Mesh_Shader.cpp" />
     <ClCompile Include="Base_Camera.cpp" />
     <ClCompile Include="Base_Mesh.cpp" />
     <ClCompile Include="Batch.cpp" />
     <ClCompile Include="BV_Mesh.cpp" />
     <ClCompile Include="cAnimationController.cpp" />
     <ClCompile Include="cBaseD3D.cpp" />
-    <ClCompile Include="cMeshLoader.cpp" />
     <ClCompile Include="FXAA.cpp" />
     <ClCompile Include="Globals_GraphicsCore.cpp" />
     <ClCompile Include="GraphicsCore.cpp" />
