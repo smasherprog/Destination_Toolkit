@@ -16,12 +16,29 @@
 	#define OUTPUT_DEBUG_MSG(x) {}
 	#endif
 #endif
+
+#ifndef OUTPUT_DEBUG_MSG // nothing special about this, I use the console for standard debug info
+#define OUTPUT_DEBUG_MSG(x) {												\
+	std::cout<<x<<std::endl;													     	\
+}
+#endif
+
 // no need to check if(x), in c++, delete always checks that before deleting
 #ifndef RELEASECOM
-#define RELEASECOM(x)  if(x) x->Release(); x=0; 
+#define RELEASECOM(x) { if(x) x->Release(); x=0; }
 #endif
 #ifndef DELETE_ARRAY
-#define DELETE_ARRAY(x)  delete[] x;  x=NULL; 
+#define DELETE_ARRAY(x) { delete[] (x);  x=nullptr; } 
+#endif
+// not really safe because delete is already safe, but saves me an extra line of code :P
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(x) { delete (x);  x=nullptr; } 
+#endif
+
+#ifdef  NDEBUG
+#define assert2(_Expression, _Msg) ((void)0)
+#else 
+#define assert2(_Expression, _Msg) (void)( (!!(_Expression)) || (_wassert(_Msg, _CRT_WIDE(__FILE__), __LINE__), 0) )
 #endif
 
 class NoCopy{

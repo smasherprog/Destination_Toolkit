@@ -2,6 +2,8 @@
 #define MY_SIGNAL_H
 #include <vector>
 #include <map>
+#include <atomic>
+#include <mutex>
 #include <functional>
 
 
@@ -10,28 +12,28 @@ namespace MY_Utilities{
 	template <typename rettype, typename... T> class Signal_st{
 	public:
 		Signal_st(): _Is_Calling(false){}
-		~Signal_st(){ clear(); }
+		~Signal_st(){ Disconnect_All(); }
 
-		void clear(){//disconnects ALL!!
-			for(auto i=Connections.begin(); i != Connections.end(); i++) {
-				(*i)->Connections.erase(this); (*i)->Slots.erase(this); 
+		void Disconnect_All(){
+			for(auto i=_Connections.begin(); i != _Connections.end(); i++) {
+				(*i)->_Connections.erase(this); (*i)->_Slots.erase(this); 
 			}  
-			Connections.clear(); Slots.clear(); 
+			_Connections.clear(); _Slots.clear(); 
 		}
-		void Disconnect(Signal_st<rettype, T...>* othersig){  othersig->Connections.erase(this); othersig->Slots.erase(this);  Connections.erase(othersig); Slots.erase(othersig);  } 
+		void Disconnect(Signal_st<rettype, T...>* othersig){  othersig->_Connections.erase(this); othersig->_Slots.erase(this);  _Connections.erase(othersig); _Slots.erase(othersig);  } 
 		void Connect(Signal_st<rettype, T...>* othersig, std::function<rettype(T...)> f){  
-			auto i = Slots.find(othersig);
-			if(i!=Slots.end()) (*i).second=f;
-			else Slots[othersig]=f;
-			Connections.insert(othersig);
-			othersig->Connections.insert(this);
+			auto i = _Slots.find(othersig);
+			if(i!=_Slots.end()) (*i).second=f;
+			else _Slots[othersig]=f;
+			_Connections.insert(othersig);
+			othersig->_Connections.insert(this);
 		}
 
 
 		void Call(T... params){
 			if(_Is_Calling) return;//avoid infinite recursion
 			_Is_Calling = true;
-			for(auto i=Slots.begin(); i!= Slots.end(); i++){
+			for(auto i=_Slots.begin(); i!= _Slots.end(); i++){
 				if((*i).first->Is_Calling()) continue;
 				(*i).second(params...);
 			}
@@ -40,39 +42,39 @@ namespace MY_Utilities{
 		bool Is_Calling() const { return _Is_Calling;}
 	protected:
 
-		std::map<Signal_st<rettype, T...>*, std::function<rettype(T...)>> Slots;
-		std::set<Signal_st<rettype, T...>*> Connections;
+		std::map<Signal_st<rettype, T...>*, std::function<rettype(T...)>> _Slots;
+		std::set<Signal_st<rettype, T...>*> _Connections;
 		bool _Is_Calling;
 	};
 
 	template <typename rettype, typename... T> class Signal_mt{
 	public:
 		Signal_mt(): _Is_Calling(false){}
-		~Signal_mt(){ clear(); }
+		~Signal_mt(){ Disconnect_All(); }
 	
-		void clear(){//disconnects ALL!!
-			for(auto i=Connections.begin(); i != Connections.end(); i++) {
+		void Disconnect_All(){//disconnects ALL!!
+			for(auto i=_Connections.begin(); i != _Connections.end(); i++) {
 				(*i)->_Lock.lock(); 
-				(*i)->Connections.erase(this); (*i)->Slots.erase(this); 
+				(*i)->_Connections.erase(this); (*i)->_Slots.erase(this); 
 				(*i)->_Lock.unlock(); 
 			}  
-			Connections.clear(); Slots.clear(); 
+			_Connections.clear(); _Slots.clear(); 
 		}
 
 		void Connect(Signal_mt<rettype, T...>* othersig, std::function<rettype(T...)> f){  
 			_Lock.lock();
-			auto i = Slots.find(othersig);
-			if(i!=Slots.end()) (*i).second=f;
-			else Slots[othersig]=f;
+			auto i = _Slots.find(othersig);
+			if(i!=_Slots.end()) (*i).second=f;
+			else _Slots[othersig]=f;
 			_Lock.unlock();
 		}
-		void Disconnect(Signal_mt<rettype, T...>* othersig){ othersig->_Lock.lock(); othersig->Connections.erase(this); othersig->Slots.erase(this); othersig->_Lock.unlock();  _Lock.lock();  Connections.erase(othersig); Slots.erase(othersig);  _Lock.unlock(); }
+		void Disconnect(Signal_mt<rettype, T...>* othersig){ othersig->_Lock.lock(); othersig->_Connections.erase(this); othersig->_Slots.erase(this); othersig->_Lock.unlock();  _Lock.lock();  _Connections.erase(othersig); _Slots.erase(othersig);  _Lock.unlock(); }
 
 		void Call(T... params){
 			if(_Is_Calling.load(std::memory_order::memory_order_acquire)) return;//avoid infinite recursion
 			_Is_Calling.store(true, std::memory_order::memory_order_release);
 			_Lock.lock();
-			for(auto i=Slots.begin(); i!= Slots.end(); i++){
+			for(auto i=_Slots.begin(); i!= _Slots.end(); i++){
 				if((*i).first->Is_Calling()) continue;
 				(*i).second(params...);
 			}
@@ -81,7 +83,7 @@ namespace MY_Utilities{
 		}
 		bool Is_Calling() const { return _Is_Calling;}
 	protected:
-		std::map<Signal_mt<rettype, T...>*, std::function<rettype(T...)>> Slots;
+		std::map<Signal_mt<rettype, T...>*, std::function<rettype(T...)>> _Slots;
 		std::atomic<bool> _Is_Calling;
 		std::mutex _Lock;
 	};

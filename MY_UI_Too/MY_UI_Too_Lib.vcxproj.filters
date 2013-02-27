@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="PCH.h" />
+    <ClInclude Include="Widget.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Root.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="standard_skin.h">
+      <Filter>Skin</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderer.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ITexture.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IWidget.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISkin.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="Utilities.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Root.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Standard_Skin.cpp">
+      <Filter>Skin</Filter>
+    </ClCompile>
+    <ClCompile Include="IWidget.cpp">
+      <Filter>Core\Interfaces</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{2ea1e835-8ecb-46cb-82ca-6a87018fa9d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls">
+      <UniqueIdentifier>{c902a21d-69c6-4423-941b-0bc45a424195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Skin">
+      <UniqueIdentifier>{7c2ae8fe-41dd-4094-b2fa-5da6f5014d1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Interfaces">
+      <UniqueIdentifier>{643f4f94-c5e0-4d77-b8dd-61dce2cf1371}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
