@@ -21,7 +21,7 @@ namespace MY_UI_Too{
 		public:
 
 			ITexture():_Texture(nullptr), _Render_Texture(nullptr) {}
-			virtual ~ITexture()=0;
+			virtual ~ITexture(){}
 
 			virtual std::string Get_FileName() const { return _FileName; }
 			virtual void Set_FileName(std::string filename) {  _FileName=filename; }

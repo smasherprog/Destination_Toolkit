@@ -163,7 +163,7 @@
     <ClInclude Include="ITexture.h" />
     <ClInclude Include="IWidget.h" />
     <ClInclude Include="Root.h" />
-    <ClInclude Include="standard_skin.h" />
+    <ClInclude Include="Standard_Skin.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="ISkin.h" />

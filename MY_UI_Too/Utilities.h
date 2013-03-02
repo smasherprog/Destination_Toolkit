@@ -87,9 +87,6 @@ const char ShiftChars[256] = {
 };	
 
 namespace MY_UI_Too{
-	namespace Controls{
-		class Widget;
-	};
 	namespace Utilities{
 		// the alignments can be OR'd together
 #define NO_ALIGNMENT 0
@@ -288,7 +285,7 @@ namespace MY_UI_Too{
 #define MOUSE_LBUTTON MK_LBUTTON
 #define MOUSE_RBUTTON MK_RBUTTON
 #define MOUSE_MBUTTON MK_MBUTTON
-\
+
 	namespace Utilities{
 		const LPSTR C_Types[] = { IDC_ARROW,  IDC_IBEAM,  IDC_SIZEALL, IDC_SIZENESW, IDC_SIZENS,  IDC_SIZENWSE, IDC_SIZEWE };
 		inline void SetCursor(unsigned int type){ ::SetCursor( LoadCursor(0, C_Types[type]) ); Current_Cursor = type;}
@@ -298,12 +295,11 @@ namespace MY_UI_Too{
 			Input(const Input& rhs);
 			Input& operator=(const Input& rhs);
 			bool AppPaused, Minimized, Maximized, Resizing;
-			MY_UI_Too::Controls::Widget* Root;
 
 		public:
 
 			bool ProcessMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-			Input(MY_UI_Too::Controls::Widget* root): AppPaused(false), Minimized(false), Maximized(false), Resizing(false), Root(root){  }
+			Input(): AppPaused(false), Minimized(false), Maximized(false), Resizing(false){  }
 			~Input();
 
 		};

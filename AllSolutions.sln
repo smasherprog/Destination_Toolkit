@@ -189,6 +189,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MY_UI_Too_DX_Example", "MY_
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MY_UI_Too_DX_Renderer_Lib", "MY_UI_Too\MY_UI_Too_DX_Renderer_Lib.vcxproj", "{A1D06B20-9505-4D4A-9713-975D21EEE9BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{25DB048A-43E0-4462-88E4-117A6DAC8127} = {25DB048A-43E0-4462-88E4-117A6DAC8127}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

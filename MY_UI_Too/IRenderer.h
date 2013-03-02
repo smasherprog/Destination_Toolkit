@@ -11,7 +11,7 @@ namespace MY_UI_Too{
 	class IRenderer{// This is a purly virtual base class that users should derive from in order to create an Open Gl renderer, or a Direct X renderer
 	public:
 
-		virtual ~IRenderer()=0;// make sure to free any resorces that you allocate in the derived destructor 
+		virtual ~IRenderer(){ }// make sure to free any resorces that you allocate in the derived destructor 
 		virtual bool Init()=0;
 		virtual void DeInit() =0;
 		virtual void Begin(MY_UI_Too::Utilities::ITexture* texture=nullptr)=0;// this should set all necessary render states, i.e. alpha blending, no depth testing, etc
@@ -27,6 +27,7 @@ namespace MY_UI_Too{
 		virtual void EndClip()=0;
 
 		virtual MY_UI_Too::Utilities::ITexture* LoadTexture(std::string filename, bool as_rendertarget=false)=0;
+		virtual MY_UI_Too::Utilities::ITexture* CreateTexture(unsigned int width, unsigned int height, bool as_rendertarget=false)=0;
 		virtual void OnResize(unsigned int x, unsigned int y) =0;// this is called when the screen sets a new window dimensions
 		virtual unsigned int GetDrawCalls()const =0;
 

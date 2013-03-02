@@ -7,6 +7,7 @@ MY_UI_Too::Controls::Root::Root(): Focus_Holder(nullptr),Hovered_Widget(nullptr)
 
 }
 MY_UI_Too::Controls::Root::~Root() {
+	OUTPUT_DEBUG_MSG("Shuttng down Root");
 	SAFE_DELETE(MY_UI_Too::Internal::UI_Skin); 
 	SAFE_DELETE(MY_UI_Too::Internal::Renderer);
 	MY_UI_Too::Internal::Root_Widget = nullptr;
@@ -19,6 +20,7 @@ void MY_UI_Too::Controls::Root::Set_Control_Bounds(Utilities::Rect p){
 void MY_UI_Too::Controls::Root::Set_Control_Size(Utilities::Point p){
 	_Internals.Absolute_Control_Area.width = _Internals.Relative_Client_Area.width =p.left;
 	_Internals.Absolute_Control_Area.top = _Internals.Relative_Client_Area.top = p.top;
+	Internal::Renderer->OnResize(p.x, p.y);
 }
 void MY_UI_Too::Controls::Root::Set_Control_Pos(Utilities::Point p){ //always 0, 0
 	_Internals.Absolute_Control_Area.left = _Internals.Relative_Client_Area.top =0;
@@ -72,7 +74,6 @@ void MY_UI_Too::Controls::Root::Key_Up() {
 }
 void MY_UI_Too::Controls::Root::Draw(){
 	Internal::Renderer->Begin();
-	Internal::Renderer->StartClip(Get_Control_Bounds());
 
 	Internal::Renderer->StartNewBatch();
 	for(int i((int)_Internals.Children.size()-1); i >= 0 ; i--) {
@@ -81,7 +82,6 @@ void MY_UI_Too::Controls::Root::Draw(){
 
 	Internal::Renderer->Draw();
 
-	Internal::Renderer->EndClip();
 	Internal::Renderer->End();
 	Delta_Mousex = 0;
 	Delta_Mousey = 0;

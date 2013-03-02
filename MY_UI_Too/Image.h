@@ -14,7 +14,7 @@ namespace MY_UI_Too{
 			MY_UI_Too::Utilities::UVs _UVs;
 
 		public:
-			Image(Widget* parent);
+			Image(IWidget* parent);
 			virtual ~Image();
 
 			virtual void Draw() override;

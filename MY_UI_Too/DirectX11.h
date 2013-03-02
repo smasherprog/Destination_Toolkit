@@ -101,7 +101,7 @@ namespace MY_UI_Too{
 		virtual void DrawTexturedRect_NoClip( MY_UI_Too::Utilities::ITexture* Texture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer = false) override;
 
 		virtual MY_UI_Too::Utilities::ITexture* LoadTexture(std::string filename, bool as_rendertarget=false) override;
-
+		virtual MY_UI_Too::Utilities::ITexture* CreateTexture(unsigned int width, unsigned int height, bool as_rendertarget=false) override;
 		virtual void StartClip(MY_UI_Too::Utilities::Rect& rect) override;
 		virtual void EndClip() override;
 		// the onresize does as much pre calculations are possible by divding and multiplying by two
@@ -157,8 +157,10 @@ namespace MY_UI_Too{
 		ID3D11DepthStencilState*	LastDepthState;
 		ID3D11RasterizerState*		LastRasterizerState;
 
-
-
+		ID3D11RenderTargetView*		LastRTVs[8];
+		ID3D11DepthStencilView*		LastDTV;
+		D3D11_VIEWPORT				LastViewPort;
+		bool						ResetRT;
 	};
 
 };

@@ -39,7 +39,7 @@ namespace MY_UI_Too{
 			MY_Utilities::Signal_st<void> On_Destructor;
 
 			/*
-			all control positions are specific in relative coordinates. Meaning relative to the top left corner of the Control Top Left.
+			all control positions are specific in absolute coordinates. Meaning relative to the top left corner of the Control Top Left.
 
 			*/
 			virtual void Set_Control_Bounds(Utilities::Rect p) override;

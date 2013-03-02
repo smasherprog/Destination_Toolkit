@@ -4,42 +4,55 @@
 #include "Main.h"
 #include "Root.h"
 #include "Standard_Skin.h"
+#include "Image.h"
 
-#pragma comment(lib, "MY_UI_Too_DX_Renderer_Lib")
-
-HWND					g_pHWND = NULL;
-ID3D11Device			*g_Device = NULL;
-IDXGISwapChain			*SwapChain =0;
-ID3D11RenderTargetView	*BackBufferRTV=0;
-ID3D11Texture2D			*BackBuffer=0;
-ID3D11DeviceContext		*g_DeviceContext=0;
+HWND					g_pHWND =nullptr;
+ID3D11Device			*g_Device=nullptr;
+IDXGISwapChain			*SwapChain =nullptr;
+ID3D11RenderTargetView	*BackBufferRTV=nullptr;
+ID3D11Texture2D			*BackBuffer=nullptr;
+ID3D11DeviceContext		*g_DeviceContext=nullptr;
 
 RECT ClientRect;
-MY_UI_Too::Utilities::Input* input=0;
+MY_UI_Too::Utilities::Input* input=nullptr;
 
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	if(input->ProcessMessage(hwnd, msg, wParam, lParam)) return 0;
 	return DefWindowProc(hwnd, msg, wParam, lParam);
-	
+
 }
 HWND CreateGameWindow( void )
 {
-	// very important to allocate this before the window is created because the messageproc above will start to be called immediately after CreateWindowEx is called
-	
+
 	WNDCLASS	wc;
 	ZeroMemory( &wc, sizeof( wc ) );
 
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc		= MainWndProc;
 	wc.hInstance		= GetModuleHandle(NULL);
-	wc.lpszClassName	= "MY_UI Test";
+	wc.lpszClassName	= "MY_UI_Too";
 
 
-	RegisterClass( &wc );
+	if(!RegisterClass( &wc )){
+		std::string msg = "Error Registering window Code: " + std::to_string(GetLastError());
+		MessageBoxA(0, msg.c_str(), "Error Registering window", MB_OK);
+		return 0;
+	}
+	
+	RECT R = { 0, 0,  1024, 768};
 
-	HWND hWindow = CreateWindowEx( (WS_EX_APPWINDOW | WS_EX_WINDOWEDGE) , wc.lpszClassName, "MY_UI - Direct10 Example", (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN) & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME), 400, 400, 1024, 768, NULL, NULL, GetModuleHandle(NULL), NULL );
 
+	AdjustWindowRect(&R, (WS_EX_APPWINDOW | WS_EX_WINDOWEDGE), false);
+	int other_width  = R.right - R.left;
+	int other_height = R.bottom - R.top;
+
+	HWND hWindow = CreateWindowExA( (WS_EX_APPWINDOW | WS_EX_WINDOWEDGE) , wc.lpszClassName, "MY_UI_Too - Direct11 Example", (WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN) & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME), 400, 400, other_width, other_height, NULL, NULL, GetModuleHandle(NULL), NULL );
+	if(hWindow==NULL){
+		std::string msg = "Error Creating window Code: " + std::to_string(GetLastError());
+		MessageBoxA(0, msg.c_str(), "Error Registering window", MB_OK);
+		return 0;
+	}
 	ShowWindow( hWindow, SW_SHOW );
 	SetForegroundWindow( hWindow );
 	SetFocus( hWindow );
@@ -81,7 +94,7 @@ void CreateD3DDevice()
 	HR(SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**) &BackBuffer));
 	HR(g_Device->CreateRenderTargetView(BackBuffer, NULL, &BackBufferRTV));
 	RELEASECOM(BackBuffer);
-	
+
 	g_DeviceContext->OMSetRenderTargets(1, &BackBufferRTV, 0);
 	// Setup the viewport
 	D3D11_VIEWPORT viewport;
@@ -104,26 +117,27 @@ void CreateD3DDevice()
 //
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd) {	
 
-	MY_UI_Too::Controls::Root* root = new MY_UI_Too::Controls::Root();
-	input = new MY_UI_Too::Utilities::Input(root);
+	
+	input = new MY_UI_Too::Utilities::Input();
+	// very important to allocate this before the window is created because the messageproc above will start to be called immediately after CreateWindowEx is called
+
 	g_pHWND = CreateGameWindow();
+
 	CreateD3DDevice();	
 
-	MY_UI_Too::DirectX11* renderer = new MY_UI_Too::DirectX11( g_Device, g_DeviceContext );
-	MY_UI_Too::Standard_Skin* skin = new MY_UI_Too::Standard_Skin(renderer);
-
-	MY_UI_Too::Init(renderer, skin, root);
-	MY_UI_Too::Utilities::SetCursor(MY_UI_Too::Utilities::Standard);
 	RECT temp;
 	GetClientRect( g_pHWND, &temp );
 
-	root->Set_Control_Bounds(MY_UI_Too::Utilities::Rect(0, 0, temp.right, temp.bottom));
+	//Initialize the Library Delete will be called on all of these controls when the Input control is destroyed
+	MY_UI_Too::Init(
+		new MY_UI_Too::DirectX11( g_Device, g_DeviceContext ),
+		new MY_UI_Too::Standard_Skin(),
+		new MY_UI_Too::Controls::Root(),
+		temp.right, temp.bottom);
 
 	//
 	// Begin the main game loop
 	//
-
-
 	MSG msg;
 	while( true )
 	{
@@ -145,14 +159,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		else
 		{
 			// Normal DirectX rendering loop
-				
 
-	
-				float ClearColor[4] = { .2f, .1f, 1.0f, 0.0f };
-				
-				g_DeviceContext->ClearRenderTargetView( BackBufferRTV, ClearColor );
-				root->Draw();
-				SwapChain->Present(0, 0);
+
+
+			float ClearColor[4] = { .2f, .1f, 1.0f, 0.0f };
+
+			g_DeviceContext->ClearRenderTargetView( BackBufferRTV, ClearColor );
+			MY_UI_Too::Internal::Root_Widget->Draw();
+			SwapChain->Present(0, 0);
 
 		}
 	}

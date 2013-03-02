@@ -43,6 +43,7 @@ MY_UI_Too::DirectX11::DirectX11(ID3D11Device* pDevice, ID3D11DeviceContext* cont
 	memset(LastStrides, 0, sizeof(LastStrides));
 	memset(LastOffsets, 0, sizeof(LastOffsets));
 	memset(LastSOBuffers, 0, sizeof(LastSOBuffers));
+	memset(LastRTVs, 0, sizeof(LastRTVs));
 
 	LastIndexBuffer=0;
 	LastIndexBufferFormat=DXGI_FORMAT_R32_UINT;
@@ -59,6 +60,7 @@ MY_UI_Too::DirectX11::DirectX11(ID3D11Device* pDevice, ID3D11DeviceContext* cont
 	LastRasterizerState=UIRasterizerStateNormal=0;
 	UIIndexBuffer=0;
 	Draw_State_Index=0;
+	ResetRT=false;
 }
 
 MY_UI_Too::DirectX11::~DirectX11(){		
@@ -180,6 +182,10 @@ bool MY_UI_Too::DirectX11::Init(){
 	return true;
 }
 void MY_UI_Too::DirectX11::DeInit(){
+	OUTPUT_DEBUG_MSG("Shuttng down IRenderer");
+	for(unsigned int i=0; i<8;i++) RELEASECOM(LastRTVs[i]);
+	RELEASECOM(LastDTV);
+
 	RELEASECOM(UIInputLayout);
 	RELEASECOM(UISampler);
 
@@ -196,7 +202,23 @@ void MY_UI_Too::DirectX11::DeInit(){
 
 void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Utilities::ITexture* texture)// get the states that this will change to set at the end call
 {
-	assert(texture->Get_Render_Texture()!=nullptr);
+	if(texture!=nullptr){
+		assert(texture->Get_Render_Texture()!=nullptr);
+		UINT views = 1;
+		DeviceContext->RSGetViewports(&views, &LastViewPort);
+		DeviceContext->OMGetRenderTargets(8, LastRTVs, &LastDTV);
+
+		D3D11_VIEWPORT vp;
+		memset(&vp, 0, sizeof(D3D11_VIEWPORT));
+		Utilities::Point p=texture->Get_Dimensions();
+		vp.Height = p.top;
+		vp.Width = p.left;
+		vp.MaxDepth = 1;
+		DeviceContext->RSSetViewports(1, &vp);
+		ID3D11RenderTargetView* ptrs[1] = { (ID3D11RenderTargetView*)texture->Get_Render_Texture()};
+		DeviceContext->OMSetRenderTargets(1, ptrs, NULL);
+		ResetRT=true;
+	}
 	////GET ALL THE SET STATES so they can be set after the UI is finished drawing
 	DeviceContext->OMGetBlendState(&UILastBlendState, LastBlendFactor, &LastBlendMask);
 	DeviceContext->RSGetState(&LastRasterizerState);
@@ -229,7 +251,14 @@ void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Utilities::ITexture* texture)// get 
 }
 
 void MY_UI_Too::DirectX11::End(){// reset the device to its original state{
-
+	if(ResetRT){
+		UINT views = 1;
+		DeviceContext->RSSetViewports(views, &LastViewPort);
+		DeviceContext->OMSetRenderTargets(8, LastRTVs, LastDTV);
+		for(unsigned int i=0; i<8;i++) RELEASECOM(LastRTVs[i]);
+		RELEASECOM(LastDTV);
+	}
+	ResetRT=false;
 	// set all the previous states back 
 	DeviceContext->OMSetBlendState(UILastBlendState, LastBlendFactor, LastBlendMask);
 	RELEASECOM(UILastBlendState);
@@ -329,7 +358,7 @@ bool MY_UI_Too::DirectX11::SetTexture(MY_UI_Too::Utilities::ITexture* pTexture, 
 
 void MY_UI_Too::DirectX11::DrawTexturedRect_Clip(MY_UI_Too::Utilities::ITexture* pTexture, MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
 	if(!SetTexture(pTexture, drawnow)) return;
-
+	assert(!ClipRects.empty());
 	Utilities::Point tl(rect.left, rect.top);
 	Utilities::Point tr(rect.left + rect.width, rect.top);
 	Utilities::Point bl(rect.left, rect.top + rect.height);
@@ -470,11 +499,58 @@ MY_UI_Too::Utilities::ITexture* MY_UI_Too::DirectX11::LoadTexture(std::string fi
 		tex->Set_Texture(srv);
 		tex->Set_Render_Texture(rtv);
 		RELEASECOM(Texture_);// this isnt needed. The srv and rtv holds the texture
-		return tex;
 	} else {
 		ID3D11ShaderResourceView *resource(0);
 		HR(D3DX11CreateShaderResourceViewFromFileA( Device, filename.c_str(), 0, 0, &resource, 0));
 		tex->Set_Texture(resource);
-		return tex;
 	}
+	return tex;
+}
+
+MY_UI_Too::Utilities::ITexture* MY_UI_Too::DirectX11::CreateTexture(unsigned int width, unsigned int height, bool as_rendertarget){	
+
+	Utilities::ITexture* tex = new Utilities::DX_Texture();
+	tex->Set_Dimensions(Utilities::Point(width, height));
+
+
+	ID3D11Resource* Texture_=nullptr;
+	D3D11_TEXTURE2D_DESC desc;
+	desc.Width  = (UINT)width;
+	desc.Height = (UINT)height;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.MipLevels = 1;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	desc.CPUAccessFlags = 0;
+	desc.ArraySize = 1;
+	desc.MiscFlags = 0;
+	HR(Device->CreateTexture2D(&desc, NULL, (ID3D11Texture2D **) &Texture_));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	memset(&srvDesc, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	ID3D11ShaderResourceView *srv=nullptr;
+	srvDesc.Format =  desc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = desc.MipLevels;
+	HR(Device->CreateShaderResourceView(Texture_, &srvDesc, &srv));
+	tex->Set_Texture(srv);
+
+	if(as_rendertarget){
+		D3D11_RESOURCE_DIMENSION type;
+		Texture_->GetType(&type);
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+		memset(&rtvDesc, 0, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
+		ID3D11RenderTargetView *rtv=nullptr;
+
+		rtvDesc.Format = desc.Format;
+		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+		rtvDesc.Texture2D.MipSlice = 0;
+		HR(Device->CreateRenderTargetView(Texture_, &rtvDesc, &rtv));
+		tex->Set_Render_Texture(rtv);
+	}
+	RELEASECOM(Texture_);// this isnt needed. The srv and rtv holds the texture
+	return tex;
 }

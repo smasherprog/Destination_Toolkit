@@ -52,8 +52,8 @@ namespace MY_UI_Too{
 
 
 			//Utility Functions
-			virtual IWidget* Hit();
-			virtual IWidget* Hit_And_SetFocus();
+			virtual IWidget* Hit()=0;
+			virtual IWidget* Hit_And_SetFocus()=0;
 
 			virtual void Add(IWidget* child)=0;
 			virtual void Remove(IWidget* child)=0;
@@ -86,7 +86,7 @@ namespace MY_UI_Too{
 		extern MY_UI_Too::IRenderer* Renderer;
 		extern MY_UI_Too::ISkin* UI_Skin;
 	};
-	inline void Init(MY_UI_Too::IRenderer* renderer, MY_UI_Too::ISkin* skin, MY_UI_Too::Controls::IWidget* root){Internal::Renderer=renderer; Internal::UI_Skin = skin; Internal::Root_Widget = root;} 
+	void Init(MY_UI_Too::IRenderer* renderer, MY_UI_Too::ISkin* skin, MY_UI_Too::Controls::IWidget* root, unsigned int screen_width, unsigned int screen_height);
 	void Safe_Delete(Controls::IWidget*& widget);
 };
 
