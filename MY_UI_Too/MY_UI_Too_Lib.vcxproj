@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\FreeType_Lib\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);</LibraryPath>
     <OutDir>..\lib\$(PlatformArchitecture)bit\$(Configuration)\</OutDir>
     <IntDir>..\Intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
@@ -158,22 +158,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="Font_Factory.h" />
+    <ClInclude Include="IFont_Factory.h" />
+    <ClInclude Include="IFont.h" />
+    <ClInclude Include="IInput.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="ITexture.h" />
     <ClInclude Include="IWidget.h" />
     <ClInclude Include="Root.h" />
     <ClInclude Include="Standard_Skin.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="PCH.h" />
     <ClInclude Include="ISkin.h" />
     <ClInclude Include="Widget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Font_Factory.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="IWidget.cpp" />
     <ClCompile Include="Root.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="Standard_Skin.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="PCH.cpp">

@@ -1,5 +1,6 @@
 #include "PCH.h"
 #include "Widget.h"
+#include "Input.h"
 
 MY_UI_Too::Controls::Widget::Widget(IWidget* parent){
 	if(parent != nullptr) {
@@ -120,26 +121,26 @@ void MY_UI_Too::Controls::Widget::Remove(IWidget* child){
 	}
 }
 
-MY_UI_Too::Controls::IWidget* MY_UI_Too::Controls::Widget::Hit() {
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit() {
 	for(auto &x : _Internals.Children){
-		MY_UI_Too::Controls::IWidget* hitcontrol = x->Hit();
+		MY_UI_Too::Interfaces::IWidget* hitcontrol = x->Hit();
 		if(hitcontrol != nullptr) return hitcontrol;
 	}
-	if(_Internals.Absolute_Control_Area.Within(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
+	if(_Internals.Absolute_Control_Area.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
 }
-MY_UI_Too::Controls::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
 	for(auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++){
-		MY_UI_Too::Controls::IWidget* hitcontrol = (*beg)->Hit_And_SetFocus();
+		MY_UI_Too::Interfaces::IWidget* hitcontrol = (*beg)->Hit_And_SetFocus();
 		if(hitcontrol != nullptr) {
 			if(beg != _Internals.Children.begin()){// dont rearrange if the control hit is already at the beginning
-				MY_UI_Too::Controls::IWidget* temp = (*beg);
+				MY_UI_Too::Interfaces::IWidget* temp = (*beg);
 				_Internals.Children.erase(beg);// remove from the array
 				_Internals.Children.insert(_Internals.Children.begin(), temp);// insert at the beginning
 			}
 			return hitcontrol;
 		}
 	}
-	if(_Internals.Absolute_Control_Area.Within(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
+	if(_Internals.Absolute_Control_Area.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
 }

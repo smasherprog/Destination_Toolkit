@@ -14,9 +14,9 @@ namespace MY_UI_Too{
 		public:
 
 			bool Hidden, Focus, Draggable;//focus can be direct focus, or indirect by a child having focus
-			Controls::IWidget* Parent;
+			Interfaces::IWidget* Parent;
 
-			std::vector<Controls::IWidget*> Children;
+			std::vector<Interfaces::IWidget*> Children;
 			Utilities::Rect Absolute_Control_Area;//this is the absolute position, not a relative one
 			Utilities::Rect Relative_Client_Area;// this is the postion and size where children are allowed to start living
 			std::string Name;// this is what I use for testing purposes to see what control I am hitting
@@ -28,7 +28,7 @@ namespace MY_UI_Too{
 
 	namespace Controls {
 
-		class Widget: public IWidget{
+		class Widget: public Interfaces::IWidget{
 
 		protected:
 			MY_UI_Too::Internal::Internal_Widget _Internals;

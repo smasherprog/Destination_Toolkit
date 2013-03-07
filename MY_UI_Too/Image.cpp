@@ -18,7 +18,5 @@ bool MY_UI_Too::Controls::Image::Set_Texture(std::string file){
 }
 
 void MY_UI_Too::Controls::Image::Draw(){
-	//Internal::Renderer->StartClip(Get_Control_Bounds());
-	Internal::Renderer->DrawTexturedRect_NoClip(Internal::UI_Skin->Get_Skin(), _UVs, Get_Control_Bounds());
-	//Internal::Renderer->EndClip();
+	Internal::Renderer->DrawTexturedRect_NoClip(_Texture, _UVs, Get_Control_Bounds());
 }

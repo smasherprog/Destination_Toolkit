@@ -2,6 +2,8 @@
 #include "Root.h"
 #include "IRenderer.h"
 #include "ISkin.h"
+#include "Input.h"
+#include "IFont_Factory.h"
 
 MY_UI_Too::Controls::Root::Root(): Focus_Holder(nullptr),Hovered_Widget(nullptr), Dragged_Widget(nullptr), Widget(nullptr) {
 
@@ -10,6 +12,7 @@ MY_UI_Too::Controls::Root::~Root() {
 	OUTPUT_DEBUG_MSG("Shuttng down Root");
 	SAFE_DELETE(MY_UI_Too::Internal::UI_Skin); 
 	SAFE_DELETE(MY_UI_Too::Internal::Renderer);
+	SAFE_DELETE(MY_UI_Too::Internal::Font_Factory);
 	MY_UI_Too::Internal::Root_Widget = nullptr;
 }
 
@@ -20,7 +23,7 @@ void MY_UI_Too::Controls::Root::Set_Control_Bounds(Utilities::Rect p){
 void MY_UI_Too::Controls::Root::Set_Control_Size(Utilities::Point p){
 	_Internals.Absolute_Control_Area.width = _Internals.Relative_Client_Area.width =p.left;
 	_Internals.Absolute_Control_Area.top = _Internals.Relative_Client_Area.top = p.top;
-	Internal::Renderer->OnResize(p.x, p.y);
+	Internal::Renderer->Set_Size(p);
 }
 void MY_UI_Too::Controls::Root::Set_Control_Pos(Utilities::Point p){ //always 0, 0
 	_Internals.Absolute_Control_Area.left = _Internals.Relative_Client_Area.top =0;
@@ -28,22 +31,22 @@ void MY_UI_Too::Controls::Root::Set_Control_Pos(Utilities::Point p){ //always 0,
 }
 
 void MY_UI_Too::Controls::Root::Mouse_Left_Down(){
-	IWidget* temp = Hit_And_SetFocus();
+	Interfaces::IWidget* temp = Hit_And_SetFocus();
 	if(temp != nullptr) temp->Mouse_Left_Down();// something was hit
 	Focus_Holder = temp;
 }
 void MY_UI_Too::Controls::Root::Mouse_Left_Up(){
-	IWidget* temp = Hit();
+	Interfaces::IWidget* temp = Hit();
 	if(temp != nullptr && Focus_Holder == temp) temp->Mouse_Left_Up();// make sure the same control completed a mousedown / up
 	Dragged_Widget = nullptr;
 }
 void MY_UI_Too::Controls::Root::Mouse_Right_Down() {
-	IWidget* temp = Hit_And_SetFocus();
+	Interfaces::IWidget* temp = Hit_And_SetFocus();
 	if(temp != nullptr) temp->Mouse_Right_Down();// something was hit
 	Focus_Holder = temp;
 }
 void MY_UI_Too::Controls::Root::Mouse_Right_Up() {
-	IWidget* temp = Hit();
+	Interfaces::IWidget* temp = Hit();
 	if(temp != nullptr && Focus_Holder == temp) temp->Mouse_Right_Up();// make sure the same control completed a mousedown / up
 	Dragged_Widget = nullptr;
 }
@@ -53,10 +56,12 @@ void MY_UI_Too::Controls::Root::Mouse_Moved() {
 		return Dragged_Widget->Mouse_Moved();
 	}
 
-	IWidget* temp = Hit();
+	Interfaces::IWidget* temp = Hit();
 	if(temp != nullptr){// something was hit
-		if(temp != Hovered_Widget) temp->Mouse_Entered(); // new control hit
-		if(	Hovered_Widget != nullptr) Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
+		if(temp != Hovered_Widget) {
+			temp->Mouse_Entered(); // new control hit
+			if(	Hovered_Widget != nullptr) Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
+		}
 		Hovered_Widget = temp;
 	} else { // nothing was hit
 		if(	Hovered_Widget != nullptr) Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
@@ -87,13 +92,13 @@ void MY_UI_Too::Controls::Root::Draw(){
 	Delta_Mousey = 0;
 }
 
-MY_UI_Too::Controls::IWidget* MY_UI_Too::Controls::Root::Hit() {
-	MY_UI_Too::Controls::IWidget* temp = Widget::Hit();
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Root::Hit() {
+	MY_UI_Too::Interfaces::IWidget* temp = Widget::Hit();
 	if(temp == this) return nullptr;// cant hit the root
 	return temp;
 }
-MY_UI_Too::Controls::IWidget* MY_UI_Too::Controls::Root::Hit_And_SetFocus(){
-	MY_UI_Too::Controls::IWidget* temp = Widget::Hit_And_SetFocus();
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Root::Hit_And_SetFocus(){
+	MY_UI_Too::Interfaces::IWidget* temp = Widget::Hit_And_SetFocus();
 	if(temp == this) return nullptr;// cant hit the root
 	if(temp != nullptr){ // something was hit
 		temp->Set_Focus(true);

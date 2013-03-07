@@ -4,7 +4,9 @@
 #include "Main.h"
 #include "Root.h"
 #include "Standard_Skin.h"
-#include "Image.h"
+#include "Font_Factory.h"
+#include "Button.h"
+#include "Input.h"
 
 HWND					g_pHWND =nullptr;
 ID3D11Device			*g_Device=nullptr;
@@ -132,12 +134,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	MY_UI_Too::Init(
 		new MY_UI_Too::DirectX11( g_Device, g_DeviceContext ),
 		new MY_UI_Too::Standard_Skin(),
+		new MY_UI_Too::Font_Factory(),
 		new MY_UI_Too::Controls::Root(),
 		temp.right, temp.bottom);
 
-	//
-	// Begin the main game loop
-	//
+	MY_UI_Too::Controls::Button* button = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+
 	MSG msg;
 	while( true )
 	{

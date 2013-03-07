@@ -5,7 +5,7 @@
 
 namespace MY_UI_Too{
 
-	namespace Controls {
+	namespace Interfaces{
 
 		class IWidget{
 		public:
@@ -76,18 +76,21 @@ namespace MY_UI_Too{
 			virtual void Draw()=0;
 		};	
 	};
-	class IRenderer;
-	class ISkin;
-
+	namespace Interfaces{
+		class IRenderer;
+		class ISkin;
+		class IFont_Factory;
+	};
 	namespace Internal{
 
-		extern std::set<MY_UI_Too::Controls::IWidget*> AllWidgets;
-		extern MY_UI_Too::Controls::IWidget* Root_Widget;
-		extern MY_UI_Too::IRenderer* Renderer;
-		extern MY_UI_Too::ISkin* UI_Skin;
+		extern std::set<MY_UI_Too::Interfaces::IWidget*> AllWidgets;
+		extern MY_UI_Too::Interfaces::IWidget* Root_Widget;
+		extern MY_UI_Too::Interfaces::IRenderer* Renderer;
+		extern MY_UI_Too::Interfaces::ISkin* UI_Skin;
+		extern MY_UI_Too::Interfaces::IFont_Factory* Font_Factory;
 	};
-	void Init(MY_UI_Too::IRenderer* renderer, MY_UI_Too::ISkin* skin, MY_UI_Too::Controls::IWidget* root, unsigned int screen_width, unsigned int screen_height);
-	void Safe_Delete(Controls::IWidget*& widget);
+	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, unsigned int screen_width, unsigned int screen_height);
+	void Safe_Delete(Interfaces::IWidget*& widget);
 };
 
 

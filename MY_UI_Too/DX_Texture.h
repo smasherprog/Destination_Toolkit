@@ -5,7 +5,7 @@
 
 namespace MY_UI_Too{
 	namespace Utilities {
-		class DX_Texture : public ITexture{
+		class DX_Texture : public Interfaces::ITexture{
 		public:
 
 			DX_Texture(){}

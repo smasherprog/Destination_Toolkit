@@ -4,6 +4,10 @@
 #include <assert.h>
 #include <string>
 #include <sys/stat.h>
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 #if defined(_DEBUG) | defined(DEBUG)
 	#ifndef OUTPUT_DEBUG_MSG // nothing special about this, I use the console for standard debug info
@@ -72,6 +76,14 @@ inline std::string StripPath(const std::string& file){// this will only strip of
 	po+=1;
 	return file.substr(po, file.size()-po);// only return the filename
 }
+
+// trim from start
+inline std::string &ltrim(std::string &s) { s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace)))); return s; }
+// trim from end
+inline std::string &rtrim(std::string &s) { s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end()); return s; }
+// trim from both ends
+inline std::string &trim(std::string &s) { return ltrim(rtrim(s)); }
+
 inline bool ContainsPath(const std::string& str){
 	std::string::size_type po = str.find_last_of('\\');
 	if(po == std::string::npos) po = str.find_last_of('/');// couldnt find it with the double slashes, try a single forward slash

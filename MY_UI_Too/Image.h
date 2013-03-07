@@ -10,7 +10,7 @@ namespace MY_UI_Too{
 		class Image : public Widget{
 		protected:
 
-			MY_UI_Too::Utilities::ITexture* _Texture;
+			MY_UI_Too::Interfaces::ITexture* _Texture;
 			MY_UI_Too::Utilities::UVs _UVs;
 
 		public:
@@ -18,6 +18,7 @@ namespace MY_UI_Too{
 			virtual ~Image();
 
 			virtual void Draw() override;
+
 			virtual bool Set_Texture(std::string file);
 
 			virtual void Set_UVs(MY_UI_Too::Utilities::UVs uvs){_UVs=uvs; }

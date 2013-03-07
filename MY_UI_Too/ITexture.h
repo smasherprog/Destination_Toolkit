@@ -12,6 +12,8 @@ namespace MY_UI_Too{
 			float u2, v2;//u2 = right, v2 = bottom
 			UVs():u1(0.0f), v1(0.0f), u2(1.0f), v2(1.0f){}
 		};
+	};
+	namespace Interfaces{
 		class ITexture{
 		protected:
 			std::string	_FileName;
@@ -35,9 +37,9 @@ namespace MY_UI_Too{
 
 			virtual void* Get_Render_Texture() const { return _Render_Texture; }
 			virtual void Set_Render_Texture(void* texture)  {  _Render_Texture =texture; }
-	
+
 			virtual void clear()=0;
-			
+
 		};
 	};
 };

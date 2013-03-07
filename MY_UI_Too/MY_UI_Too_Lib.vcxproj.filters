@@ -29,6 +29,27 @@
     <ClInclude Include="ISkin.h">
       <Filter>Core\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="IFont.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="IInput.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IFont_Factory.h">
+      <Filter>Core\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Font_Factory.h">
+      <Filter>Font</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -50,6 +71,18 @@
     <ClCompile Include="IWidget.cpp">
       <Filter>Core\Interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Font_Factory.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
@@ -63,6 +96,9 @@
     </Filter>
     <Filter Include="Core\Interfaces">
       <UniqueIdentifier>{643f4f94-c5e0-4d77-b8dd-61dce2cf1371}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Font">
+      <UniqueIdentifier>{09983698-5414-45b5-946a-a41cb3ffd5d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

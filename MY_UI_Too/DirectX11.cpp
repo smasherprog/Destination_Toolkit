@@ -200,7 +200,7 @@ void MY_UI_Too::DirectX11::DeInit(){
 
 }
 
-void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Utilities::ITexture* texture)// get the states that this will change to set at the end call
+void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Interfaces::ITexture* texture)// get the states that this will change to set at the end call
 {
 	if(texture!=nullptr){
 		assert(texture->Get_Render_Texture()!=nullptr);
@@ -211,8 +211,8 @@ void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Utilities::ITexture* texture)// get 
 		D3D11_VIEWPORT vp;
 		memset(&vp, 0, sizeof(D3D11_VIEWPORT));
 		Utilities::Point p=texture->Get_Dimensions();
-		vp.Height = p.top;
-		vp.Width = p.left;
+		vp.Height = (FLOAT)p.top;
+		vp.Width = (FLOAT)p.left;
 		vp.MaxDepth = 1;
 		DeviceContext->RSSetViewports(1, &vp);
 		ID3D11RenderTargetView* ptrs[1] = { (ID3D11RenderTargetView*)texture->Get_Render_Texture()};
@@ -345,7 +345,7 @@ void MY_UI_Too::DirectX11::AddVert( float x, float y, float u, float v, Utilitie
 	drawstate.NumVerts+=1;
 	drawstate.changed=true;
 }
-bool MY_UI_Too::DirectX11::SetTexture(MY_UI_Too::Utilities::ITexture* pTexture, bool drawingnow){
+bool MY_UI_Too::DirectX11::SetTexture(MY_UI_Too::Interfaces::ITexture* pTexture, bool drawingnow){
 	void* pImage = pTexture->Get_Texture();
 	if ( pImage ==nullptr) return false;// Missing image, not loaded properly?
 	if( (CurrentTexture!= pImage) | (drawingnow)){
@@ -356,7 +356,7 @@ bool MY_UI_Too::DirectX11::SetTexture(MY_UI_Too::Utilities::ITexture* pTexture, 
 	return true;
 }
 
-void MY_UI_Too::DirectX11::DrawTexturedRect_Clip(MY_UI_Too::Utilities::ITexture* pTexture, MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
+void MY_UI_Too::DirectX11::DrawTexturedRect_Clip(MY_UI_Too::Interfaces::ITexture* pTexture, MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
 	if(!SetTexture(pTexture, drawnow)) return;
 	assert(!ClipRects.empty());
 	Utilities::Point tl(rect.left, rect.top);
@@ -364,11 +364,11 @@ void MY_UI_Too::DirectX11::DrawTexturedRect_Clip(MY_UI_Too::Utilities::ITexture*
 	Utilities::Point bl(rect.left, rect.top + rect.height);
 	Utilities::Point br(rect.left + rect.width, rect.top + rect.height);
 	// if all the points are not within the cliprect, dont draw it
-	bool brin = ClipRects.back().Within(br);
-	bool trin = ClipRects.back().Within(tr);
+	bool brin = ClipRects.back().Intersect(br);
+	bool trin = ClipRects.back().Intersect(tr);
 
-	bool blin = ClipRects.back().Within(bl);
-	bool tlin = ClipRects.back().Within(tl);
+	bool blin = ClipRects.back().Intersect(bl);
+	bool tlin = ClipRects.back().Intersect(tl);
 
 	if( (!brin) & (!trin) & (!blin) & (!tlin)) return;// all points are outside the cliprect
 
@@ -428,7 +428,7 @@ void MY_UI_Too::DirectX11::DrawTexturedRect_Clip(MY_UI_Too::Utilities::ITexture*
 	}
 }
 
-void MY_UI_Too::DirectX11::DrawTexturedRect_NoClip(MY_UI_Too::Utilities::ITexture* pTexture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
+void MY_UI_Too::DirectX11::DrawTexturedRect_NoClip(MY_UI_Too::Interfaces::ITexture* pTexture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
 	if(!SetTexture(pTexture, drawnow)) return;
 
 	float left= static_cast<float>(rect.left);
@@ -452,13 +452,13 @@ void MY_UI_Too::DirectX11::EndClip(){
 	ClipRects.pop_back();
 }
 
-MY_UI_Too::Utilities::ITexture* MY_UI_Too::DirectX11::LoadTexture(std::string filename, bool as_rendertarget){	
+MY_UI_Too::Interfaces::ITexture* MY_UI_Too::DirectX11::LoadTexture(std::string filename, bool as_rendertarget){	
 	if(!FileExists(filename)) return nullptr;
 
 	D3DX11_IMAGE_INFO finfo;
 	memset(&finfo, 0, sizeof(D3DX11_IMAGE_INFO));
 	HR(D3DX11GetImageInfoFromFileA(filename.c_str(), 0, &finfo, 0));
-	Utilities::ITexture* tex = new Utilities::DX_Texture();
+	Interfaces::ITexture* tex = new Utilities::DX_Texture();
 	tex->Set_Dimensions(Utilities::Point(finfo.Width, finfo.Height));
 
 	if(as_rendertarget){
@@ -507,11 +507,10 @@ MY_UI_Too::Utilities::ITexture* MY_UI_Too::DirectX11::LoadTexture(std::string fi
 	return tex;
 }
 
-MY_UI_Too::Utilities::ITexture* MY_UI_Too::DirectX11::CreateTexture(unsigned int width, unsigned int height, bool as_rendertarget){	
+MY_UI_Too::Interfaces::ITexture* MY_UI_Too::DirectX11::CreateTexture(unsigned int width, unsigned int height,Utilities::Color* buffer, bool as_rendertarget){	
 
-	Utilities::ITexture* tex = new Utilities::DX_Texture();
+	Interfaces::ITexture* tex = new Utilities::DX_Texture();
 	tex->Set_Dimensions(Utilities::Point(width, height));
-
 
 	ID3D11Resource* Texture_=nullptr;
 	D3D11_TEXTURE2D_DESC desc;
@@ -522,11 +521,19 @@ MY_UI_Too::Utilities::ITexture* MY_UI_Too::DirectX11::CreateTexture(unsigned int
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
 	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+	UINT flags = D3D11_BIND_SHADER_RESOURCE;
+	if(as_rendertarget) flags |=D3D11_BIND_RENDER_TARGET;
+	desc.BindFlags = flags;
 	desc.CPUAccessFlags = 0;
 	desc.ArraySize = 1;
 	desc.MiscFlags = 0;
-	HR(Device->CreateTexture2D(&desc, NULL, (ID3D11Texture2D **) &Texture_));
+	
+	D3D11_SUBRESOURCE_DATA dat, *data(NULL);
+	dat.SysMemSlicePitch=0;
+	dat.pSysMem = buffer;
+	dat.SysMemPitch = width*sizeof(Utilities::Color);
+	if(buffer) data = &dat;
+	HR(Device->CreateTexture2D(&desc, data, (ID3D11Texture2D **) &Texture_));
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	memset(&srvDesc, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
