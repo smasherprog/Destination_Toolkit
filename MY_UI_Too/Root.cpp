@@ -1,33 +1,27 @@
 #include "PCH.h"
 #include "Root.h"
 #include "IRenderer.h"
-#include "ISkin.h"
 #include "Input.h"
-#include "IFont_Factory.h"
 
 MY_UI_Too::Controls::Root::Root(): Focus_Holder(nullptr),Hovered_Widget(nullptr), Dragged_Widget(nullptr), Widget(nullptr) {
 
 }
 MY_UI_Too::Controls::Root::~Root() {
 	OUTPUT_DEBUG_MSG("Shuttng down Root");
-	SAFE_DELETE(MY_UI_Too::Internal::UI_Skin); 
-	SAFE_DELETE(MY_UI_Too::Internal::Renderer);
-	SAFE_DELETE(MY_UI_Too::Internal::Font_Factory);
-	MY_UI_Too::Internal::Root_Widget = nullptr;
 }
 
-void MY_UI_Too::Controls::Root::Set_Control_Bounds(Utilities::Rect p){
-	Set_Control_Pos(Utilities::Point(p.left, p.top));
-	Set_Control_Size(Utilities::Point(p.width, p.height));
+void MY_UI_Too::Controls::Root::Set_Bounds(Utilities::Rect p){
+	Set_Pos(Utilities::Point(p.left, p.top));
+	Set_Size(Utilities::Point(p.width, p.height));
 }
-void MY_UI_Too::Controls::Root::Set_Control_Size(Utilities::Point p){
-	_Internals.Absolute_Control_Area.width = _Internals.Relative_Client_Area.width =p.left;
-	_Internals.Absolute_Control_Area.top = _Internals.Relative_Client_Area.top = p.top;
+void MY_UI_Too::Controls::Root::Set_Size(Utilities::Point p){
+	_Internals.Rect.width  =p.left;
+	_Internals.Rect.top = p.top;
 	Internal::Renderer->Set_Size(p);
 }
-void MY_UI_Too::Controls::Root::Set_Control_Pos(Utilities::Point p){ //always 0, 0
-	_Internals.Absolute_Control_Area.left = _Internals.Relative_Client_Area.top =0;
-	_Internals.Absolute_Control_Area.top = _Internals.Relative_Client_Area.left = 0;
+void MY_UI_Too::Controls::Root::Set_Pos(Utilities::Point p){ //always 0, 0
+	_Internals.Rect.top =0;
+	_Internals.Rect.left = 0;
 }
 
 void MY_UI_Too::Controls::Root::Mouse_Left_Down(){
@@ -78,13 +72,12 @@ void MY_UI_Too::Controls::Root::Key_Up() {
 
 }
 void MY_UI_Too::Controls::Root::Draw(){
+
 	Internal::Renderer->Begin();
 
 	Internal::Renderer->StartNewBatch();
-	for(int i((int)_Internals.Children.size()-1); i >= 0 ; i--) {
-		_Internals.Children[i]->Draw();
-	}
-
+	for( auto rbeg = _Internals.Children.rbegin(); rbeg != _Internals.Children.rend(); rbeg++) (*rbeg)->Draw();
+	
 	Internal::Renderer->Draw();
 
 	Internal::Renderer->End();

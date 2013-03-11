@@ -48,7 +48,19 @@
       <Filter>Core\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Font_Factory.h">
-      <Filter>Font</Filter>
+      <Filter>Font_Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckBox.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Radio_Group.h">
+      <Filter>Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -81,7 +93,16 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Font_Factory.cpp">
-      <Filter>Font</Filter>
+      <Filter>Font_Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckBox.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Radio_Group.cpp">
+      <Filter>Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +118,7 @@
     <Filter Include="Core\Interfaces">
       <UniqueIdentifier>{643f4f94-c5e0-4d77-b8dd-61dce2cf1371}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Font">
+    <Filter Include="Font_Factory">
       <UniqueIdentifier>{09983698-5414-45b5-946a-a41cb3ffd5d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

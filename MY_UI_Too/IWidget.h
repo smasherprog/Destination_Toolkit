@@ -8,34 +8,47 @@ namespace MY_UI_Too{
 	namespace Interfaces{
 
 		class IWidget{
+		protected:
+			
 		public:
 
 			IWidget();
 			virtual ~IWidget();
 
-			/*
-			all control positions are specific in relative coordinates. Meaning relative to the top left corner of the Control Top Left.
-			*/
-			virtual void Set_Control_Bounds(Utilities::Rect p)=0;
-			virtual Utilities::Rect Get_Control_Bounds()=0;
+			virtual void Set_Absolute_Pos(MY_UI_Too::Utilities::Point p)=0;
+			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const =0;
 
-			virtual void Set_Control_Size(Utilities::Point p)=0;
-			virtual Utilities::Point Get_Control_Size()=0;
+			virtual void Set_Bounds(Utilities::Rect p)=0;
+			virtual Utilities::Rect Get_Bounds()const =0;
 
-			virtual void Set_Control_Pos(Utilities::Point p)=0;
-			virtual Utilities::Point Get_Control_Pos()=0;
+			virtual void Set_Size(Utilities::Point p)=0;
+			virtual Utilities::Point Get_Size()const =0;
 
-			/*
-			all client positions are specific in relative coordinates. Meaning relative to the top left corner of the Control Top Left.
-			*/
-			virtual void Set_Client_Bounds(Utilities::Rect p)=0;
-			virtual Utilities::Rect Get_Client_Bounds()=0;
+			virtual void Set_Pos_ByOffset(Utilities::Point offset)=0;
+			virtual void Set_Pos(Utilities::Point p)=0;
+			virtual Utilities::Point Get_Pos()const =0;
 
-			virtual void Set_Client_Size(Utilities::Point p)=0;
-			virtual Utilities::Point Get_Client_Size()=0;
+			virtual void Align_TopLeft(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_TopCenter(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_TopRight(int padding=5, IWidget* widget=nullptr)=0;
 
-			virtual void Set_Client_Pos(Utilities::Point p)=0;
-			virtual Utilities::Point Get_Client_Pos()=0;
+			virtual void Align_BottomLeft(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_BottomCenter(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_BottomRight(int padding=5, IWidget* widget=nullptr)=0;
+
+			virtual void Align_LeftTop(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_LeftCenter(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_LeftBottom(int padding=5, IWidget* widget=nullptr)=0;
+
+			virtual void Align_RightTop(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_RightCenter(int padding=5, IWidget* widget=nullptr)=0;
+			virtual void Align_RightBottom(int padding=5, IWidget* widget=nullptr)=0;
+
+			virtual void Align_TR(int padding, IWidget* widget)=0;
+			virtual void Align_TL(int padding, IWidget* widget)=0;
+			virtual void Align_BL(int padding, IWidget* widget)=0;
+			virtual void Align_BR(int padding, IWidget* widget)=0;
+			virtual void Align_Center()=0;// only works within parent
 
 			//Input functions
 			virtual void Mouse_Left_Down()=0;
@@ -73,6 +86,9 @@ namespace MY_UI_Too{
 			virtual void Set_Name(std::string name)=0;
 			virtual std::string Get_Name()const =0;
 
+			virtual void Set_Color(MY_UI_Too::Utilities::Color color)=0;
+			virtual MY_UI_Too::Utilities::Color Get_Color() const =0;
+
 			virtual void Draw()=0;
 		};	
 	};
@@ -89,7 +105,8 @@ namespace MY_UI_Too{
 		extern MY_UI_Too::Interfaces::ISkin* UI_Skin;
 		extern MY_UI_Too::Interfaces::IFont_Factory* Font_Factory;
 	};
-	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, unsigned int screen_width, unsigned int screen_height);
+	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, unsigned int screen_width, unsigned int screen_height, unsigned int skinsize);
+	void DeInit();
 	void Safe_Delete(Interfaces::IWidget*& widget);
 };
 

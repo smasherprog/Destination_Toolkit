@@ -3,6 +3,8 @@
 #include <vector>
 #include <fstream>
 #include "DX_Texture.h"
+#include "IFont.h"
+#include "Common.h"
 
 const std::string UIShader = std::string(
 	"SamplerState sampler0;"
@@ -21,7 +23,7 @@ const std::string UIShader = std::string(
 	"}"
 	"float4 PS( PSstruct In ) : SV_Target0 {"
 	"	float4 col = UITexture.Sample( sampler0, In.texcoord );"
-	"    return col*In.color; "
+	"	return col*In.color;"
 	"}" 
 
 
@@ -59,16 +61,15 @@ MY_UI_Too::DirectX11::DirectX11(ID3D11Device* pDevice, ID3D11DeviceContext* cont
 	LastDepthState=0;
 	LastRasterizerState=UIRasterizerStateNormal=0;
 	UIIndexBuffer=0;
-	Draw_State_Index=0;
 	ResetRT=false;
 }
 
 MY_UI_Too::DirectX11::~DirectX11(){		
 	DeInit();
-
 }
 
 bool MY_UI_Too::DirectX11::Init(){
+	MY_UI_Too::Renderer::Init();//call base init
 	ID3DBlob* blob=0;
 
 	HR(CompileShaderFromMemory(UIShader, "PS", "ps_4_0", &blob)); 
@@ -130,7 +131,7 @@ bool MY_UI_Too::DirectX11::Init(){
 
 
 	D3D11_SAMPLER_DESC sampledesc;
-	sampledesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+	sampledesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	sampledesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	sampledesc.AddressW = sampledesc.AddressV = sampledesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	sampledesc.MipLODBias = 0.0f;
@@ -178,11 +179,11 @@ bool MY_UI_Too::DirectX11::Init(){
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &indexbuffer[0];
 	HR(Device->CreateBuffer(&ibd, &iinitData, &UIIndexBuffer));
-	Draw_States.resize(1);// at least one
 	return true;
 }
 void MY_UI_Too::DirectX11::DeInit(){
-	OUTPUT_DEBUG_MSG("Shuttng down IRenderer");
+
+	OUTPUT_DEBUG_MSG("Shuttng down Renderer");
 	for(unsigned int i=0; i<8;i++) RELEASECOM(LastRTVs[i]);
 	RELEASECOM(LastDTV);
 
@@ -199,26 +200,8 @@ void MY_UI_Too::DirectX11::DeInit(){
 	RELEASECOM(UIRasterizerStateNormal);
 
 }
-
-void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Interfaces::ITexture* texture)// get the states that this will change to set at the end call
-{
-	if(texture!=nullptr){
-		assert(texture->Get_Render_Texture()!=nullptr);
-		UINT views = 1;
-		DeviceContext->RSGetViewports(&views, &LastViewPort);
-		DeviceContext->OMGetRenderTargets(8, LastRTVs, &LastDTV);
-
-		D3D11_VIEWPORT vp;
-		memset(&vp, 0, sizeof(D3D11_VIEWPORT));
-		Utilities::Point p=texture->Get_Dimensions();
-		vp.Height = (FLOAT)p.top;
-		vp.Width = (FLOAT)p.left;
-		vp.MaxDepth = 1;
-		DeviceContext->RSSetViewports(1, &vp);
-		ID3D11RenderTargetView* ptrs[1] = { (ID3D11RenderTargetView*)texture->Get_Render_Texture()};
-		DeviceContext->OMSetRenderTargets(1, ptrs, NULL);
-		ResetRT=true;
-	}
+void MY_UI_Too::DirectX11::Get_Render_States(){
+	
 	////GET ALL THE SET STATES so they can be set after the UI is finished drawing
 	DeviceContext->OMGetBlendState(&UILastBlendState, LastBlendFactor, &LastBlendMask);
 	DeviceContext->RSGetState(&LastRasterizerState);
@@ -246,11 +229,8 @@ void MY_UI_Too::DirectX11::Begin(MY_UI_Too::Interfaces::ITexture* texture)// get
 	DeviceContext->OMSetBlendState(UIBlendState, factor, ~0);
 	DeviceContext->OMSetDepthStencilState(UIDepthState, 0);
 	DeviceContext->RSSetState( UIRasterizerStateNormal);
-	DrawCalls =0;
-
 }
-
-void MY_UI_Too::DirectX11::End(){// reset the device to its original state{
+void MY_UI_Too::DirectX11::Restore_Render_States(){
 	if(ResetRT){
 		UINT views = 1;
 		DeviceContext->RSSetViewports(views, &LastViewPort);
@@ -291,16 +271,28 @@ void MY_UI_Too::DirectX11::End(){// reset the device to its original state{
 	DeviceContext->HSSetShader(LastHSShader,0,0);
 	RELEASECOM(LastHSShader);
 }
+void MY_UI_Too::DirectX11::Set_Render_Target(MY_UI_Too::Interfaces::ITexture* texture){
+	if(texture!=nullptr){
+		assert(texture->Get_Render_Texture()!=nullptr);
+		UINT views = 1;
+		DeviceContext->RSGetViewports(&views, &LastViewPort);
+		DeviceContext->OMGetRenderTargets(8, LastRTVs, &LastDTV);
 
-void MY_UI_Too::DirectX11::Draw(){	
-	for(size_t i(0); i < Draw_State_Index +1; i++){
-		if(Draw_States[i].NumVerts == 0) continue;
-		Draw(Draw_States[i]);
+		D3D11_VIEWPORT vp;
+		memset(&vp, 0, sizeof(D3D11_VIEWPORT));
+		Utilities::Point p=texture->Get_Dimensions();
+		vp.Height = (FLOAT)p.top;
+		vp.Width = (FLOAT)p.left;
+		vp.MaxDepth = 1;
+		DeviceContext->RSSetViewports(1, &vp);
+		ID3D11RenderTargetView* ptrs[1] = { (ID3D11RenderTargetView*)texture->Get_Render_Texture()};
+		DeviceContext->OMSetRenderTargets(1, ptrs, NULL);
+		ResetRT=true;
 	}
 }
 
+
 void MY_UI_Too::DirectX11::Draw(MyDrawState& drawstate){
-	++DrawCalls;
 	if(drawstate.changed){
 		D3D11_MAPPED_SUBRESOURCE sb;
 		memset(&sb, 0, sizeof(D3D11_MAPPED_SUBRESOURCE));
@@ -325,131 +317,7 @@ void MY_UI_Too::DirectX11::Draw(MyDrawState& drawstate){
 	// apply the correct technique 
 
 	DeviceContext->DrawIndexed((drawstate.NumVerts/4)*6, 0, 0);
-	drawstate.changed=false;
-}
-void MY_UI_Too::DirectX11::GotoNextBufferSlot(){		
-	if(Draw_States.size() <= Draw_State_Index +1)  Draw_States.resize(Draw_States.size() + 16);// add more space if needed
-	Draw_States[ Draw_State_Index ].Verts.resize(Draw_States[ Draw_State_Index ].NumVerts);// resize the buffer in case there is hardly any data inside
-	Draw_State_Index+=1;// goto the next index
-}
-void MY_UI_Too::DirectX11::AddVert( float x, float y, float u, float v, Utilities::Color col){
-	if ( Draw_States[ Draw_State_Index ].NumVerts >= VERT_BUFFER_SIZE) GotoNextBufferSlot();
-
-	MyDrawState& drawstate = Draw_States[ Draw_State_Index ];
-	VERTEXFORMAT2D& vert = drawstate.Verts[drawstate.NumVerts];
-	vert.x = (x*Inv_Wndx) -1.0f;
-	vert.y = (y*Inv_Wndy) +1.0f;
-	vert.u = u;
-	vert.v = v;	
-	vert.color = col.color;
-	drawstate.NumVerts+=1;
-	drawstate.changed=true;
-}
-bool MY_UI_Too::DirectX11::SetTexture(MY_UI_Too::Interfaces::ITexture* pTexture, bool drawingnow){
-	void* pImage = pTexture->Get_Texture();
-	if ( pImage ==nullptr) return false;// Missing image, not loaded properly?
-	if( (CurrentTexture!= pImage) | (drawingnow)){
-		GotoNextBufferSlot();
-	}
-	Draw_States[ Draw_State_Index ].texture = pImage;
-	CurrentTexture =pImage;
-	return true;
-}
-
-void MY_UI_Too::DirectX11::DrawTexturedRect_Clip(MY_UI_Too::Interfaces::ITexture* pTexture, MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
-	if(!SetTexture(pTexture, drawnow)) return;
-	assert(!ClipRects.empty());
-	Utilities::Point tl(rect.left, rect.top);
-	Utilities::Point tr(rect.left + rect.width, rect.top);
-	Utilities::Point bl(rect.left, rect.top + rect.height);
-	Utilities::Point br(rect.left + rect.width, rect.top + rect.height);
-	// if all the points are not within the cliprect, dont draw it
-	bool brin = ClipRects.back().Intersect(br);
-	bool trin = ClipRects.back().Intersect(tr);
-
-	bool blin = ClipRects.back().Intersect(bl);
-	bool tlin = ClipRects.back().Intersect(tl);
-
-	if( (!brin) & (!trin) & (!blin) & (!tlin)) return;// all points are outside the cliprect
-
-
-	float left= static_cast<float>(rect.left);
-	float top = static_cast<float>(rect.top);
-	float width = static_cast<float>(rect.width);
-	float right = width + left;
-	float height = static_cast<float>(rect.height);
-	float bottom = height + top;
-	// resize the buffer if needed
-	if(Draw_States[ Draw_State_Index ].Verts.size() <= 4 + Draw_States[ Draw_State_Index ].NumVerts ) Draw_States[ Draw_State_Index ].Verts.resize(Draw_States[ Draw_State_Index ].Verts.size() + 200);
-	if( (brin) & (trin) & (blin) & (tlin)){// all points are fully contained inside the cliprect
-
-		AddVert( left, top,					uvs.u1, uvs.v1, color_tl );
-		AddVert( right, top,				uvs.u2, uvs.v1, color_tr );
-		AddVert( left, bottom,				uvs.u1, uvs.v2, color_bl );
-		AddVert( right, bottom,				uvs.u2, uvs.v2, color_br );
-
-
-	} else {// this means the rect is partially in the clip region. Use the cpu to clip it
-
-		Utilities::Rect& r = ClipRects.back();
-		float newleft= static_cast<float>(Utilities::Clamp<int>(rect.left, r.left, r.left + r.width));
-		float newtop = static_cast<float>(Utilities::Clamp<int>(rect.top, r.top, r.top + r.height));
-		float newright = static_cast<float>(Utilities::Clamp<int>(rect.width + rect.left, r.left, r.left + r.width));
-		float newbottom = static_cast<float>(Utilities::Clamp<int>(rect.height + rect.top, r.top, r.top + r.height));
-
-		float difleft = newleft - left;
-		float diftop = newtop - top;
-		float difright = newright - right;
-		float difbottom = newbottom - bottom;
-
-		difleft /= width;
-		diftop /= height;
-		difright /= width;
-		difbottom /= height;
-
-		float u1 = uvs.u1;
-		float v1 = uvs.v1;
-		float u2 = uvs.u2;
-		float v2 = uvs.v2;
-
-		float uwidth = u2 - u1;
-		float vheight = v2 - v1;
-
-		u1 = u1 + (uwidth*difleft);
-		u2 = u2 + (uwidth*difright);
-		v1 = v1 + (vheight*diftop);
-		v2 = v2 + (vheight*difbottom);
-
-		AddVert( newleft, newtop,					u1, v1, color_tl );
-		AddVert( newright, newtop,					u2, v1, color_tr );
-		AddVert( newleft, newbottom,				u1, v2, color_bl );
-		AddVert( newright, newbottom,				u2, v2, color_br );
-
-	}
-}
-
-void MY_UI_Too::DirectX11::DrawTexturedRect_NoClip(MY_UI_Too::Interfaces::ITexture* pTexture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
-	if(!SetTexture(pTexture, drawnow)) return;
-
-	float left= static_cast<float>(rect.left);
-	float top = static_cast<float>(rect.top);
-	float width = static_cast<float>(rect.width);
-	float right = width + left;
-	float height = static_cast<float>(rect.height);
-	float bottom = height + top;
-	if(Draw_States[ Draw_State_Index ].Verts.size() <= 4 + Draw_States[ Draw_State_Index ].NumVerts ) Draw_States[ Draw_State_Index ].Verts.resize(Draw_States[ Draw_State_Index ].Verts.size() + 200);
-	AddVert( left, top,					uvs.u1, uvs.v1, color_tl );
-	AddVert( right, top,				uvs.u2, uvs.v1, color_tr );
-	AddVert( left, bottom,				uvs.u1, uvs.v2, color_bl );
-	AddVert( right, bottom,				uvs.u2, uvs.v2, color_br );
-}
-
-void MY_UI_Too::DirectX11::StartClip(MY_UI_Too::Utilities::Rect& rect){
-	ClipRects.push_back(rect);
-}
-
-void MY_UI_Too::DirectX11::EndClip(){
-	ClipRects.pop_back();
+	
 }
 
 MY_UI_Too::Interfaces::ITexture* MY_UI_Too::DirectX11::LoadTexture(std::string filename, bool as_rendertarget){	
@@ -498,7 +366,7 @@ MY_UI_Too::Interfaces::ITexture* MY_UI_Too::DirectX11::LoadTexture(std::string f
 		HR(Device->CreateShaderResourceView(Texture_, &srvDesc, &srv));
 		tex->Set_Texture(srv);
 		tex->Set_Render_Texture(rtv);
-		RELEASECOM(Texture_);// this isnt needed. The srv and rtv holds the texture
+		RELEASECOM(Texture_);// this isnt needed. The srv and rtv hold the texture
 	} else {
 		ID3D11ShaderResourceView *resource(0);
 		HR(D3DX11CreateShaderResourceViewFromFileA( Device, filename.c_str(), 0, 0, &resource, 0));
@@ -527,7 +395,7 @@ MY_UI_Too::Interfaces::ITexture* MY_UI_Too::DirectX11::CreateTexture(unsigned in
 	desc.CPUAccessFlags = 0;
 	desc.ArraySize = 1;
 	desc.MiscFlags = 0;
-	
+
 	D3D11_SUBRESOURCE_DATA dat, *data(NULL);
 	dat.SysMemSlicePitch=0;
 	dat.pSysMem = buffer;
@@ -557,7 +425,9 @@ MY_UI_Too::Interfaces::ITexture* MY_UI_Too::DirectX11::CreateTexture(unsigned in
 		rtvDesc.Texture2D.MipSlice = 0;
 		HR(Device->CreateRenderTargetView(Texture_, &rtvDesc, &rtv));
 		tex->Set_Render_Texture(rtv);
+		float colors[] = {1, 1, 1, 0};
+		DeviceContext->ClearRenderTargetView(rtv, colors);
 	}
-	RELEASECOM(Texture_);// this isnt needed. The srv and rtv holds the texture
+	RELEASECOM(Texture_);// this isnt needed. The srv and rtv hold the texture
 	return tex;
 }

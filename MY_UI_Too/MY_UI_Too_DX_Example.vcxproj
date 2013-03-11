@@ -26,10 +26,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Test_Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Test.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{00E7A70D-4868-4592-B0FE-B2947BC67FFE}</ProjectGuid>
@@ -83,7 +85,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(DXSDK_DIR)Include;MY_UI\;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>..\lib\$(PlatformArchitecture)bit\$(Configuration);$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>..\Intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
     <OutDir>..\_$(Configuration)_$(PlatformName)\</OutDir>

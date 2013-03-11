@@ -17,15 +17,17 @@ namespace MY_UI_Too{
 			Interfaces::IWidget* Parent;
 
 			std::vector<Interfaces::IWidget*> Children;
-			Utilities::Rect Absolute_Control_Area;//this is the absolute position, not a relative one
-			Utilities::Rect Relative_Client_Area;// this is the postion and size where children are allowed to start living
+			Utilities::Rect Rect;//this is the absolute position, not a relative one
+			Utilities::Point Absolute_TL;
 			std::string Name;// this is what I use for testing purposes to see what control I am hitting
+			MY_UI_Too::Utilities::Color Color;
 
 			Internal_Widget(): Draggable(false), Parent(nullptr), Focus(false), Hidden(false) { }
 			~Internal_Widget() {}
 		};
+		
 	};
-
+	
 	namespace Controls {
 
 		class Widget: public Interfaces::IWidget{
@@ -36,32 +38,44 @@ namespace MY_UI_Too{
 
 			Widget(IWidget* parent);
 			virtual ~Widget() override;
+
 			MY_Utilities::Signal_st<void> On_Destructor;
 
-			/*
-			all control positions are specific in absolute coordinates. Meaning relative to the top left corner of the Control Top Left.
+			virtual void Set_Absolute_Pos(MY_UI_Too::Utilities::Point p){ _Internals.Absolute_TL=p;}
+			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const { return _Internals.Absolute_TL; }
+			
 
-			*/
-			virtual void Set_Control_Bounds(Utilities::Rect p) override;
-			virtual Utilities::Rect Get_Control_Bounds() override;
+			virtual void Set_Bounds(Utilities::Rect p) override;
+			virtual Utilities::Rect Get_Bounds()const override;
 
-			virtual void Set_Control_Size(Utilities::Point p) override;
-			virtual Utilities::Point Get_Control_Size() override;
+			virtual void Set_Size(Utilities::Point p) override;
+			virtual Utilities::Point Get_Size()const override;
 
-			virtual void Set_Control_Pos(Utilities::Point p) override;
-			virtual Utilities::Point Get_Control_Pos() override;
+			virtual void Set_Pos_ByOffset(Utilities::Point offset) override;
+			virtual void Set_Pos(Utilities::Point p) override;
+			virtual Utilities::Point Get_Pos()const override;
 
-			/*
-			all client positions are specific in relative coordinates. Meaning relative to the top left corner of the Control Top Left.
-			*/
-			virtual void Set_Client_Bounds(Utilities::Rect p) override;
-			virtual Utilities::Rect Get_Client_Bounds() override;
+			virtual void Align_TopLeft(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_TopCenter(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_TopRight(int padding=5, IWidget* widget=nullptr) override;
 
-			virtual void Set_Client_Size(Utilities::Point p) override;
-			virtual Utilities::Point Get_Client_Size() override;
+			virtual void Align_BottomLeft(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_BottomCenter(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_BottomRight(int padding=5, IWidget* widget=nullptr) override;
 
-			virtual void Set_Client_Pos(Utilities::Point p) override;
-			virtual Utilities::Point Get_Client_Pos() override;
+			virtual void Align_LeftTop(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_LeftCenter(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_LeftBottom(int padding=5, IWidget* widget=nullptr) override;
+
+			virtual void Align_RightTop(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_RightCenter(int padding=5, IWidget* widget=nullptr) override;
+			virtual void Align_RightBottom(int padding=5, IWidget* widget=nullptr) override;
+
+			virtual void Align_TR(int padding, IWidget* widget) override;
+			virtual void Align_TL(int padding, IWidget* widget) override;
+			virtual void Align_BL(int padding, IWidget* widget) override;
+			virtual void Align_BR(int padding, IWidget* widget) override;
+			virtual void Align_Center() override;;// only works within parent
 
 			//Input functions
 			virtual void Mouse_Left_Down() override;
@@ -109,6 +123,9 @@ namespace MY_UI_Too{
 
 			virtual void Set_Name(std::string name) override{_Internals.Name=name;}
 			virtual std::string Get_Name() const override { return _Internals.Name;}
+
+			virtual void Set_Color(MY_UI_Too::Utilities::Color color) override{ _Internals.Color = color; } 
+			virtual MY_UI_Too::Utilities::Color Get_Color()const override{ return _Internals.Color; }
 
 			virtual void Draw()override{}//nothing to do here
 		};	

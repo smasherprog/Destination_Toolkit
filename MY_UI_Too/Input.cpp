@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "Utilities.h"
 #include "IWidget.h"
+#include "Common.h"
 
 bool CapsLock = false;
 bool ShiftDown =false;
@@ -16,10 +17,10 @@ int Old_MousePosx(0), Old_MousePosy(0), New_MousePosx(0), New_MousePosy(0), Delt
 int Mouse_Wheel_Delta(0);
 int Current_Key=0;
 
-unsigned int Current_Cursor = MY_UI_Too::Utilities::Standard;
+Cursor_Types Current_Cursor =Standard;
 
 #ifdef _WIN32
-	void MY_UI_Too::Utilities::SetCursor(unsigned int type) { ::SetCursor( LoadCursor(0, C_Types[type]) ); Current_Cursor = type;}
+	void MY_UI_Too::Utilities::SetCursor(Cursor_Types type) { ::SetCursor( LoadCursor(0, C_Types[type]) ); Current_Cursor = type;}
 #else
 	void MY_UI_Too::Utilities::SetCursor(unsigned int type) { static_assert("You must define your own function for non windows platforms"); }
 #endif
@@ -110,18 +111,18 @@ bool MY_UI_Too::Utilities::Input::ProcessMessage(HWND hwnd, UINT msg, WPARAM wPa
 					AppPaused = false;
 					Minimized = false;
 					Maximized = true;
-					Internal::Root_Widget->Set_Control_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
+					Internal::Root_Widget->Set_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
 				}else if( wParam == SIZE_RESTORED ){// Restoring from minimized state?
 					if( Minimized ){
 						AppPaused = false;
 						Minimized = false;
-						Internal::Root_Widget->Set_Control_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
+						Internal::Root_Widget->Set_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
 					} else if( Maximized ){// Restoring from maximized state?
 						AppPaused = false;
 						Maximized = false;
-						Internal::Root_Widget->Set_Control_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
+						Internal::Root_Widget->Set_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
 					}else {// API call such as SetWindowPos or SwapChain->SetFullscreenState.
-						Internal::Root_Widget->Set_Control_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
+						Internal::Root_Widget->Set_Size(Utilities::Point(LOWORD(lParam), HIWORD(lParam)));
 					}
 				}
 				return false;
@@ -134,7 +135,7 @@ bool MY_UI_Too::Utilities::Input::ProcessMessage(HWND hwnd, UINT msg, WPARAM wPa
 			Resizing  = false;
 			return false;
 		case WM_MOUSELEAVE:
-			Utilities::SetCursor(Utilities::Standard);
+			Utilities::SetCursor(Standard);
 			return false;
 		default:	
 			return false;

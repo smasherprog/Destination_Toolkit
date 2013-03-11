@@ -75,17 +75,17 @@
     <IntDir>..\Intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\FreeType_Lib\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
     <OutDir>..\lib\$(PlatformArchitecture)bit\$(Configuration)\</OutDir>
     <IntDir>..\Intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(DXSDK_DIR)Include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\FreeType_Lib\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
     <OutDir>..\lib\$(PlatformArchitecture)bit\$(Configuration)\</OutDir>
     <IntDir>..\Intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(DXSDK_DIR)Include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>..\FreeType_Lib\include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
     <OutDir>..\lib\$(PlatformArchitecture)bit\$(Configuration)\</OutDir>
     <IntDir>..\Intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
@@ -159,6 +159,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="CheckBox.h" />
+    <ClInclude Include="Common.h" />
     <ClInclude Include="Font_Factory.h" />
     <ClInclude Include="IFont_Factory.h" />
     <ClInclude Include="IFont.h" />
@@ -168,6 +170,8 @@
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="ITexture.h" />
     <ClInclude Include="IWidget.h" />
+    <ClInclude Include="Radio_Group.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Root.h" />
     <ClInclude Include="Standard_Skin.h" />
     <ClInclude Include="Text.h" />
@@ -177,10 +181,13 @@
     <ClInclude Include="Widget.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CheckBox.cpp" />
     <ClCompile Include="Font_Factory.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="IWidget.cpp" />
+    <ClCompile Include="Radio_Group.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Root.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Standard_Skin.cpp" />

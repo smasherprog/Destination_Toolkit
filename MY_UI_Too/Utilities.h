@@ -119,6 +119,7 @@ namespace MY_UI_Too{
 				return true;
 			}
 		};
+		inline bool operator==(const Rect& l, const Rect& r){ return (l.left==r.left) & (l.top==r.top) & (l.width==r.width) & (l.height==r.height); }
 		inline Rect operator+(const Rect& l, const Rect& r){ return Rect(l.left+r.left, l.top+r.top, l.width+r.width, l.height+r.height); }
 		inline Rect operator-(const Rect& l, const Rect& r){ return Rect(l.left-r.left, l.top-r.top, l.width-r.width, l.height-r.height); }
 		inline Rect operator*(const Rect& l, const Rect& r){ return Rect(l.left*r.left, l.top*r.top, l.width*r.width, l.height*r.height); }
@@ -144,7 +145,7 @@ namespace MY_UI_Too{
 		inline Utilities::Color Lerp(const Utilities::Color &beg, const Utilities::Color &end, float &scalar){ return beg + (end - beg) * scalar; }
 
 		unsigned int GetTime();
-		enum Cursor_Types { Standard, Text, Mover, Tr_to_Bl,U_to_D, Tl_to_Br,  L_to_R};	
+		
 	};
 
 

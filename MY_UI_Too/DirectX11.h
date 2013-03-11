@@ -1,6 +1,6 @@
 #ifndef MY_UI_RENDERERS_DirectX11_H
 #define MY_UI_RENDERERS_DirectX11_H
-#include "IRenderer.h"
+#include "Renderer.h"
 #include "../Utilities/Utilities.h"
 #include <vector>
 
@@ -42,23 +42,6 @@
 #define HR(x) (x)
 #endif
 
-struct VERTEXFORMAT2D
-{
-	float x, y;
-	unsigned int color;
-	float u, v;
-};
-#define VERT_BUFFER_SIZE 32768
-
-class MyDrawState{
-public:
-	MyDrawState() : Verts(VERT_BUFFER_SIZE), texture(0), NumVerts(0), changed(true) {}
-	std::vector<VERTEXFORMAT2D>	Verts;
-	void* texture;
-	unsigned int NumVerts;
-	bool changed;
-};
-
 inline HRESULT CompileShaderFromMemory(const std::string& strinmem, const std::string& functionname,const std::string& shadermodel, ID3DBlob** ppBlobOut ){
 	HRESULT hr = S_OK;
 
@@ -78,7 +61,7 @@ inline HRESULT CompileShaderFromMemory(const std::string& strinmem, const std::s
 	return S_OK;
 }
 namespace MY_UI_Too{
-	class DirectX11 : public MY_UI_Too::Interfaces::IRenderer
+	class DirectX11 : public MY_UI_Too::Renderer
 	{
 	public:
 		DirectX11( ID3D11Device* pDevice, ID3D11DeviceContext* context);
@@ -86,44 +69,21 @@ namespace MY_UI_Too{
 
 		virtual bool Init() override;
 		virtual void DeInit() override;
-
-		virtual void Begin(MY_UI_Too::Interfaces::ITexture* texture=nullptr) override;
-		virtual void End() override;
-		// start new batch should be called if the previous contents of all the buffered data are no longer valid and the entire buffer should be rebuilt
-		virtual void StartNewBatch() override { Draw_State_Index=0; for(size_t i(0); i < Draw_States.size(); i++) Draw_States[i].NumVerts=0;   }
-		virtual void Draw() override;// this will draw everything that has been buffered so far
-
-		// the four draw functions below only buffer the data, they do not actually draw anything until DrawBuffred is called
-		virtual void DrawTexturedRect_Clip( MY_UI_Too::Interfaces::ITexture* Texture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer = false) override;
-		virtual void DrawTexturedRect_NoClip( MY_UI_Too::Interfaces::ITexture* Texture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer = false) override;
-
+	
 		virtual MY_UI_Too::Interfaces::ITexture* LoadTexture(std::string filename, bool as_rendertarget=false) override;
 		virtual MY_UI_Too::Interfaces::ITexture* CreateTexture(unsigned int width, unsigned int height, Utilities::Color* buffer=nullptr, bool as_rendertarget=false) override;
-		virtual void StartClip(MY_UI_Too::Utilities::Rect& rect) override;
-		virtual void EndClip() override;
-	
-		virtual void Set_Size(MY_UI_Too::Utilities::Point screensize) override { Screen_Dimension = screensize; Inv_Wndx = (1.0f/static_cast<float>(screensize.x))*2.0f; Inv_Wndy = (1.0f/static_cast<float>(screensize.y))*-2.0f; }
-		virtual MY_UI_Too::Utilities::Point Get_Size() { return Screen_Dimension; }
-
-		virtual unsigned int GetDrawCalls()const override{ return DrawCalls;}
+		virtual void Set_Render_Target(MY_UI_Too::Interfaces::ITexture* texture)override;
 
 	protected:
+		
+		virtual void Get_Render_States()override;
+		virtual void Restore_Render_States()override;
 
-		void Draw(MyDrawState& drawstate);
-		bool SetTexture(MY_UI_Too::Interfaces::ITexture* pTexture, bool getnewbuffer);
-		void AddVert( float x, float y, float u, float v, Utilities::Color col);
-		void GotoNextBufferSlot();
+		virtual void Draw(MyDrawState& drawstate) override;
 
 		ID3D11Device*		Device;
 		ID3D11DeviceContext* DeviceContext;
-		std::vector<MY_UI_Too::Utilities::Rect> ClipRects;
-		float				Inv_Wndx, Inv_Wndy;// screen size in pixels
-
-		std::vector<MyDrawState>  Draw_States;
-
-		unsigned int				Draw_State_Index, DrawCalls;
-		Utilities::Point			Screen_Dimension;
-		void*						CurrentTexture;
+		
 		ID3D11InputLayout*			UIInputLayout;
 		ID3D11PixelShader*			UIPSShader;
 		ID3D11VertexShader*			UIVSShader;

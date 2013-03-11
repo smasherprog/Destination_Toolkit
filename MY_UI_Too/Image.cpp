@@ -13,10 +13,13 @@ bool MY_UI_Too::Controls::Image::Set_Texture(std::string file){
 	if(_Texture != nullptr) _Texture->clear();
 	_Texture = Internal::Renderer->LoadTexture(file);
 	Utilities::Point p = _Texture->Get_Dimensions();
-	Set_Control_Bounds(Utilities::Rect(0, 0, p.left, p.top));
+	Set_Bounds(Utilities::Rect(0, 0, p.left, p.top));
 	return _Texture != nullptr;
 }
 
 void MY_UI_Too::Controls::Image::Draw(){
-	Internal::Renderer->DrawTexturedRect_NoClip(_Texture, _UVs, Get_Control_Bounds());
+	Utilities::Rect rect = Get_Bounds();
+	rect.left = _Internals.Absolute_TL.x;
+	rect.top = _Internals.Absolute_TL.y;
+	Internal::Renderer->DrawTexturedRect_NoClip(_Texture, _UVs, rect);
 }

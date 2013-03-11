@@ -2,6 +2,7 @@
 #include "Font_Factory.h"
 #include "../Utilities/Utilities.h"
 #include <set>
+#include "Common.h"
 #include "Utilities.h"
 #include "IWidget.h"
 #include "IRenderer.h"
@@ -16,6 +17,9 @@
 #define MAX_KEY_LENGTH 255
 #define MAX_VALUE_NAME 16383
 #define PATH_TOFONTS "c:/windows/fonts/"
+
+
+MY_UI_Too::Interfaces::IFont* MY_UI_Too::Font_Factory::Get_NewFont(){ return new MY_UI_Too::Interfaces::IFont();}
 
 void MY_UI_Too::Font_Factory::BuildInstalledFonts(){
 
@@ -190,12 +194,24 @@ bool MY_UI_Too::Font_Factory::Init(){
 	return b;
 }
 void MY_UI_Too::Font_Factory::DeInit(){
-	for(auto beg = _Fonts.begin(); beg!= _Fonts.end(); beg++) delete beg->second;
+	for(auto beg = _Fonts.begin(); beg!= _Fonts.end(); beg++) delete beg->second.font;
 	_Fonts.clear();
 	FT_Done_FreeType(_Library);
 	_Library=0;
 }
-
+void MY_UI_Too::Font_Factory::Destroy_Font(std::string fontname){
+	auto foundfont = _Fonts.find(fontname);
+	if(foundfont == _Fonts.end()) return;// dont doesnt exist
+	if(--foundfont->second._Ref_Count <= 0){
+		char start = START_CHAR;
+		while(start<=END_CHAR){
+			Internal::UI_Skin->Remove_From_Skin(foundfont->second.font->Get_Char(start));
+			start+=1;
+		}
+		delete foundfont->second.font;
+		_Fonts.erase(foundfont);
+	}
+}
 MY_UI_Too::Interfaces::IFont* MY_UI_Too::Font_Factory::Get_Font(std::string fontname){
 	auto found = _Installed_Fonts.find(fontname);
 	if(found == _Installed_Fonts.end()) {
@@ -204,33 +220,49 @@ MY_UI_Too::Interfaces::IFont* MY_UI_Too::Font_Factory::Get_Font(std::string font
 	}
 	auto foundfont = _Fonts.find(fontname);
 	if(foundfont != _Fonts.end()){
-		return foundfont->second;
+		foundfont->second._Ref_Count++;
+		return foundfont->second.font;
 	}
 	
 	std::string fontfilename = found->second;
 	FT_Face _Font;
-	Interfaces::IFont* retfont = new Interfaces::IFont();
-	retfont->Set_Font(fontname);
-	_Fonts[fontname] = retfont;
+	IFont_Wrapper wrapper;
+	wrapper.font = Get_NewFont();
+	wrapper.font->Set_Font(fontname);
+	wrapper._Ref_Count=1;
+	_Fonts[fontname] = wrapper;
 	fontname = PATH_TOFONTS + fontfilename;
 	bool b =FT_New_Face( _Library, fontname.c_str(), 0, &_Font ) ==0;
 	if(b) {
-		unsigned int pixelheight=20;
+		int pixelheight=FONT_CREATE_SIZE;
 		FT_GlyphSlot slot = _Font->glyph;
 		FT_Set_Pixel_Sizes( _Font, 0, pixelheight );
-		char start = 'a';
+		char start = START_CHAR;
 	
-		while(start!='z'){
+		int largestbaseline = 0;
+
+		//find the baseline
+		while(start!=END_CHAR){
 			FT_Load_Char( _Font, start, FT_LOAD_RENDER );
-			Utilities::Color* charmap = new Utilities::Color[slot->bitmap.width*slot->bitmap.rows];
-			for(int begcol = 0; begcol < slot->bitmap.rows; begcol++){
-				for(int begrow = 0; begrow < slot->bitmap.width; begrow++){
-					charmap[begcol * slot->bitmap.width + begrow]= Utilities::Color(slot->bitmap.buffer[begcol * slot->bitmap.width + begrow], 255, 255, 255);
+			largestbaseline = max(slot->metrics.horiBearingY/64, largestbaseline);
+			start+=1;
+		}
+	
+		start = START_CHAR;
+		while(start<=END_CHAR){
+			FT_Load_Char( _Font, start, FT_LOAD_RENDER );
+			int te = largestbaseline - slot->metrics.horiBearingY/64;//push the character down to the baseline'
+			pixelheight = max(pixelheight, slot->bitmap.rows + te);
+			std::vector<Utilities::Color> charmap(pixelheight*slot->bitmap.width);// the height must always be the pixelsize
+			
+			for(int i=0; i<pixelheight*slot->bitmap.width; i++) charmap[i]=Utilities::Color(0,255, 255, 255);
+			for(int maprow=0; maprow < slot->bitmap.rows; maprow++){//start on the correct row
+				for(int begcol = 0; begcol < slot->bitmap.width; begcol++){
+					charmap[((maprow + te)* slot->bitmap.width) + begcol]= Utilities::Color(slot->bitmap.buffer[maprow * slot->bitmap.width + begcol], 255, 255, 255);
 				}
 			}
-			Interfaces::ITexture*tex =  Internal::Renderer->CreateTexture(slot->bitmap.width, slot->bitmap.rows, charmap);
-			retfont->Set_Char_UV(start, Internal::UI_Skin->Add_To_Skin(tex));
-			delete charmap;
+			Interfaces::ITexture*tex =  Internal::Renderer->CreateTexture(slot->bitmap.width, pixelheight, &charmap[0]);
+			wrapper.font->Set_Char_UV(start, Internal::UI_Skin->Add_To_Skin(tex));
 			delete tex;
 			start+=1;
 		}
@@ -242,5 +274,11 @@ MY_UI_Too::Interfaces::IFont* MY_UI_Too::Font_Factory::Get_Font(std::string font
 		_Font =0;
 	}
 	if(!b) return nullptr;
-	return retfont;
+	return wrapper.font;
+}
+MY_UI_Too::Utilities::Point MY_UI_Too::Font_Factory::Measure_String(std::string fontname, unsigned int fontsize, std::string text){
+	MY_UI_Too::Interfaces::IFont* font =Get_Font(fontname);
+	MY_UI_Too::Utilities::Point p = MY_UI_Too::Internal::Renderer->Measure_String(Internal::UI_Skin->Get_Skin()->Get_Dimensions(), font, fontsize, text);
+	Destroy_Font(fontname);// make sure to remove the reference
+	return p;
 }

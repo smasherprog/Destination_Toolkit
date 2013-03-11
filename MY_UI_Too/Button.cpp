@@ -2,40 +2,100 @@
 #include "Button.h"
 #include "IRenderer.h"
 #include "ISkin.h"
+#include "Text.h"
+#include "Input.h"
 
 MY_UI_Too::Controls::Button::Button(IWidget* parent): Widget(parent) {
-	Set_Control_Bounds(Utilities::Rect(0, 0, 100, 30));
-	_State = 0;
+	Set_Bounds(Utilities::Rect(0, 0, 100, 30));
+	_Cust_MouseDown=_Cust_MouseHovered=_Cust_MouseUp=false;
+
+	_Selected_UVs=_UVs_MouseUp = Internal::UI_Skin->Get_Up_Button();
+	_UVs_MouseHovered = Internal::UI_Skin->Get_Hovered_Button();
+	_UVs_MouseDown = Internal::UI_Skin->Get_Down_Button();
+
+	Text=new MY_UI_Too::Controls::Text(this);
+	Text->Set_Font_Size(20);
+	Text->Set_Text("Button");
+	Text->Align_Center();
 }
 MY_UI_Too::Controls::Button::~Button(){
+	if(_Cust_MouseDown) Internal::UI_Skin->Remove_From_Skin(_UVs_MouseDown);
+	if(_Cust_MouseHovered) Internal::UI_Skin->Remove_From_Skin(_UVs_MouseHovered);
+	if(_Cust_MouseUp) Internal::UI_Skin->Remove_From_Skin(_UVs_MouseUp);
+}
 
+void MY_UI_Too::Controls::Button::Set_Text(std::string txt){
+	Text->Set_Text(txt);
+	Text->Align_Center();
 }
 void MY_UI_Too::Controls::Button::Set_Focus(bool focus){
 	MY_UI_Too::Controls::Widget::Set_Focus(focus);
-	if(!focus) _State =0;
+	if(!focus) _Selected_UVs = _UVs_MouseUp;
 }
 void MY_UI_Too::Controls::Button::Mouse_Left_Down(){
 	MY_UI_Too::Controls::Widget::Mouse_Left_Down();
-	_State=2;
+	_Selected_UVs = _UVs_MouseDown;
 }
 void MY_UI_Too::Controls::Button::Mouse_Left_Up(){
 	MY_UI_Too::Controls::Widget::Mouse_Left_Up();
-	_State=1;
+	_Selected_UVs = _UVs_MouseUp;
 }
 void MY_UI_Too::Controls::Button::Mouse_Entered(){
 	MY_UI_Too::Controls::Widget::Mouse_Entered();
-	_State = 1;
+	_Selected_UVs = _UVs_MouseHovered;
 }
 void MY_UI_Too::Controls::Button::Mouse_Exited(){
 	MY_UI_Too::Controls::Widget::Mouse_Exited();
-	_State =0;
+	_Selected_UVs = _UVs_MouseUp;
 }
 void MY_UI_Too::Controls::Button::Draw(){
-	Interfaces::ITexture* skin = Internal::UI_Skin->Get_Skin();
-	Utilities::UVs uvs;
-	if(_State==0)uvs = Internal::UI_Skin->Get_Up_Button();
-	else if(_State==1)uvs = Internal::UI_Skin->Get_Hovered_Button();
-	else if(_State==2)uvs = Internal::UI_Skin->Get_Down_Button();
-
-	Internal::Renderer->DrawTexturedRect_NoClip(skin, uvs, Get_Control_Bounds());
+	Utilities::Rect rect = Get_Bounds();
+	rect.left = _Internals.Absolute_TL.x;
+	rect.top = _Internals.Absolute_TL.y;
+	Internal::Renderer->DrawTexturedRect_NoClip(Internal::UI_Skin->Get_Skin(), _Selected_UVs, rect);
+	Text->Draw();
 }
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Button::Hit(){
+	if(_Internals.Rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
+	return nullptr;
+}
+
+
+
+void MY_UI_Too::Controls::Button::Set_MouseDownImage(std::string file){
+	MY_UI_Too::Interfaces::ITexture* tex = Internal::Renderer->LoadTexture(file);
+	if(tex != nullptr) {
+		_UVs_MouseDown = Internal::UI_Skin->Add_To_Skin(tex);
+		_Cust_MouseDown= true;
+	} else {
+		Interfaces::ITexture* skin = Internal::UI_Skin->Get_Skin();
+		_UVs_MouseDown = Internal::UI_Skin->Get_Down_Button();
+		_Cust_MouseDown= false;
+	}
+	delete tex;// the texture is no longer needed since it was copied to the skin
+}
+
+void MY_UI_Too::Controls::Button::Set_MouseUpImage(std::string file){
+	MY_UI_Too::Interfaces::ITexture* tex = Internal::Renderer->LoadTexture(file);
+	if(tex != nullptr) {
+		_UVs_MouseUp = Internal::UI_Skin->Add_To_Skin(tex);
+		_Cust_MouseUp= true;
+	} else {
+		Interfaces::ITexture* skin = Internal::UI_Skin->Get_Skin();
+		_UVs_MouseUp = Internal::UI_Skin->Get_Up_Button();
+		_Cust_MouseUp= false;
+	}
+	delete tex;// the texture is no longer needed since it was copied to the skin
+}
+void MY_UI_Too::Controls::Button::Set_MouseHoveredImage(std::string file){
+	MY_UI_Too::Interfaces::ITexture* tex = Internal::Renderer->LoadTexture(file);
+	if(tex != nullptr) {
+		_UVs_MouseHovered = Internal::UI_Skin->Add_To_Skin(tex);
+		_Cust_MouseHovered= true;
+	} else {
+		Interfaces::ITexture* skin = Internal::UI_Skin->Get_Skin();
+		_UVs_MouseHovered = Internal::UI_Skin->Get_Hovered_Button();
+		_Cust_MouseHovered= false;
+	}
+	delete tex;// the texture is no longer needed since it was copied to the skin
+}	

@@ -5,8 +5,11 @@
 #include "Root.h"
 #include "Standard_Skin.h"
 #include "Font_Factory.h"
-#include "Button.h"
 #include "Input.h"
+#include "Test.h"
+#include "Text.h"
+#include "Button.h"
+#include "CheckBox.h"
 
 HWND					g_pHWND =nullptr;
 ID3D11Device			*g_Device=nullptr;
@@ -17,7 +20,7 @@ ID3D11DeviceContext		*g_DeviceContext=nullptr;
 
 RECT ClientRect;
 MY_UI_Too::Utilities::Input* input=nullptr;
-
+std::vector<MY_UI_Too::Interfaces::IWidget*> widgets;
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	if(input->ProcessMessage(hwnd, msg, wParam, lParam)) return 0;
@@ -41,7 +44,7 @@ HWND CreateGameWindow( void )
 		MessageBoxA(0, msg.c_str(), "Error Registering window", MB_OK);
 		return 0;
 	}
-	
+
 	RECT R = { 0, 0,  1024, 768};
 
 
@@ -119,7 +122,7 @@ void CreateD3DDevice()
 //
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd) {	
 
-	
+
 	input = new MY_UI_Too::Utilities::Input();
 	// very important to allocate this before the window is created because the messageproc above will start to be called immediately after CreateWindowEx is called
 
@@ -136,9 +139,51 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		new MY_UI_Too::Standard_Skin(),
 		new MY_UI_Too::Font_Factory(),
 		new MY_UI_Too::Controls::Root(),
-		temp.right, temp.bottom);
+		temp.right, temp.bottom, 2048);
+	std::string textexample="";
+	char start = START_CHAR;
+	while(start<=END_CHAR){
+		textexample +=start;
+		start+=1;
+	}
+	MY_UI_Too::Controls::Text* text1 = new MY_UI_Too::Controls::Text(MY_UI_Too::Internal::Root_Widget);
+	text1->Set_Text(textexample);
+	text1->Set_Font_Size(20);
+	text1->Set_Pos(MY_UI_Too::Utilities::Point(30, 100));
+
+
+	MY_UI_Too::Controls::Text* text2 = new MY_UI_Too::Controls::Text(MY_UI_Too::Internal::Root_Widget);
+	text2->Set_Font("Arial");
+	text2->Set_Text(textexample);
+	text2->Set_Font_Size(20);
+	text2->Set_Pos(MY_UI_Too::Utilities::Point(30, 140));
+
+
+	MY_UI_Too::Controls::Text* text3 = new MY_UI_Too::Controls::Text(MY_UI_Too::Internal::Root_Widget);
+	text3->Set_Font("Courier New");
+	text3->Set_Text(textexample);
+	text3->Set_Font_Size(45);
+	text3->Set_Bold(true);
+	
+	text3->Set_Color(MY_UI_Too::Utilities::Blue);
+	text3->Set_Pos(MY_UI_Too::Utilities::Point(30, 50));
 
 	MY_UI_Too::Controls::Button* button = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+	button->Set_Pos(MY_UI_Too::Utilities::Point(300, 200));
+	MY_UI_Too::Controls::Button* button1 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+	button1->Align_BL(0, button);
+	MY_UI_Too::Controls::Button* button2 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+	button2->Align_BottomCenter(0, button);
+	MY_UI_Too::Controls::Button* button3 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+	button3->Align_BR(0, button);
+	MY_UI_Too::Controls::Button* button4 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+	button4->Align_TR(0, button);
+	MY_UI_Too::Controls::Button* button5 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
+	button5->Align_TL(0, button);
+	button5->Set_Text("button5");
+
+	MY_UI_Too::Controls::CheckBox* checkbox = new MY_UI_Too::Controls::CheckBox(MY_UI_Too::Internal::Root_Widget);
+	checkbox->Align_BL(5, button5);
 
 	MSG msg;
 	while( true )
@@ -164,7 +209,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 
 
-			float ClearColor[4] = { .2f, .1f, 1.0f, 0.0f };
+			float ClearColor[4] = {207.0f/255.0f,207.0f/255.0f,231.0f/255.0f, 0.0f };
 
 			g_DeviceContext->ClearRenderTargetView( BackBufferRTV, ClearColor );
 			MY_UI_Too::Internal::Root_Widget->Draw();
@@ -179,6 +224,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	RELEASECOM(SwapChain);
 	RELEASECOM(g_DeviceContext);
 	RELEASECOM(g_Device);
-
 
 }
