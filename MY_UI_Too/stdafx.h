@@ -9,7 +9,7 @@
 
 
 #if defined(_MSC_VER)
-
+#pragma comment(lib, "MY_UI_Too_Windows_Input_Lib")
 #pragma comment(lib, "MY_UI_Too_Lib")
 #pragma comment(lib, "MY_UI_Too_DX_Renderer_Lib")
 #endif

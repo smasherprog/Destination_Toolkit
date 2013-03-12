@@ -12,6 +12,7 @@ namespace MY_UI_Too{
 			float u2, v2;//u2 = right, v2 = bottom
 			UVs():u1(0.0f), v1(0.0f), u2(1.0f), v2(1.0f){}
 		};
+		inline bool operator==(const UVs& l, const UVs& r){return (l.u1==r.u1) & (l.u2==r.u2) & (l.v1==r.v1) & (l.v2==r.v2); };
 	};
 	namespace Interfaces{
 		class ITexture{

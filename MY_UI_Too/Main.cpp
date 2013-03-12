@@ -10,6 +10,7 @@
 #include "Text.h"
 #include "Button.h"
 #include "CheckBox.h"
+#include "Radio_Group.h"
 
 HWND					g_pHWND =nullptr;
 ID3D11Device			*g_Device=nullptr;
@@ -140,33 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		new MY_UI_Too::Font_Factory(),
 		new MY_UI_Too::Controls::Root(),
 		temp.right, temp.bottom, 2048);
-	std::string textexample="";
-	char start = START_CHAR;
-	while(start<=END_CHAR){
-		textexample +=start;
-		start+=1;
-	}
-	MY_UI_Too::Controls::Text* text1 = new MY_UI_Too::Controls::Text(MY_UI_Too::Internal::Root_Widget);
-	text1->Set_Text(textexample);
-	text1->Set_Font_Size(20);
-	text1->Set_Pos(MY_UI_Too::Utilities::Point(30, 100));
 
-
-	MY_UI_Too::Controls::Text* text2 = new MY_UI_Too::Controls::Text(MY_UI_Too::Internal::Root_Widget);
-	text2->Set_Font("Arial");
-	text2->Set_Text(textexample);
-	text2->Set_Font_Size(20);
-	text2->Set_Pos(MY_UI_Too::Utilities::Point(30, 140));
-
-
-	MY_UI_Too::Controls::Text* text3 = new MY_UI_Too::Controls::Text(MY_UI_Too::Internal::Root_Widget);
-	text3->Set_Font("Courier New");
-	text3->Set_Text(textexample);
-	text3->Set_Font_Size(45);
-	text3->Set_Bold(true);
-	
-	text3->Set_Color(MY_UI_Too::Utilities::Blue);
-	text3->Set_Pos(MY_UI_Too::Utilities::Point(30, 50));
 
 	MY_UI_Too::Controls::Button* button = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
 	button->Set_Pos(MY_UI_Too::Utilities::Point(300, 200));
@@ -185,6 +160,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	MY_UI_Too::Controls::CheckBox* checkbox = new MY_UI_Too::Controls::CheckBox(MY_UI_Too::Internal::Root_Widget);
 	checkbox->Align_BL(5, button5);
 
+	MY_UI_Too::Controls::Radio_Group* radios = new MY_UI_Too::Controls::Radio_Group(MY_UI_Too::Internal::Root_Widget);
+	radios->Align_BL(5, button2);
+	radios->Add();
+	radios->Add();
+	radios->Add();
+	radios->Add();
+	radios->Add();
 	MSG msg;
 	while( true )
 	{

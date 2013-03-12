@@ -11,8 +11,9 @@ namespace MY_UI_Too{
 
 			Utilities::UVs _Radio_Checked_Hovered,  _Radio_Checked, _Radio_UnChecked_Hovered, _Radio_UnChecked, _Selected_UVs;
 			bool _Checked;
+			std::function<void(Radio_Button*)> _Radio_Selected;
 		public:
-			Radio_Button(IWidget* parent);
+			Radio_Button(IWidget* parent, std::function<void(Radio_Button*)> func);
 			virtual ~Radio_Button();
 
 			virtual void Mouse_Entered()override;
@@ -23,24 +24,25 @@ namespace MY_UI_Too{
 			virtual void Set_Focus(bool focus) override;
 			virtual void Draw() override;
 
+			virtual void Select();
+			virtual void UnSelect();
 		};
 
 
 
 		class Radio_Group : public Widget{
 		protected:
-			std::vector<Button*> _Buttons;
+			std::vector<Radio_Button*> _Buttons;
+			void _Radio_Selected(Radio_Button* radio);
 		public:
-			Radio_Group(Widget* parent);
-			virtual ~Radio_Group() override;
-
-			virtual void Mouse_Left_Down()override;
-			virtual void Mouse_Left_Up()override;
+			Radio_Group(IWidget* parent);
+			virtual ~Radio_Group() override{}
 
 			virtual void Draw() override;
 
-			virtual Button* Insert(std::string txt);
+			virtual Radio_Button* Add();
 
+			
 
 		};
 	};

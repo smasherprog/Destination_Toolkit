@@ -38,9 +38,6 @@
     <ClInclude Include="IFont.h">
       <Filter>Core\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="IInput.h">
       <Filter>Core\Interfaces</Filter>
     </ClInclude>
@@ -89,9 +86,6 @@
     <ClCompile Include="Text.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Font_Factory.cpp">
       <Filter>Font_Factory</Filter>
     </ClCompile>
@@ -103,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="Radio_Group.cpp">
       <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="IInput.cpp">
+      <Filter>Core\Interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

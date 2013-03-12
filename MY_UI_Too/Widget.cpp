@@ -21,14 +21,16 @@ void MY_UI_Too::Controls::Widget::Set_Pos_ByOffset(Utilities::Point p){
 }
 MY_UI_Too::Controls::Widget::Widget(IWidget* parent){
 	if(parent != nullptr) {
-		parent->Add(this);// add this as a child
+		parent->Add_Child(this);// add this as a child
 		Set_Pos(Utilities::Point(0, 0));
 	}
 }
 MY_UI_Too::Controls::Widget::~Widget(){
 	On_Destructor.Call();
+	IWidget* parent = Get_Parent();
+	if(parent) parent->Remove_Child(this);
 	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
-		(*beg)->Set_Parent(nullptr);
+		(*beg)->Set_Parent(nullptr);// dont want the child calling Remove_Child on this
 		delete *beg;
 	}
 }
@@ -262,13 +264,11 @@ void MY_UI_Too::Controls::Widget::Key_Up(){
 	On_Key_Up.Call();
 }
 
-
-
-void MY_UI_Too::Controls::Widget::Add(IWidget* child){
+void MY_UI_Too::Controls::Widget::Add_Child(IWidget* child){
 	_Internals.Children.push_back(child);
 	child->Set_Parent(this);
 }
-void MY_UI_Too::Controls::Widget::Remove(IWidget* child){
+void MY_UI_Too::Controls::Widget::Remove_Child(IWidget* child){
 	for(auto i= _Internals.Children.begin(); i != _Internals.Children.end(); i++){
 		if( (*i) == child) {
 			child->Set_Parent(nullptr);//make sure to clear this
@@ -277,7 +277,13 @@ void MY_UI_Too::Controls::Widget::Remove(IWidget* child){
 		}
 	}
 }
-
+void MY_UI_Too::Controls::Widget::RemoveAll_Children(){
+	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
+		(*beg)->Set_Parent(nullptr);
+		delete *beg;
+	}
+	_Internals.Children.clear();
+}
 MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit() {
 	for(auto &x : _Internals.Children){
 		MY_UI_Too::Interfaces::IWidget* hitcontrol = x->Hit();

@@ -68,8 +68,9 @@ namespace MY_UI_Too{
 			virtual IWidget* Hit()=0;
 			virtual IWidget* Hit_And_SetFocus()=0;
 
-			virtual void Add(IWidget* child)=0;
-			virtual void Remove(IWidget* child)=0;
+			virtual void Add_Child(IWidget* child)=0;
+			virtual void Remove_Child(IWidget* child)=0;
+			virtual void RemoveAll_Children()=0;
 
 			virtual void Set_Hidden(bool hidden)=0;
 			virtual bool Get_Hidden()const =0;
