@@ -16,10 +16,8 @@ namespace MY_UI_Too{
 			virtual ~IWidget();
 
 			virtual void Set_Absolute_Pos(MY_UI_Too::Utilities::Point p)=0;
+			virtual void Set_Absolute_Pos_ByOffset(MY_UI_Too::Utilities::Point p)=0;
 			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const =0;
-
-			virtual void Set_Bounds(Utilities::Rect p)=0;
-			virtual Utilities::Rect Get_Bounds()const =0;
 
 			virtual void Set_Size(Utilities::Point p)=0;
 			virtual Utilities::Point Get_Size()const =0;

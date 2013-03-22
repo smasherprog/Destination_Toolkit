@@ -33,6 +33,9 @@ namespace MY_UI_Too{
 
 			virtual Utilities::UVs Get_Radio_UnChecked_Hovered() const=0;
 			virtual Utilities::UVs Get_Radio_UnChecked() const=0;
+
+			virtual Utilities::UVs Get_Window_Top() const=0;
+			virtual Utilities::UVs Get_Window_Bottom() const=0;
 			
 		};
 	};

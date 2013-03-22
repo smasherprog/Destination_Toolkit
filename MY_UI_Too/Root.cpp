@@ -3,25 +3,19 @@
 #include "IRenderer.h"
 #include "Input.h"
 
-MY_UI_Too::Controls::Root::Root(): Focus_Holder(nullptr),Hovered_Widget(nullptr), Dragged_Widget(nullptr), Widget(nullptr) {
+MY_UI_Too::Controls::Root::Root(): Focus_Holder(nullptr),Hovered_Widget(nullptr), Widget(nullptr), Dragged_Widget(nullptr) {
 
 }
 MY_UI_Too::Controls::Root::~Root() {
 	OUTPUT_DEBUG_MSG("Shuttng down Root");
 }
 
-void MY_UI_Too::Controls::Root::Set_Bounds(Utilities::Rect p){
-	Set_Pos(Utilities::Point(p.left, p.top));
-	Set_Size(Utilities::Point(p.width, p.height));
-}
 void MY_UI_Too::Controls::Root::Set_Size(Utilities::Point p){
-	_Internals.Rect.width  =p.left;
-	_Internals.Rect.top = p.top;
+	_Internals.Size = p;
 	Internal::Renderer->Set_Size(p);
 }
 void MY_UI_Too::Controls::Root::Set_Pos(Utilities::Point p){ //always 0, 0
-	_Internals.Rect.top =0;
-	_Internals.Rect.left = 0;
+	_Internals.Pos= Utilities::Point(0,0);
 }
 
 void MY_UI_Too::Controls::Root::Mouse_Left_Down(){
@@ -45,10 +39,7 @@ void MY_UI_Too::Controls::Root::Mouse_Right_Up() {
 	Dragged_Widget = nullptr;
 }
 void MY_UI_Too::Controls::Root::Mouse_Moved() {
-	//dragging the control
-	if(Dragged_Widget != nullptr && (Mouse_LButton_Down | Mouse_RButton_Down)){
-		return Dragged_Widget->Mouse_Moved();
-	}
+	if((Dragged_Widget != nullptr) & (Mouse_RButton_Down | Mouse_LButton_Down)) return Dragged_Widget->Mouse_Moved();
 
 	Interfaces::IWidget* temp = Hit();
 	if(temp != nullptr){// something was hit
@@ -57,9 +48,12 @@ void MY_UI_Too::Controls::Root::Mouse_Moved() {
 			if(	Hovered_Widget != nullptr) Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
 		}
 		Hovered_Widget = temp;
+		Hovered_Widget->Mouse_Moved();
+		if(Mouse_RButton_Down | Mouse_LButton_Down) Dragged_Widget = Hovered_Widget; 
 	} else { // nothing was hit
+		
 		if(	Hovered_Widget != nullptr) Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
-		Hovered_Widget = nullptr;
+		Dragged_Widget= Hovered_Widget = nullptr;
 	}
 }
 void MY_UI_Too::Controls::Root::Mouse_Wheel_Moved() {

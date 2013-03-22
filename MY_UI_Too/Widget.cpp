@@ -13,16 +13,11 @@
 	}\
 	Utilities::Point newpos;\
 
-void MY_UI_Too::Controls::Widget::Set_Pos_ByOffset(Utilities::Point p){
-	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
-		(*beg)->Set_Pos_ByOffset(p);
-	}
-	_Internals.Absolute_TL+=p;
-}
+
 MY_UI_Too::Controls::Widget::Widget(IWidget* parent){
 	if(parent != nullptr) {
+		Set_Absolute_Pos(parent->Get_Absolute_Pos());
 		parent->Add_Child(this);// add this as a child
-		Set_Pos(Utilities::Point(0, 0));
 	}
 }
 MY_UI_Too::Controls::Widget::~Widget(){
@@ -35,32 +30,35 @@ MY_UI_Too::Controls::Widget::~Widget(){
 	}
 }
 
-void MY_UI_Too::Controls::Widget::Set_Bounds(Utilities::Rect p){
-	Set_Pos(Utilities::Point(p.left, p.top));
-	Set_Size(Utilities::Point(p.width, p.height));
-}
-MY_UI_Too::Utilities::Rect MY_UI_Too::Controls::Widget::Get_Bounds() const{
-	return _Internals.Rect;
-}
 void MY_UI_Too::Controls::Widget::Set_Size(Utilities::Point p){
-	_Internals.Rect.width=p.left;
-	_Internals.Rect.height = p.top;
+	_Internals.Size = p;
 }
 MY_UI_Too::Utilities::Point MY_UI_Too::Controls::Widget::Get_Size() const{
-	return Utilities::Point(_Internals.Rect.width, _Internals.Rect.height);
+	return _Internals.Size;
+}
+
+void MY_UI_Too::Controls::Widget::Set_Absolute_Pos(Utilities::Point p){
+	Set_Absolute_Pos_ByOffset(p- _Internals.Absolute_TL);//move all the children
+}
+void MY_UI_Too::Controls::Widget::Set_Absolute_Pos_ByOffset(MY_UI_Too::Utilities::Point p){ 
+	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
+		(*beg)->Set_Absolute_Pos_ByOffset(p);
+	}
+	_Internals.Absolute_TL+=p;
+}
+void MY_UI_Too::Controls::Widget::Set_Pos_ByOffset(Utilities::Point p){
+	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
+		(*beg)->Set_Pos_ByOffset(p);
+	}
+	_Internals.Absolute_TL+=p;
 }
 void MY_UI_Too::Controls::Widget::Set_Pos(Utilities::Point p){
-	int offsetx = p.left - _Internals.Rect.left;
-	int offsety = p.top - _Internals.Rect.top;
-	_Internals.Rect.left = p.left;
-	_Internals.Rect.top = p.top;	
-	//now move all the children
-	p.x=offsetx;
-	p.y=offsety;
-	Set_Pos_ByOffset(p);//move all the children
+	Utilities::Point offsetpos = p- _Internals.Pos;
+	_Internals.Pos=p;	
+	Set_Pos_ByOffset(offsetpos);//move all the children
 }
 MY_UI_Too::Utilities::Point MY_UI_Too::Controls::Widget::Get_Pos() const{
-	return Utilities::Point(_Internals.Rect.left, _Internals.Rect.top);
+	return _Internals.Pos;
 }
 
 void MY_UI_Too::Controls::Widget::Align_TopLeft(int padding, MY_UI_Too::Interfaces::IWidget* widget){
@@ -289,7 +287,8 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit() {
 		MY_UI_Too::Interfaces::IWidget* hitcontrol = x->Hit();
 		if(hitcontrol != nullptr) return hitcontrol;
 	}
-	if(_Internals.Rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
+	Utilities::Rect rect(_Internals.Absolute_TL.left, _Internals.Absolute_TL.top, _Internals.Size.x, _Internals.Size.y);
+	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
 }
 MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
@@ -304,6 +303,10 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
 			return hitcontrol;
 		}
 	}
-	if(_Internals.Rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
+	Utilities::Rect rect(_Internals.Absolute_TL.left, _Internals.Absolute_TL.top, _Internals.Size.x, _Internals.Size.y);
+	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
+}
+void MY_UI_Too::Controls::Widget::Draw(){
+	for( auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++) (*beg)->Draw();
 }

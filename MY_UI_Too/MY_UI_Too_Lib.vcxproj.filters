@@ -12,7 +12,7 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Image.h">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClInclude>
     <ClInclude Include="standard_skin.h">
       <Filter>Skin</Filter>
@@ -30,10 +30,10 @@
       <Filter>Core\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClInclude>
     <ClInclude Include="IFont.h">
       <Filter>Core\Interfaces</Filter>
@@ -54,10 +54,19 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="CheckBox.h">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClInclude>
     <ClInclude Include="Radio_Group.h">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Basic_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="FPS.h">
+      <Filter>Advanced_Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Basic_Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -72,7 +81,7 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Image.cpp">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClCompile>
     <ClCompile Include="Standard_Skin.cpp">
       <Filter>Skin</Filter>
@@ -81,10 +90,10 @@
       <Filter>Core\Interfaces</Filter>
     </ClCompile>
     <ClCompile Include="Button.cpp">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClCompile>
     <ClCompile Include="Font_Factory.cpp">
       <Filter>Font_Factory</Filter>
@@ -93,21 +102,24 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="CheckBox.cpp">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClCompile>
     <ClCompile Include="Radio_Group.cpp">
-      <Filter>Controls</Filter>
+      <Filter>Basic_Controls</Filter>
     </ClCompile>
     <ClCompile Include="IInput.cpp">
       <Filter>Core\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Basic_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="FPS.cpp">
+      <Filter>Advanced_Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Core">
       <UniqueIdentifier>{2ea1e835-8ecb-46cb-82ca-6a87018fa9d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Controls">
-      <UniqueIdentifier>{c902a21d-69c6-4423-941b-0bc45a424195}</UniqueIdentifier>
     </Filter>
     <Filter Include="Skin">
       <UniqueIdentifier>{7c2ae8fe-41dd-4094-b2fa-5da6f5014d1f}</UniqueIdentifier>
@@ -117,6 +129,12 @@
     </Filter>
     <Filter Include="Font_Factory">
       <UniqueIdentifier>{09983698-5414-45b5-946a-a41cb3ffd5d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Basic_Controls">
+      <UniqueIdentifier>{c902a21d-69c6-4423-941b-0bc45a424195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Advanced_Controls">
+      <UniqueIdentifier>{f94886db-ff4f-4f28-b486-f3a4f1832e42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -11,6 +11,8 @@
 #include "Button.h"
 #include "CheckBox.h"
 #include "Radio_Group.h"
+#include "Window.h"
+#include "FPS.h"
 
 HWND					g_pHWND =nullptr;
 ID3D11Device			*g_Device=nullptr;
@@ -142,9 +144,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		new MY_UI_Too::Controls::Root(),
 		temp.right, temp.bottom, 2048);
 
+	MY_UI_Too::Controls::Window* wind =new MY_UI_Too::Controls::Window(MY_UI_Too::Internal::Root_Widget);
+	wind->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
+	OUTPUT_DEBUG_MSG("Creatinb text from button");
+	MY_UI_Too::Controls::Button* button6 = new MY_UI_Too::Controls::Button(wind);
+	button6->Set_Pos(MY_UI_Too::Utilities::Point(30, 100));
+	OUTPUT_DEBUG_MSG("Finished");
+	
+	MY_UI_Too::Controls::FPS* fps = new MY_UI_Too::Controls::FPS(MY_UI_Too::Internal::Root_Widget);
+	fps->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
 
 	MY_UI_Too::Controls::Button* button = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button->Set_Pos(MY_UI_Too::Utilities::Point(300, 200));
+	button->Set_Pos(MY_UI_Too::Utilities::Point(350, 350));
+
 	MY_UI_Too::Controls::Button* button1 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
 	button1->Align_BL(0, button);
 	MY_UI_Too::Controls::Button* button2 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
@@ -161,12 +173,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	checkbox->Align_BL(5, button5);
 
 	MY_UI_Too::Controls::Radio_Group* radios = new MY_UI_Too::Controls::Radio_Group(MY_UI_Too::Internal::Root_Widget);
-	radios->Align_BL(5, button2);
 	radios->Add();
 	radios->Add();
 	radios->Add();
 	radios->Add();
 	radios->Add();
+	
+	radios->Set_Pos(MY_UI_Too::Utilities::Point(400, 20));
+
 	MSG msg;
 	while( true )
 	{

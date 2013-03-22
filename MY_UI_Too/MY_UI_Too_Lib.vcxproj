@@ -160,6 +160,9 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="CheckBox.h" />
+    <ClInclude Include="FPS.h" />
+    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Window.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Font_Factory.h" />
     <ClInclude Include="IFont_Factory.h" />
@@ -182,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="CheckBox.cpp" />
     <ClCompile Include="Font_Factory.cpp" />
+    <ClCompile Include="FPS.cpp" />
     <ClCompile Include="IInput.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="IWidget.cpp" />
@@ -200,6 +204,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

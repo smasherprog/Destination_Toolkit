@@ -47,7 +47,8 @@ namespace MY_UI_Too{
 		virtual Utilities::UVs Get_Radio_UnChecked_Hovered()  const override { return _Radio_UnChecked_Hovered; }
 		virtual Utilities::UVs Get_Radio_UnChecked()  const override { return _Radio_UnChecked; }
 
-
+		virtual Utilities::UVs Get_Window_Top() const override { return _Window_Top; }
+		virtual Utilities::UVs Get_Window_Bottom() const override { return _Window_Bottom; }
 
 	protected:
 		Utilities::UVs _Down_Button;
@@ -63,6 +64,10 @@ namespace MY_UI_Too{
 		Utilities::UVs _Radio_Checked;
 		Utilities::UVs _Radio_UnChecked_Hovered;
 		Utilities::UVs _Radio_UnChecked;
+
+		Utilities::UVs _Window_Top;
+		Utilities::UVs _Window_Bottom;
+
 	};
 
 };

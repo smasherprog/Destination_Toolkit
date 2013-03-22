@@ -17,8 +17,9 @@ namespace MY_UI_Too{
 			Interfaces::IWidget* Parent;
 
 			std::vector<Interfaces::IWidget*> Children;
-			Utilities::Rect Rect;//this is the absolute position, not a relative one
-			Utilities::Point Absolute_TL;
+			Utilities::Point Size;
+			Utilities::Point Pos;//relative position
+			Utilities::Point Absolute_TL;//this is the absolute position, not a relative one
 			std::string Name;// this is what I use for testing purposes to see what control I am hitting
 			MY_UI_Too::Utilities::Color Color;
 
@@ -41,13 +42,10 @@ namespace MY_UI_Too{
 
 			MY_Utilities::Signal_st<void> On_Destructor;
 
-			virtual void Set_Absolute_Pos(MY_UI_Too::Utilities::Point p){ _Internals.Absolute_TL=p;}
-			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const { return _Internals.Absolute_TL; }
-			
-
-			virtual void Set_Bounds(Utilities::Rect p) override;
-			virtual Utilities::Rect Get_Bounds()const override;
-
+			virtual void Set_Absolute_Pos(MY_UI_Too::Utilities::Point p)override;
+			virtual void Set_Absolute_Pos_ByOffset(MY_UI_Too::Utilities::Point p) override;
+			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const override{ return _Internals.Absolute_TL; }
+	
 			virtual void Set_Size(Utilities::Point p) override;
 			virtual Utilities::Point Get_Size()const override;
 
@@ -128,7 +126,7 @@ namespace MY_UI_Too{
 			virtual void Set_Color(MY_UI_Too::Utilities::Color color) override{ _Internals.Color = color; } 
 			virtual MY_UI_Too::Utilities::Color Get_Color()const override{ return _Internals.Color; }
 
-			virtual void Draw()override{}//nothing to do here
+			virtual void Draw()override;
 		};	
 	};
 };

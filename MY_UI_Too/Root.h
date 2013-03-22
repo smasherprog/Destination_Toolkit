@@ -16,7 +16,6 @@ namespace MY_UI_Too{
 			Root();
 			virtual ~Root();
 
-			virtual void Set_Bounds(Utilities::Rect p) override;
 			virtual void Set_Size(Utilities::Point p) override;
 			virtual void Set_Pos(Utilities::Point p) override;
 

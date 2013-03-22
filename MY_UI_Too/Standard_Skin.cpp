@@ -47,6 +47,11 @@ void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned in
 	textures.push_back(_Renderer->LoadTexture("Radio_UnChecked.png"));
 	_Setup_Texture(textures.back(), uvs, _Radio_UnChecked);
 
+	textures.push_back(_Renderer->LoadTexture("Window_Top.png"));
+	_Setup_Texture(textures.back(), uvs, _Window_Top);
+	textures.push_back(_Renderer->LoadTexture("Window_Bottom.png"));
+	_Setup_Texture(textures.back(), uvs, _Window_Bottom);
+
 	_Renderer->Draw();
 	_Renderer->End();
 	_Renderer->Set_Size(oldscreen);//restore the old size
@@ -132,7 +137,7 @@ MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::_Get_Pos_For_Placement(uns
 	std::list<Utilities::Rect> copy_rects;
 	for(size_t i=0; i< _Rects.size(); i++) copy_rects.push_back(_Rects[i]);
 
-	My_Timer::tick_count timer = My_Timer::tick_count::now();
+
 	while(true){
 		bool missedall=true;
 		for(auto beg = copy_rects.begin(); beg!= copy_rects.end(); beg++){
@@ -161,10 +166,8 @@ MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::_Get_Pos_For_Placement(uns
 				}
 			}
 		}
-		if(missedall){
-			//std::cout<<"time taken: "<<(My_Timer::tick_count::now() - timer).micro_seconds()<<std::endl;
-			return Utilities::Point(rect.left, rect.top);
-		}
+		if(missedall) return Utilities::Point(rect.left, rect.top);
+		
 	} 
 	return Utilities::Point(rect.left, rect.top);
 }

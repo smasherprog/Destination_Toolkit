@@ -34,7 +34,7 @@ void MY_UI_Too::Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Inte
 	Internal::Root_Widget = root;
 
 	Internal::Renderer->Init();
-	Internal::Root_Widget->Set_Bounds(MY_UI_Too::Utilities::Rect(0, 0, screen_width, screen_height));
+	Internal::Root_Widget->Set_Size(MY_UI_Too::Utilities::Point(screen_width, screen_height));
 
 	Internal::UI_Skin->Init(Internal::Renderer, skinsize);
 	Utilities::SetCursor(Standard);

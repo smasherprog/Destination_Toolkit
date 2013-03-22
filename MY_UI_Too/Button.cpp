@@ -6,17 +6,18 @@
 #include "Input.h"
 
 MY_UI_Too::Controls::Button::Button(IWidget* parent): Widget(parent) {
-	Set_Bounds(Utilities::Rect(0, 0, 100, 30));
+	Set_Size(Utilities::Point(100, 30));
 	_Cust_MouseDown=_Cust_MouseHovered=_Cust_MouseUp=false;
 
 	_Selected_UVs=_UVs_MouseUp = Internal::UI_Skin->Get_Up_Button();
 	_UVs_MouseHovered = Internal::UI_Skin->Get_Hovered_Button();
 	_UVs_MouseDown = Internal::UI_Skin->Get_Down_Button();
-
+	Set_Name("Button");
 	Text=new MY_UI_Too::Controls::Text(this);
 	Text->Set_Font_Size(20);
 	Text->Set_Text("Button");
 	Text->Align_Center();
+
 }
 MY_UI_Too::Controls::Button::~Button(){
 	if(_Cust_MouseDown) Internal::UI_Skin->Remove_From_Skin(_UVs_MouseDown);
@@ -49,14 +50,12 @@ void MY_UI_Too::Controls::Button::Mouse_Exited(){
 	_Selected_UVs = _UVs_MouseUp;
 }
 void MY_UI_Too::Controls::Button::Draw(){
-	Utilities::Rect rect = Get_Bounds();
-	rect.left = _Internals.Absolute_TL.x;
-	rect.top = _Internals.Absolute_TL.y;
-	Internal::Renderer->DrawTexturedRect_NoClip(Internal::UI_Skin->Get_Skin(), _Selected_UVs, rect);
+	Internal::Renderer->DrawTexturedRect_NoClip(Internal::UI_Skin->Get_Skin(), _Selected_UVs, Utilities::Rect(_Internals.Absolute_TL.x , _Internals.Absolute_TL.y, _Internals.Size.x, _Internals.Size.y) );
 	Text->Draw();
 }
 MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Button::Hit(){
-	if(_Internals.Rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
+	Utilities::Rect rect(_Internals.Absolute_TL.left, _Internals.Absolute_TL.top, _Internals.Size.x, _Internals.Size.y);
+	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
 }
 

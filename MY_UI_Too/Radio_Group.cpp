@@ -6,7 +6,7 @@
 
 
 MY_UI_Too::Controls::Radio_Button::Radio_Button(IWidget* parent, std::function<void(Radio_Button*)> func): Widget(parent) {
-	Set_Bounds(Utilities::Rect(0, 0, 16, 16));
+	Set_Size(Utilities::Point(16, 16));
 	_Checked = false;
 	_Radio_Checked_Hovered = Internal::UI_Skin->Get_Radio_Checked_Hovered();
 	_Radio_Checked= Internal::UI_Skin->Get_Radio_Checked();
@@ -53,11 +53,7 @@ void MY_UI_Too::Controls::Radio_Button::Mouse_Exited(){
 	else _Selected_UVs = _Radio_UnChecked;
 }
 void MY_UI_Too::Controls::Radio_Button::Draw(){
-	Utilities::Rect rect = Get_Bounds();
-	rect.left = _Internals.Absolute_TL.x;
-	rect.top = _Internals.Absolute_TL.y;
-	Internal::Renderer->DrawTexturedRect_NoClip(Internal::UI_Skin->Get_Skin(), _Selected_UVs, rect);
-
+	Internal::Renderer->DrawTexturedRect_NoClip(Internal::UI_Skin->Get_Skin(), _Selected_UVs, Utilities::Rect(_Internals.Absolute_TL.x , _Internals.Absolute_TL.y, _Internals.Size.x, _Internals.Size.y) );
 }
 
 
