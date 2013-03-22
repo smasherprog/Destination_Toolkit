@@ -24,7 +24,7 @@ void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned in
 
 	textures.push_back(_Renderer->LoadTexture("Down_Button.png"));
 	_Setup_Texture(textures.back(), uvs, _Down_Button);
-	textures.push_back(_Renderer->LoadTexture("Button.png"));
+	textures.push_back(_Renderer->LoadTexture("Up_Button.png"));
 	_Setup_Texture(textures.back(), uvs, _Up_Button);
 	textures.push_back(_Renderer->LoadTexture("Hovered_Button.png"));
 	_Setup_Texture(textures.back(), uvs, _Hovered_Button);
