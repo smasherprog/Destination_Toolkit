@@ -82,6 +82,9 @@ namespace MY_UI_Too{
 			virtual void Set_Draggable(bool draggable)=0;
 			virtual bool Get_Draggable() const =0;
 
+			virtual void Set_Hitable(bool hitable)=0;
+			virtual bool Get_Hitable() const =0;
+
 			virtual void Set_Name(std::string name)=0;
 			virtual std::string Get_Name()const =0;
 

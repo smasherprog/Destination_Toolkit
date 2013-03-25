@@ -47,7 +47,7 @@
 #define START_CHAR '!'
 #define END_CHAR '~'
 #define NEXTLINEPERCENT .1f  //this is percentage of the tallest character used to padd between text lines
-#define FONT_CREATE_SIZE 40 //this should provide font large enough for most uses.
+#define FONT_CREATE_SIZE 30 //this should provide font large enough for most uses.
 
 const char Keyboard_Characters[] = {// this is padded strangly, but it is needed so I can use the VK_keys directly, the numbers and letter start at 48, and I want this struct to be const
 	'E','E','E','E','E','E','E','E','E','E',		'E','E','E','E','E','E','E','E','E','E',		

@@ -21,35 +21,35 @@ void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned in
 	_Renderer->Begin();
 	_Renderer->Set_Render_Target(_Skin);
 	_Renderer->StartNewBatch();
-
-	textures.push_back(_Renderer->LoadTexture("Down_Button.png"));
+	std::string basefolder= "../Assets/UI_Textures/";
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Down_Button.png"));
 	_Setup_Texture(textures.back(), uvs, _Down_Button);
-	textures.push_back(_Renderer->LoadTexture("Up_Button.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Up_Button.png"));
 	_Setup_Texture(textures.back(), uvs, _Up_Button);
-	textures.push_back(_Renderer->LoadTexture("Hovered_Button.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Hovered_Button.png"));
 	_Setup_Texture(textures.back(), uvs, _Hovered_Button);
 
-	textures.push_back(_Renderer->LoadTexture("CheckBox_Checked.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"CheckBox_Checked.png"));
 	_Setup_Texture(textures.back(), uvs, _CheckBox_Checked);
-	textures.push_back(_Renderer->LoadTexture("CheckBox_Checked_Hovered.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"CheckBox_Checked_Hovered.png"));
 	_Setup_Texture(textures.back(), uvs, _CheckBox_Checked_Hovered);
-	textures.push_back(_Renderer->LoadTexture("CheckBox_UnChecked_Hovered.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"CheckBox_UnChecked_Hovered.png"));
 	_Setup_Texture(textures.back(), uvs, _CheckBox_UnChecked_Hovered);
-	textures.push_back(_Renderer->LoadTexture("CheckBox_UnChecked.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"CheckBox_UnChecked.png"));
 	_Setup_Texture(textures.back(), uvs, _CheckBox_UnChecked);
 
-	textures.push_back(_Renderer->LoadTexture("Radio_Checked_Hovered.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Radio_Checked_Hovered.png"));
 	_Setup_Texture(textures.back(), uvs, _Radio_Checked_Hovered);
-	textures.push_back(_Renderer->LoadTexture("Radio_Checked.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Radio_Checked.png"));
 	_Setup_Texture(textures.back(), uvs, _Radio_Checked);
-	textures.push_back(_Renderer->LoadTexture("Radio_UnChecked_Hovered.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Radio_UnChecked_Hovered.png"));
 	_Setup_Texture(textures.back(), uvs, _Radio_UnChecked_Hovered);
-	textures.push_back(_Renderer->LoadTexture("Radio_UnChecked.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Radio_UnChecked.png"));
 	_Setup_Texture(textures.back(), uvs, _Radio_UnChecked);
 
-	textures.push_back(_Renderer->LoadTexture("Window_Top.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Top.png"));
 	_Setup_Texture(textures.back(), uvs, _Window_Top);
-	textures.push_back(_Renderer->LoadTexture("Window_Bottom.png"));
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Bottom.png"));
 	_Setup_Texture(textures.back(), uvs, _Window_Bottom);
 
 	_Renderer->Draw();

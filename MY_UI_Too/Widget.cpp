@@ -283,6 +283,7 @@ void MY_UI_Too::Controls::Widget::RemoveAll_Children(){
 	_Internals.Children.clear();
 }
 MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit() {
+	if(!_Internals.Hitable || _Internals.Hidden) return nullptr;
 	for(auto &x : _Internals.Children){
 		MY_UI_Too::Interfaces::IWidget* hitcontrol = x->Hit();
 		if(hitcontrol != nullptr) return hitcontrol;
@@ -292,6 +293,7 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit() {
 	return nullptr;
 }
 MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
+	if(!_Internals.Hitable || _Internals.Hidden) return nullptr;
 	for(auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++){
 		MY_UI_Too::Interfaces::IWidget* hitcontrol = (*beg)->Hit_And_SetFocus();
 		if(hitcontrol != nullptr) {

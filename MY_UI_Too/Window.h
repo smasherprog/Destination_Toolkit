@@ -6,17 +6,20 @@
 namespace MY_UI_Too{
 
 	namespace Controls{
-		class Image;
+		class Text;
 		class Window : public Widget{
-		MY_UI_Too::Controls::Image* _Background;
+			MY_UI_Too::Controls::Text* _Title;
 		public:
 			Window(IWidget* parent);
 			virtual ~Window();
 
+			virtual void Set_Title(std::string title);
+			virtual std::string Get_Title() const;
+
 			virtual void Mouse_Moved() override;
 
 			virtual void Add_Child(IWidget* child)override;
-			virtual IWidget* Hit() override;
+
 			virtual IWidget* Hit_And_SetFocus() override;
 		};
 	};

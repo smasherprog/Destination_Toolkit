@@ -13,7 +13,7 @@ namespace MY_UI_Too{
 			class Internal_Widget{// I use this to hide clutter from the user so there isnt a bunch of protected variables that the user doesnt need to see or access directly
 		public:
 
-			bool Hidden, Focus, Draggable;//focus can be direct focus, or indirect by a child having focus
+			bool Hidden, Focus, Draggable, Hitable;//focus can be direct focus, or indirect by a child having focus
 			Interfaces::IWidget* Parent;
 
 			std::vector<Interfaces::IWidget*> Children;
@@ -23,7 +23,7 @@ namespace MY_UI_Too{
 			std::string Name;// this is what I use for testing purposes to see what control I am hitting
 			MY_UI_Too::Utilities::Color Color;
 
-			Internal_Widget(): Draggable(false), Parent(nullptr), Focus(false), Hidden(false) { }
+			Internal_Widget(): Draggable(false), Parent(nullptr), Focus(false), Hidden(false), Hitable(true) { }
 			~Internal_Widget() {}
 		};
 		
@@ -119,6 +119,9 @@ namespace MY_UI_Too{
 
 			virtual void Set_Draggable(bool draggable)override {_Internals.Draggable=draggable;}
 			virtual bool Get_Draggable() const override { return _Internals.Draggable;}
+
+			virtual void Set_Hitable(bool hitable)override {_Internals.Hitable=hitable;}
+			virtual bool Get_Hitable() const override { return _Internals.Hitable;}
 
 			virtual void Set_Name(std::string name) override{_Internals.Name=name;}
 			virtual std::string Get_Name() const override { return _Internals.Name;}
