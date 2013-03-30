@@ -13,6 +13,7 @@
 #include "Radio_Group.h"
 #include "Window.h"
 #include "FPS.h"
+#include "Text_Box.h"
 
 HWND					g_pHWND =nullptr;
 ID3D11Device			*g_Device=nullptr;
@@ -142,6 +143,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		new MY_UI_Too::Standard_Skin(),
 		new MY_UI_Too::Font_Factory(),
 		new MY_UI_Too::Controls::Root(),
+		input,
 		temp.right, temp.bottom, 2048);
 
 	MY_UI_Too::Controls::Window* wind =new MY_UI_Too::Controls::Window(MY_UI_Too::Internal::Root_Widget);
@@ -181,6 +183,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	
 	radios->Set_Pos(MY_UI_Too::Utilities::Point(400, 20));
 
+	MY_UI_Too::Controls::Text_Box* tbox = new MY_UI_Too::Controls::Text_Box(MY_UI_Too::Internal::Root_Widget);
+	tbox->Set_Pos(MY_UI_Too::Utilities::Point(50, 400));
 	MSG msg;
 	while( true )
 	{

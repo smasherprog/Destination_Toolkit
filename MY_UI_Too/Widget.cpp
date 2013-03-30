@@ -300,6 +300,9 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
 			if(beg != _Internals.Children.begin()){// dont rearrange if the control hit is already at the beginning
 				MY_UI_Too::Interfaces::IWidget* temp = (*beg);
 				_Internals.Children.erase(beg);// remove from the array
+				auto start =_Internals.Children.begin();
+				if(_Internals.Children.size()>0) (*start)->Set_Focus(false);
+				temp->Set_Focus(true);
 				_Internals.Children.insert(_Internals.Children.begin(), temp);// insert at the beginning
 			}
 			return hitcontrol;

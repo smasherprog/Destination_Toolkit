@@ -68,6 +68,9 @@
     <ClInclude Include="TextBox.h">
       <Filter>Basic_Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Text_Box.h">
+      <Filter>Basic_Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="FPS.cpp">
       <Filter>Advanced_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Text_Box.cpp">
+      <Filter>Basic_Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

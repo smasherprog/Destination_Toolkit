@@ -36,6 +36,9 @@ namespace MY_UI_Too{
 
 			virtual Utilities::UVs Get_Window_Top() const=0;
 			virtual Utilities::UVs Get_Window_Bottom() const=0;
+
+			virtual Utilities::UVs Get_Text_Box_Focus() const=0;
+			virtual Utilities::UVs Get_Text_Box_No_Focus() const=0;
 			
 		};
 	};

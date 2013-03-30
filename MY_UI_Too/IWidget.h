@@ -98,6 +98,7 @@ namespace MY_UI_Too{
 		class IRenderer;
 		class ISkin;
 		class IFont_Factory;
+		class IInput;
 	};
 	namespace Internal{
 
@@ -105,9 +106,11 @@ namespace MY_UI_Too{
 		extern MY_UI_Too::Interfaces::IWidget* Root_Widget;
 		extern MY_UI_Too::Interfaces::IRenderer* Renderer;
 		extern MY_UI_Too::Interfaces::ISkin* UI_Skin;
+		extern MY_UI_Too::Interfaces::IInput* Input;
+	
 		extern MY_UI_Too::Interfaces::IFont_Factory* Font_Factory;
 	};
-	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, unsigned int screen_width, unsigned int screen_height, unsigned int skinsize);
+	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, MY_UI_Too::Interfaces::IInput* input, unsigned int screen_width, unsigned int screen_height, unsigned int skinsize);
 	void DeInit();
 	void Safe_Delete(Interfaces::IWidget*& widget);
 };

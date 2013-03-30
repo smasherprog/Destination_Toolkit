@@ -162,6 +162,7 @@
     <ClInclude Include="CheckBox.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Text_Box.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Font_Factory.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Standard_Skin.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Text_Box.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="PCH.cpp">

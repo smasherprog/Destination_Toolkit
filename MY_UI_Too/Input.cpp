@@ -3,20 +3,12 @@
 #include "IWidget.h"
 #include "Common.h"
 
-Cursor_Types Current_Cursor =Standard;
-
-#ifdef _WIN32
-	void MY_UI_Too::Utilities::SetCursor(Cursor_Types type) { ::SetCursor( LoadCursor(0, C_Types[type]) ); Current_Cursor = type;}
-#else
-	void MY_UI_Too::Utilities::SetCursor(unsigned int type) { static_assert("You must define your own function for non windows platforms"); }
-#endif
-
-
 #ifdef _WIN32
 
 MY_UI_Too::Utilities::Input::~Input() { 
 	SetCursor(Standard); 
 } 
+void MY_UI_Too::Utilities::Input::SetCursor(Cursor_Types type) { ::SetCursor( LoadCursor(0, C_Types[type]) ); _Current_Cursor = type;}
 bool MY_UI_Too::Utilities::Input::ProcessMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	if(Internal::Root_Widget == nullptr) return false;
 	int otherkey=0;
@@ -121,7 +113,7 @@ bool MY_UI_Too::Utilities::Input::ProcessMessage(HWND hwnd, UINT msg, WPARAM wPa
 			Resizing  = false;
 			return false;
 		case WM_MOUSELEAVE:
-			Utilities::SetCursor(Standard);
+			SetCursor(Standard);
 			return false;
 		default:	
 			return false;

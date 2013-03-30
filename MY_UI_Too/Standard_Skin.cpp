@@ -52,6 +52,12 @@ void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned in
 	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Bottom.png"));
 	_Setup_Texture(textures.back(), uvs, _Window_Bottom);
 
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Text_Box_Focus.png"));
+	_Setup_Texture(textures.back(), uvs, _Text_Box_Focus);
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Text_Box_No_Focus.png"));
+	_Setup_Texture(textures.back(), uvs, _Text_Box_No_Focus);
+
+
 	_Renderer->Draw();
 	_Renderer->End();
 	_Renderer->Set_Size(oldscreen);//restore the old size
@@ -131,8 +137,8 @@ void MY_UI_Too::Standard_Skin::_Setup_Texture(Interfaces::ITexture* tex, Utiliti
 MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::_Get_Pos_For_Placement(unsigned int width, unsigned int height){
 	Utilities::Point skinsize = _Skin->Get_Dimensions();
 	Utilities::Rect rect;
-	rect.width=width+4;//add a little padding
-	rect.height=height+4;//add a little padding
+	rect.width=width+1;//add a little padding
+	rect.height=height+1;//add a little padding
 
 	std::list<Utilities::Rect> copy_rects;
 	for(size_t i=0; i< _Rects.size(); i++) copy_rects.push_back(_Rects[i]);

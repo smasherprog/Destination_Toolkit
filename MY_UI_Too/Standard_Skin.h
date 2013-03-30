@@ -50,6 +50,9 @@ namespace MY_UI_Too{
 		virtual Utilities::UVs Get_Window_Top() const override { return _Window_Top; }
 		virtual Utilities::UVs Get_Window_Bottom() const override { return _Window_Bottom; }
 
+		virtual Utilities::UVs Get_Text_Box_Focus() const override { return _Text_Box_Focus; }
+		virtual Utilities::UVs Get_Text_Box_No_Focus() const override { return _Text_Box_No_Focus; }
+
 	protected:
 		Utilities::UVs _Down_Button;
 		Utilities::UVs _Up_Button;
@@ -67,6 +70,9 @@ namespace MY_UI_Too{
 
 		Utilities::UVs _Window_Top;
 		Utilities::UVs _Window_Bottom;
+
+		Utilities::UVs _Text_Box_Focus;
+		Utilities::UVs _Text_Box_No_Focus;
 
 	};
 

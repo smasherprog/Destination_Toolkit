@@ -60,10 +60,10 @@ void MY_UI_Too::Controls::Root::Mouse_Wheel_Moved() {
 	if(Focus_Holder != nullptr) Focus_Holder->Mouse_Wheel_Moved();
 }
 void MY_UI_Too::Controls::Root::Key_Down() {
-
+	Focus_Holder->Key_Down();
 }
 void MY_UI_Too::Controls::Root::Key_Up() {
-
+	Focus_Holder->Key_Up();
 }
 void MY_UI_Too::Controls::Root::Draw(){
 
