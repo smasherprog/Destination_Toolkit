@@ -3,7 +3,7 @@
 #include "IRenderer.h"
 #include "ISkin.h"
 #include "Text.h"
-#include "Input.h"
+#include "IInput.h"
 
 MY_UI_Too::Controls::Button::Button(IWidget* parent): Widget(parent) {
 	Set_Size(Utilities::Point(100, 30));

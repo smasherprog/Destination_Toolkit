@@ -7,8 +7,10 @@ namespace MY_UI_Too{
 
 	namespace Controls{
 		class Text;
+		class Image;
 		class Window : public Widget{
 			MY_UI_Too::Controls::Text* _Title;
+			MY_UI_Too::Controls::Image* _Background;
 		public:
 			Window(IWidget* parent);
 			virtual ~Window();
@@ -19,7 +21,7 @@ namespace MY_UI_Too{
 			virtual void Mouse_Moved() override;
 
 			virtual void Add_Child(IWidget* child)override;
-
+			virtual IWidget* Hit() override;
 			virtual IWidget* Hit_And_SetFocus() override;
 		};
 	};

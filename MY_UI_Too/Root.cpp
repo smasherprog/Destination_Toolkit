@@ -1,7 +1,7 @@
 #include "PCH.h"
 #include "Root.h"
 #include "IRenderer.h"
-#include "Input.h"
+#include "IInput.h"
 
 MY_UI_Too::Controls::Root::Root(): Focus_Holder(nullptr),Hovered_Widget(nullptr), Widget(nullptr), Dragged_Widget(nullptr) {
 
@@ -60,10 +60,10 @@ void MY_UI_Too::Controls::Root::Mouse_Wheel_Moved() {
 	if(Focus_Holder != nullptr) Focus_Holder->Mouse_Wheel_Moved();
 }
 void MY_UI_Too::Controls::Root::Key_Down() {
-	Focus_Holder->Key_Down();
+	if(Focus_Holder!= nullptr) Focus_Holder->Key_Down();
 }
 void MY_UI_Too::Controls::Root::Key_Up() {
-	Focus_Holder->Key_Up();
+	if(Focus_Holder!= nullptr) Focus_Holder->Key_Up();
 }
 void MY_UI_Too::Controls::Root::Draw(){
 

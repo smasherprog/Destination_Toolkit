@@ -1,6 +1,6 @@
 #include "PCH.h"
 #include "Widget.h"
-#include "Input.h"
+#include "IInput.h"
 
 #define ALIGNINGMACRO \
 	Utilities::Point dimensions; \

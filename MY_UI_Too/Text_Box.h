@@ -13,7 +13,7 @@ namespace MY_UI_Too{
 		class Text_Box: public Widget{
 
 			Utilities::UVs _UVs_No_Focus, _UVs_Focus,  _Selected_UVs;
-			
+			unsigned int _Carret_Index;
 
 		public:
 			Text_Box(IWidget* parent);
@@ -33,6 +33,12 @@ namespace MY_UI_Too{
 			virtual void Key_Up() override;
 			//if you want to change the text, do it through this pointer.
 			Text* Text;
+
+			virtual void BackSpace();
+			virtual void Tab();
+			virtual void NewLine();
+			virtual void Enter();
+			virtual void Delete();
 		};
 
 	};

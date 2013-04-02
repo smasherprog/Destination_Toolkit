@@ -161,7 +161,6 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="CheckBox.h" />
     <ClInclude Include="FPS.h" />
-    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Text_Box.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Common.h" />

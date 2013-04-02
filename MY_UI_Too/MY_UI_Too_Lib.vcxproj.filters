@@ -65,9 +65,6 @@
     <ClInclude Include="FPS.h">
       <Filter>Advanced_Controls</Filter>
     </ClInclude>
-    <ClInclude Include="TextBox.h">
-      <Filter>Basic_Controls</Filter>
-    </ClInclude>
     <ClInclude Include="Text_Box.h">
       <Filter>Basic_Controls</Filter>
     </ClInclude>
