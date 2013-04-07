@@ -4,13 +4,13 @@
 #include <list>
 #include "../Utilities/My_Timer.h"
 
-#define OPTIMIZED_SEARCH
+#define BORDER_SIZE 10 //in pixels
 
 void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned int skin_size){
 	DeInit();
 	_Renderer = renderer;
 	_Skin= _Renderer->CreateTexture(skin_size, skin_size, nullptr, true);
-
+	_Border_Size = (float)BORDER_SIZE/(float)skin_size;
 	Utilities::Point oldscreen = _Renderer->Get_Size();//save the old size so we can restore it 
 	_Renderer->Set_Size(Utilities::Point(skin_size, skin_size));
 	assert(_Skin!= nullptr);
@@ -48,6 +48,7 @@ void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned in
 	_Setup_Texture(textures.back(), uvs, _Radio_UnChecked);
 
 	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Top.png"));
+	_Wnd_Title_Height = textures.back()->Get_Dimensions().y;
 	_Setup_Texture(textures.back(), uvs, _Window_Top);
 	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Bottom.png"));
 	_Setup_Texture(textures.back(), uvs, _Window_Bottom);
@@ -131,9 +132,6 @@ void MY_UI_Too::Standard_Skin::_Setup_Texture(Interfaces::ITexture* tex, Utiliti
 	out_uvs.v2/= (float)skinsize.y;
 }
 
-// the optimized search might look worse because of the use of a list and the extra work creating it; however, the unoptimized search is an N Squard problem, the the optimized is must less,
-#if defined(OPTIMIZED_SEARCH)
-
 MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::_Get_Pos_For_Placement(unsigned int width, unsigned int height){
 	Utilities::Point skinsize = _Skin->Get_Dimensions();
 	Utilities::Rect rect;
@@ -173,47 +171,194 @@ MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::_Get_Pos_For_Placement(uns
 			}
 		}
 		if(missedall) return Utilities::Point(rect.left, rect.top);
-		
-	} 
-	return Utilities::Point(rect.left, rect.top);
-}
-#else
 
-MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::_Get_Pos_For_Placement(unsigned int width, unsigned int height){
-	Utilities::Point skinsize = _Skin->Get_Dimensions();
-	Utilities::Rect rect;
-	rect.width=width+4;//add a little padding
-	rect.height=height+4;//add a little padding
-
-	My_Timer::tick_count timer = My_Timer::tick_count::now();
-
-	while(true){
-		bool missedall=true;
-		for(size_t i=0; i< _Rects.size(); i++){
-			if(_Rects[i].Intersect(rect)){
-				rect.left+=width;
-				if(rect.left>=skinsize.x){
-					rect.top+=height;
-					rect.left=0;
-				}
-				missedall =false;
-				break;
-			} else {
-				if(rect.left + (int)width>=skinsize.x){
-					rect.top+=height +4;
-					rect.left=0;
-					missedall =false;
-					break;
-				}
-			}
-		}
-		if(missedall){
-			//std::cout<<"time taken: "<<(My_Timer::tick_count::now() - timer).micro_seconds()<<std::endl;
-			return Utilities::Point(rect.left, rect.top);
-		}
 	} 
 	return Utilities::Point(rect.left, rect.top);
 }
 
-#endif
+void MY_UI_Too::Standard_Skin::Draw_Button(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
+	Utilities::UVs uv;
 
+	if(state == Widget_States::Hovered) uv = _Hovered_Button;
+	else if(state == Widget_States::Pressed) uv = _Down_Button;
+	else uv = _Up_Button;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uv, bounds);
+
+}
+void MY_UI_Too::Standard_Skin::Draw_CheckBox(Widget_States state, bool checked, MY_UI_Too::Utilities::Rect bounds) const{
+	Utilities::UVs uv;
+	if(checked){
+		if(state == Widget_States::Hovered) uv = _CheckBox_Checked_Hovered;
+		else if(state == Widget_States::Pressed) uv = _CheckBox_Checked_Hovered;
+		else uv = _CheckBox_Checked;
+	} else {
+		if(state == Widget_States::Hovered) uv = _CheckBox_UnChecked_Hovered;
+		else if(state == Widget_States::Pressed) uv = _CheckBox_UnChecked_Hovered;
+		else uv = _CheckBox_UnChecked;
+	}
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uv, bounds);
+}
+void MY_UI_Too::Standard_Skin::Draw_Radio(Widget_States state,bool checked, MY_UI_Too::Utilities::Rect bounds) const{
+	Utilities::UVs uv;
+	if(checked){
+		if(state == Widget_States::Hovered) uv = _Radio_Checked_Hovered;
+		else if(state == Widget_States::Pressed) uv = _Radio_Checked_Hovered;
+		else uv = _Radio_Checked;
+	} else {
+		if(state == Widget_States::Hovered) uv = _Radio_UnChecked_Hovered;
+		else if(state == Widget_States::Pressed) uv = _Radio_UnChecked_Hovered;
+		else uv = _Radio_UnChecked;
+	}
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uv, bounds);
+}
+void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
+
+	MY_UI_Too::Utilities::UVs uvs = _Window_Top;
+	MY_UI_Too::Utilities::Rect r(bounds);
+	r.width -=BORDER_SIZE;
+	r.left += BORDER_SIZE/2;
+	r.height = _Wnd_Title_Height;
+	uvs *= _Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, _Window_Top, r);
+
+	uvs = _Window_Top;
+	uvs.u2 = uvs.u1 + _Border_Size;
+	r.left = bounds.left;
+	r.width = BORDER_SIZE;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	uvs.u1 =_Window_Top.u2 - _Border_Size;
+	uvs.u2 = _Window_Top.u2;
+	r.width = BORDER_SIZE;
+	r.left = (bounds.left + bounds.width) - BORDER_SIZE;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//draw the center 
+	r = bounds;
+	r.left += BORDER_SIZE;
+	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
+	r.width =  bounds.width - (BORDER_SIZE*2);
+	r.top += _Wnd_Title_Height + BORDER_SIZE;
+	uvs = _Window_Bottom;
+	uvs.u1 += _Border_Size;
+	uvs.u2 -= _Border_Size;
+	uvs.v1 += _Border_Size;
+	uvs.v2 -= _Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the top left corner
+	r.top = bounds.top + _Wnd_Title_Height;
+	r.left = bounds.left;
+	r.height = BORDER_SIZE;
+	r.width =  BORDER_SIZE;
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u1;
+	uvs.u2 = _Window_Bottom.u1 +_Border_Size;
+	uvs.v1 = _Window_Bottom.v1;
+	uvs.v2 = _Window_Bottom.v1 +_Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the top center
+	r.top = bounds.top + _Wnd_Title_Height;
+	r.left = bounds.left + BORDER_SIZE;
+	r.height = BORDER_SIZE;
+	r.width =  bounds.width - (BORDER_SIZE*2);
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u1 +_Border_Size;
+	uvs.u2 = _Window_Bottom.u2 -_Border_Size;
+	uvs.v1 = _Window_Bottom.v1;
+	uvs.v2 = _Window_Bottom.v1 +_Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the top right
+	r.top = bounds.top + _Wnd_Title_Height;
+	r.left = bounds.left + bounds.width - BORDER_SIZE;
+	r.height = BORDER_SIZE;
+	r.width =  BORDER_SIZE;
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u2 - _Border_Size;
+	uvs.u2 = _Window_Bottom.u2;
+	uvs.v1 = _Window_Bottom.v1;
+	uvs.v2 = _Window_Bottom.v1 +_Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the right center
+	r.top = bounds.top + _Wnd_Title_Height+ BORDER_SIZE;
+	r.left = bounds.left + bounds.width - BORDER_SIZE;
+	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
+	r.width =  BORDER_SIZE;
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u2 - _Border_Size;
+	uvs.u2 = _Window_Bottom.u2;
+	uvs.v1 = _Window_Bottom.v1 + _Border_Size;
+	uvs.v2 = _Window_Bottom.v2 - _Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+		//now the right bottom corner
+	r.top = bounds.top + bounds.height- BORDER_SIZE;
+	r.left = bounds.left + bounds.width - BORDER_SIZE;
+	r.height = BORDER_SIZE;
+	r.width =  BORDER_SIZE;
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u2 - _Border_Size;
+	uvs.u2 = _Window_Bottom.u2;
+	uvs.v1 = _Window_Bottom.v2 - _Border_Size;
+	uvs.v2 = _Window_Bottom.v2;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the bottom center
+	r.top = bounds.top + bounds.height- BORDER_SIZE;
+	r.left = bounds.left + BORDER_SIZE;
+	r.height = BORDER_SIZE;
+	r.width = bounds.width - (BORDER_SIZE*2);
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u1 + _Border_Size;
+	uvs.u2 = _Window_Bottom.u2 - _Border_Size;
+	uvs.v1 = _Window_Bottom.v2 - _Border_Size;
+	uvs.v2 = _Window_Bottom.v2;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the bottom left corner
+	r.top = bounds.top + bounds.height- BORDER_SIZE;
+	r.left = bounds.left;
+	r.height = BORDER_SIZE;
+	r.width = BORDER_SIZE;
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u1;
+	uvs.u2 = _Window_Bottom.u1 + _Border_Size;
+	uvs.v1 = _Window_Bottom.v2 - _Border_Size;
+	uvs.v2 = _Window_Bottom.v2;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//now the left center
+	r.top = bounds.top + _Wnd_Title_Height+ BORDER_SIZE;
+	r.left = bounds.left;
+	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
+	r.width = BORDER_SIZE;
+
+	uvs = _Window_Bottom;
+	uvs.u1 = _Window_Bottom.u1;
+	uvs.u2 = _Window_Bottom.u1 + _Border_Size;
+	uvs.v1 = _Window_Bottom.v1 + _Border_Size;
+	uvs.v2 = _Window_Bottom.v2 - _Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+}
+
+void MY_UI_Too::Standard_Skin::Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const{
+	if(focus)  _Renderer->DrawTexturedRect_NoClip(_Skin, _Text_Box_Focus, bounds);
+	else _Renderer->DrawTexturedRect_NoClip(_Skin, _Text_Box_No_Focus, bounds);
+}
+
+void MY_UI_Too::Standard_Skin::Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color) const{
+	_Renderer->DrawText_NoClip(_Skin, font, txt, startinpos, fontsize, color, color, color, color);
+}
+MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const{
+	return _Renderer->Measure_String(_Skin->Get_Dimensions(), font, fontsize, text);
+}

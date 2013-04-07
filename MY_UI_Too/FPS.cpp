@@ -15,8 +15,8 @@ void MY_UI_Too::Controls::FPS::Start(){
 unsigned int MY_UI_Too::Controls::FPS::Get_FPS(){
 	return _LastFps;
 }
-void MY_UI_Too::Controls::FPS::Draw(){
-	MY_UI_Too::Controls::Widget::Draw();
+void MY_UI_Too::Controls::FPS::Draw(MY_UI_Too::Interfaces::ISkin* skin){
+	MY_UI_Too::Controls::Widget::Draw(skin);
 	_Last_Second += std::chrono::duration_cast<milliseconds>(std::chrono::high_resolution_clock::now() - _Start).count();
 	_Start = std::chrono::high_resolution_clock::now();
 	if(_Last_Second>=1000){

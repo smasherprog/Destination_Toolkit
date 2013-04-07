@@ -3,7 +3,6 @@
 #include "IFont_Factory.h"
 #include "IFont.h"
 #include "ISkin.h"
-#include "IRenderer.h"
 
 MY_UI_Too::Controls::Text::Text(IWidget* widget): Widget(widget){
 	_Font = Internal::Font_Factory->Get_Font();
@@ -15,11 +14,12 @@ MY_UI_Too::Controls::Text::~Text(){
 	if(Internal::Font_Factory!= nullptr) Internal::Font_Factory->Destroy_Font(_Font->Get_Font());
 }
 
-void MY_UI_Too::Controls::Text::Draw(){
-	Internal::Renderer->DrawText_NoClip(Internal::UI_Skin->Get_Skin(), _Font, _Text, _Internals.Absolute_TL, _Font_Size, _Internals.Color, _Internals.Color, _Internals.Color, _Internals.Color);
+void MY_UI_Too::Controls::Text::Draw(MY_UI_Too::Interfaces::ISkin* skin){
+	skin->Draw_Text(_Font, _Text, _Internals.Absolute_TL, _Font_Size);
 	Utilities::Point p = _Internals.Absolute_TL+ Utilities::Point(1, 1);//bold just adds a little thickness
-	if(_Bold) Internal::Renderer->DrawText_NoClip(Internal::UI_Skin->Get_Skin(), _Font, _Text, p, _Font_Size, _Internals.Color, _Internals.Color, _Internals.Color, _Internals.Color);
+	if(_Bold) skin->Draw_Text(_Font, _Text, p, _Font_Size);
 }
+
 void MY_UI_Too::Controls::Text::Set_Font(std::string fontname){
 	_Font = Internal::Font_Factory->Get_Font(fontname);
 	if(_Font == nullptr){
@@ -44,7 +44,7 @@ unsigned int MY_UI_Too::Controls::Text::Get_Font_Size() const{
 }
 void MY_UI_Too::Controls::Text::Set_Text(std::string text){
 	_Text = text;
-	Utilities::Point p = Internal::Renderer->Measure_String(Internal::UI_Skin->Get_Skin()->Get_Dimensions(), _Font, _Font_Size, text);
+	Utilities::Point p = Internal::UI_Skin->Measure_String( _Font, _Font_Size, text);
 	if(p.y==0.0f) p.y = _Font_Size;
 	Set_Size(p);
 }

@@ -27,6 +27,14 @@ bool MY_UI_Too::Utilities::Input::ProcessMessage(HWND hwnd, UINT msg, WPARAM wPa
 		Mouse_RButton_Down = false;
 		Internal::Root_Widget->Mouse_Right_Up();
 		break;
+	case WM_LBUTTONDBLCLK:
+		Mouse_LButton_Down = false;
+		Internal::Root_Widget->Mouse_Right_Up();
+		break;
+	case WM_RBUTTONDBLCLK:
+		Mouse_RButton_Down = false;
+		Internal::Root_Widget->Mouse_Right_Up();
+		break;
 	case WM_LBUTTONDOWN:
 		if(Mouse_LButton_Down) return false;// windows screws up and sends multiple mouse events though there actually was only one...
 		Mouse_LButton_Down = true;
@@ -84,11 +92,11 @@ bool MY_UI_Too::Utilities::Input::ProcessMessage(HWND hwnd, UINT msg, WPARAM wPa
 		} 
 		break;
 	case WM_CHAR:
-			if((static_cast<char>(wParam) >= (START_CHAR-1) && static_cast<char>(wParam) <= END_CHAR) | (wParam>=8 & wParam<=10) | (wParam==13)){
-				Current_Key = static_cast<char>(wParam);
-				Internal::Root_Widget->Key_Up();
-			} 
-			break;
+		if( ( (static_cast<char>(wParam) >= (START_CHAR-1)) && (static_cast<char>(wParam) <= END_CHAR)) | ((wParam>=8 && wParam<=10) | (wParam==13))){
+			Current_Key = static_cast<char>(wParam);
+			Internal::Root_Widget->Key_Up();
+		} 
+		break;
 	case WM_SIZE:// WM_SIZE is sent when the user resizes the window.  		
 		if( wParam == SIZE_MINIMIZED ){
 			AppPaused = true;

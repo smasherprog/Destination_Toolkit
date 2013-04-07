@@ -4,6 +4,7 @@
 #include "../Utilities/Signal.h"
 #include "Utilities.h"
 #include "IWidget.h"
+#include "Common.h"
 
 namespace MY_UI_Too{
 	namespace Controls{
@@ -15,7 +16,7 @@ namespace MY_UI_Too{
 
 			bool Hidden, Focus, Draggable, Hitable;//focus can be direct focus, or indirect by a child having focus
 			Interfaces::IWidget* Parent;
-
+			Widget_States State;
 			std::vector<Interfaces::IWidget*> Children;
 			Utilities::Point Size;
 			Utilities::Point Pos;//relative position
@@ -23,7 +24,7 @@ namespace MY_UI_Too{
 			std::string Name;// this is what I use for testing purposes to see what control I am hitting
 			MY_UI_Too::Utilities::Color Color;
 
-			Internal_Widget(): Draggable(false), Parent(nullptr), Focus(false), Hidden(false), Hitable(true) { }
+			Internal_Widget(): Draggable(false), Parent(nullptr), Focus(false), Hidden(false), Hitable(true), State(Widget_States::UnPressed) { }
 			~Internal_Widget() {}
 		};
 		
@@ -35,6 +36,7 @@ namespace MY_UI_Too{
 
 		protected:
 			MY_UI_Too::Internal::Internal_Widget _Internals;
+
 		public:
 
 			Widget(IWidget* parent);
@@ -47,6 +49,7 @@ namespace MY_UI_Too{
 			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const override{ return _Internals.Absolute_TL; }
 	
 			virtual void Set_Size(Utilities::Point p) override;
+			virtual void Set_Size_To_Contents() override;
 			virtual Utilities::Point Get_Size()const override;
 
 			virtual void Set_Pos_ByOffset(Utilities::Point offset) override;
@@ -78,8 +81,10 @@ namespace MY_UI_Too{
 			//Input functions
 			virtual void Mouse_Left_Down() override;
 			virtual void Mouse_Left_Up() override;
+			virtual void Mouse_Left_DblClk()override;
 			virtual void Mouse_Right_Down() override;
 			virtual void Mouse_Right_Up() override;
+			virtual void Mouse_Right_DblClk()override;
 			virtual void Mouse_Moved() override;
 			virtual void Mouse_Entered() override;
 			virtual void Mouse_Exited() override;
@@ -91,8 +96,10 @@ namespace MY_UI_Too{
 			//events that outside code can register with to call custom functions.
 			MY_Utilities::Signal_st<void> On_Mouse_Left_Down;
 			MY_Utilities::Signal_st<void> On_Mouse_Left_Up;
+			MY_Utilities::Signal_st<void> On_Mouse_Left_DblClk;
 			MY_Utilities::Signal_st<void> On_Mouse_Right_Down;
 			MY_Utilities::Signal_st<void> On_Mouse_Right_Up;
+			MY_Utilities::Signal_st<void> On_Mouse_Right_DblClk;
 			MY_Utilities::Signal_st<void> On_Mouse_Moved;
 			MY_Utilities::Signal_st<void> On_Mouse_Exited;
 			MY_Utilities::Signal_st<void> On_Mouse_Entered;
@@ -129,7 +136,7 @@ namespace MY_UI_Too{
 			virtual void Set_Color(MY_UI_Too::Utilities::Color color) override{ _Internals.Color = color; } 
 			virtual MY_UI_Too::Utilities::Color Get_Color()const override{ return _Internals.Color; }
 
-			virtual void Draw()override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin)override;
 		};	
 	};
 };

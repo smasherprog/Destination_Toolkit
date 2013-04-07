@@ -21,7 +21,6 @@ bool MY_UI_Too::Controls::Image::Set_Texture(MY_UI_Too::Interfaces::ITexture* te
 	_Texture = tex;
 	return true;
 }
-void MY_UI_Too::Controls::Image::Draw(){
-
+void MY_UI_Too::Controls::Image::Draw(MY_UI_Too::Interfaces::ISkin* skin){
 	Internal::Renderer->DrawTexturedRect_NoClip(_Texture, _UVs, Utilities::Rect(_Internals.Absolute_TL.x , _Internals.Absolute_TL.y, _Internals.Size.x, _Internals.Size.y) );
 }

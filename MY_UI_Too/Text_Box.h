@@ -12,23 +12,19 @@ namespace MY_UI_Too{
 
 		class Text_Box: public Widget{
 
-			Utilities::UVs _UVs_No_Focus, _UVs_Focus,  _Selected_UVs;
 			unsigned int _Carret_Index;
 
 		public:
 			Text_Box(IWidget* parent);
-			virtual ~Text_Box();
+			virtual ~Text_Box(){}
 
 			virtual IWidget* Hit() override;
 			virtual IWidget* Hit_And_SetFocus() override{return Hit();}
 
 			virtual void Mouse_Entered()override;
 			virtual void Mouse_Exited()override;
-			virtual void Mouse_Left_Down()override;
-			virtual void Mouse_Left_Up()override;
 
-			virtual void Set_Focus(bool focus) override;
-			virtual void Draw() override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 			virtual void Key_Up() override;
 			//if you want to change the text, do it through this pointer.

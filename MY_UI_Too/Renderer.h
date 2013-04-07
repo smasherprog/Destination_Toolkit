@@ -42,11 +42,12 @@ namespace MY_UI_Too{
 		virtual void Draw() override;// this will draw everything that has been buffered so far
 
 		// the four draw functions below only buffer the data, they do not actually draw anything until DrawBuffred is called
-		virtual void DrawTexturedRect_Clip( MY_UI_Too::Interfaces::ITexture* Texture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer = false) override;
-		virtual void DrawTexturedRect_NoClip( MY_UI_Too::Interfaces::ITexture* Texture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer = false) override;
+			virtual void DrawTexturedRect_Clip(const MY_UI_Too::Interfaces::ITexture* Texture, const MY_UI_Too::Utilities::UVs& uvs, const MY_UI_Too::Utilities::Rect rect, const MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, const MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, const MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, const MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer=false);
+			virtual void DrawTexturedRect_NoClip( const MY_UI_Too::Interfaces::ITexture* Texture, const MY_UI_Too::Utilities::UVs& uvs, const MY_UI_Too::Utilities::Rect rect, const MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White,const  MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, const MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White,const  MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer=false);
 
-		virtual void DrawText_NoClip(MY_UI_Too::Interfaces::ITexture* pTexture, MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer=false) override;
-		virtual MY_UI_Too::Utilities::Point Measure_String(MY_UI_Too::Utilities::Point skinsize, MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text);
+			virtual void DrawText_NoClip(const MY_UI_Too::Interfaces::ITexture* pTexture, const MY_UI_Too::Interfaces::IFont* font, const std::string txt,const MY_UI_Too::Utilities::Point startinpos,const  unsigned int fontsize,const  MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::White,const  MY_UI_Too::Utilities::Color color_tr = MY_UI_Too::Utilities::White,const  MY_UI_Too::Utilities::Color color_bl = MY_UI_Too::Utilities::White, const MY_UI_Too::Utilities::Color color_br = MY_UI_Too::Utilities::White, bool getnewbuffer=false);
+
+			virtual MY_UI_Too::Utilities::Point Measure_String(const MY_UI_Too::Utilities::Point skinsize, const MY_UI_Too::Interfaces::IFont* font,const  unsigned int fontsize,const  std::string text);
 
 		virtual void StartClip(MY_UI_Too::Utilities::Rect& rect) override{ ClipRects.push_back(rect);}
 		virtual void EndClip() override{ClipRects.pop_back();}
@@ -59,8 +60,8 @@ namespace MY_UI_Too{
 	protected:
 
 		virtual void Draw(MyDrawState& drawstate)=0;
-		virtual bool SetTexture(MY_UI_Too::Interfaces::ITexture* pTexture, bool getnewbuffer)override;
-		virtual void AddVert( float x, float y, float u, float v, Utilities::Color col)override;
+		virtual bool SetTexture(const MY_UI_Too::Interfaces::ITexture* pTexture, bool getnewbuffer) override;
+		virtual void AddVert(float x, float y, float u, float v, Utilities::Color col) override;
 		virtual void GotoNextBufferSlot()override;
 
 		std::vector<MY_UI_Too::Utilities::Rect> ClipRects;

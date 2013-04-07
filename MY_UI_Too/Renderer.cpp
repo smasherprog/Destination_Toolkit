@@ -47,7 +47,7 @@ void MY_UI_Too::Renderer::AddVert( float x, float y, float u, float v, Utilities
 	drawstate.NumVerts+=1;
 	drawstate.changed=true;
 }
-bool MY_UI_Too::Renderer::SetTexture(MY_UI_Too::Interfaces::ITexture* pTexture, bool drawingnow){
+bool MY_UI_Too::Renderer::SetTexture(const MY_UI_Too::Interfaces::ITexture* pTexture, bool drawingnow){
 	void* pImage = pTexture->Get_Texture();
 	if ( pImage ==nullptr) return false;// Missing image, not loaded properly?
 	if( (CurrentTexture!= pImage) | (drawingnow)){
@@ -58,7 +58,7 @@ bool MY_UI_Too::Renderer::SetTexture(MY_UI_Too::Interfaces::ITexture* pTexture, 
 	return true;
 }
 
-void MY_UI_Too::Renderer::DrawTexturedRect_Clip(MY_UI_Too::Interfaces::ITexture* pTexture, MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
+void MY_UI_Too::Renderer::DrawTexturedRect_Clip(const MY_UI_Too::Interfaces::ITexture* pTexture,const  MY_UI_Too::Utilities::UVs& uvs, const MY_UI_Too::Utilities::Rect rect,  const MY_UI_Too::Utilities::Color color_tl, const MY_UI_Too::Utilities::Color color_tr, const MY_UI_Too::Utilities::Color color_bl, const MY_UI_Too::Utilities::Color color_br, bool drawnow){
 	if(!SetTexture(pTexture, drawnow)) return;
 	assert(!ClipRects.empty());
 	Utilities::Point tl(rect.left, rect.top);
@@ -130,7 +130,7 @@ void MY_UI_Too::Renderer::DrawTexturedRect_Clip(MY_UI_Too::Interfaces::ITexture*
 	}
 }
 
-void MY_UI_Too::Renderer::DrawTexturedRect_NoClip(MY_UI_Too::Interfaces::ITexture* pTexture,  MY_UI_Too::Utilities::UVs& uvs, MY_UI_Too::Utilities::Rect rect,  MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
+void MY_UI_Too::Renderer::DrawTexturedRect_NoClip(const MY_UI_Too::Interfaces::ITexture* pTexture, const MY_UI_Too::Utilities::UVs& uvs, const MY_UI_Too::Utilities::Rect rect, const MY_UI_Too::Utilities::Color color_tl, const MY_UI_Too::Utilities::Color color_tr, const MY_UI_Too::Utilities::Color color_bl, const MY_UI_Too::Utilities::Color color_br, bool drawnow){
 	if(!SetTexture(pTexture, drawnow)) return;
 
 	float left= static_cast<float>(rect.left);
@@ -145,7 +145,7 @@ void MY_UI_Too::Renderer::DrawTexturedRect_NoClip(MY_UI_Too::Interfaces::ITextur
 	AddVert( left, bottom,				uvs.u1, uvs.v2, color_bl );
 	AddVert( right, bottom,				uvs.u2, uvs.v2, color_br );
 }
-void MY_UI_Too::Renderer::DrawText_NoClip(MY_UI_Too::Interfaces::ITexture* pTexture, MY_UI_Too::Interfaces::IFont* font, std::string text, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize, MY_UI_Too::Utilities::Color color_tl, MY_UI_Too::Utilities::Color color_tr, MY_UI_Too::Utilities::Color color_bl, MY_UI_Too::Utilities::Color color_br, bool drawnow){
+void MY_UI_Too::Renderer::DrawText_NoClip(const MY_UI_Too::Interfaces::ITexture* pTexture, const MY_UI_Too::Interfaces::IFont* font, const std::string text, const MY_UI_Too::Utilities::Point startinpos, const unsigned int fontsize, const MY_UI_Too::Utilities::Color color_tl,const  MY_UI_Too::Utilities::Color color_tr, const MY_UI_Too::Utilities::Color color_bl, const MY_UI_Too::Utilities::Color color_br, bool drawnow){
 	if(!SetTexture(pTexture, drawnow)) return;
 	int startleft= startinpos.x;
 	float skinwidth = (float)pTexture->Get_Dimensions().left;
@@ -157,25 +157,26 @@ void MY_UI_Too::Renderer::DrawText_NoClip(MY_UI_Too::Interfaces::ITexture* pText
 	unsigned int spacewidth=(int)(skinwidth*(spaceuvs.u2 - spaceuvs.u1)*fontscale);
 	spaceuvs = font->Get_Char(')');
 	unsigned int vertheight =(int)(NEXTLINEPERCENT*skinheight*(spaceuvs.v2 - spaceuvs.v1) + skinheight*(spaceuvs.v2 - spaceuvs.v1));
+	MY_UI_Too::Utilities::Point startin_pos=startinpos;
 
 	//goto http://www.asciitable.com/ for ascii info
 	for(auto beg = text.begin(); beg!= text.end(); beg++){
 
 		char c = *beg;
 		if(c == 0)continue;
-		else if(c==9) startinpos.left+=(spacewidth*8);// a tab is 8 spaces
-		else if(c==32) startinpos.left+=spacewidth;
+		else if(c==9) startin_pos.left+=(spacewidth*8);// a tab is 8 spaces
+		else if(c==32) startin_pos.left+=spacewidth;
 		else if(c==13){
 			if(beg+1 != text.end()){
 				if(*(beg+1) == 10) {
 					beg++;//advance a character.. some people still think \r\n is appropriate for a newline instead of just \n
 				}
 			}
-			startinpos.top+=vertheight;
-			startinpos.left = startleft;
+			startin_pos.top+=vertheight;
+			startin_pos.left = startleft;
 		} else if(c==10) {
-			startinpos.top+=vertheight;
-			startinpos.left = startleft;
+			startin_pos.top+=vertheight;
+			startin_pos.left = startleft;
 		}
 		else {
 			if( (c<START_CHAR) | (c> END_CHAR)) {
@@ -185,8 +186,8 @@ void MY_UI_Too::Renderer::DrawText_NoClip(MY_UI_Too::Interfaces::ITexture* pText
 			Utilities::UVs uvs = font->Get_Char(c);
 			float width = skinwidth*(uvs.u2 - uvs.u1)*fontscale;
 
-			float left= static_cast<float>(startinpos.x);
-			float top = static_cast<float>(startinpos.y);
+			float left= static_cast<float>(startin_pos.x);
+			float top = static_cast<float>(startin_pos.y);
 			float right = width + left;
 			float height = fontsizef;
 			float bottom = height + top;
@@ -195,11 +196,11 @@ void MY_UI_Too::Renderer::DrawText_NoClip(MY_UI_Too::Interfaces::ITexture* pText
 			AddVert( right, top,				uvs.u2, uvs.v1, color_tr );
 			AddVert( left, bottom,				uvs.u1, uvs.v2, color_bl );
 			AddVert( right, bottom,				uvs.u2, uvs.v2, color_br );
-			startinpos.x+=(int)width+1;// add at least one pixel
+			startin_pos.x+=(int)width+1;// add at least one pixel
 		}
 	}
 }
-MY_UI_Too::Utilities::Point MY_UI_Too::Renderer::Measure_String(MY_UI_Too::Utilities::Point skinsize, MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text){
+MY_UI_Too::Utilities::Point MY_UI_Too::Renderer::Measure_String(const MY_UI_Too::Utilities::Point skinsize,const  MY_UI_Too::Interfaces::IFont* font, const unsigned int fontsize, const std::string text){
 	MY_UI_Too::Utilities::Point dims;
 	float skinwidth = (float)skinsize.x;
 	float skinheight = (float)skinsize.y;

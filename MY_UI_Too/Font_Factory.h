@@ -36,8 +36,6 @@ namespace MY_UI_Too {
 		virtual void BuildInstalledFonts() override;// building font lists can be expensive so this should be done only when really needed
 		virtual Interfaces::IFont* Get_Font(std::string fontname ="Times New Roman") override;
 		virtual void Destroy_Font(std::string fontname ) override;
-		//if Measure_String is called on a font that does not exist, that font will be loaded into the skin and measured. This could be expensive if called on a font not loaded.
-		virtual MY_UI_Too::Utilities::Point Measure_String(std::string fontname, unsigned int fontsize, std::string text);
 
 
 	};

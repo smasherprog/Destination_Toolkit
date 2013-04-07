@@ -1,7 +1,6 @@
 #ifndef MY_UI_TOO_RADIO_GROUP_H
 #define MY_UI_TOO_RADIO_GROUP_H
 #include "Widget.h"
-#include "ITexture.h"
 
 namespace MY_UI_Too{
 	namespace Controls{
@@ -9,20 +8,15 @@ namespace MY_UI_Too{
 
 		class Radio_Button : public Widget{
 
-			Utilities::UVs _Radio_Checked_Hovered,  _Radio_Checked, _Radio_UnChecked_Hovered, _Radio_UnChecked, _Selected_UVs;
 			bool _Checked;
 			std::function<void(Radio_Button*)> _Radio_Selected;
 		public:
 			Radio_Button(IWidget* parent, std::function<void(Radio_Button*)> func);
-			virtual ~Radio_Button();
-
-			virtual void Mouse_Entered()override;
-			virtual void Mouse_Exited()override;
+			virtual ~Radio_Button(){}
 
 			virtual void Mouse_Left_Up()override;
 
-			virtual void Set_Focus(bool focus) override;
-			virtual void Draw() override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 			virtual void Select();
 			virtual void UnSelect();
@@ -38,7 +32,7 @@ namespace MY_UI_Too{
 			Radio_Group(IWidget* parent);
 			virtual ~Radio_Group() override{}
 
-			virtual void Draw() override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 			virtual Radio_Button* Add();
 

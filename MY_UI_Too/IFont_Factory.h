@@ -19,7 +19,7 @@ namespace MY_UI_Too {
 
 			virtual Interfaces::IFont* Get_Font(std::string fontname ="Times New Roman")=0;
 			virtual void Destroy_Font(std::string fontname ) =0;
-			virtual MY_UI_Too::Utilities::Point Measure_String(std::string fontname, unsigned int fontsize, std::string text)=0;
+
 
 		};
 	};

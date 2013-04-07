@@ -30,7 +30,7 @@ namespace MY_UI_Too{
 			virtual void Set_Bold(bool bold);
 			virtual bool Get_Bold();
 
-			virtual void Draw() override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 		};
 	};

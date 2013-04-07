@@ -145,13 +145,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		new MY_UI_Too::Controls::Root(),
 		input,
 		temp.right, temp.bottom, 2048);
-
+	
 	MY_UI_Too::Controls::Window* wind =new MY_UI_Too::Controls::Window(MY_UI_Too::Internal::Root_Widget);
 	wind->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
-	OUTPUT_DEBUG_MSG("Creatinb text from button");
+
 	MY_UI_Too::Controls::Button* button6 = new MY_UI_Too::Controls::Button(wind);
 	button6->Set_Pos(MY_UI_Too::Utilities::Point(30, 100));
-	OUTPUT_DEBUG_MSG("Finished");
+	
 	
 	MY_UI_Too::Controls::FPS* fps = new MY_UI_Too::Controls::FPS(MY_UI_Too::Internal::Root_Widget);
 	fps->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
@@ -173,6 +173,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	MY_UI_Too::Controls::CheckBox* checkbox = new MY_UI_Too::Controls::CheckBox(MY_UI_Too::Internal::Root_Widget);
 	checkbox->Align_BL(5, button5);
+
 
 	MY_UI_Too::Controls::Radio_Group* radios = new MY_UI_Too::Controls::Radio_Group(MY_UI_Too::Internal::Root_Widget);
 	radios->Add();
@@ -212,7 +213,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 			float ClearColor[4] = {207.0f/255.0f,207.0f/255.0f,231.0f/255.0f, 0.0f };
 
 			g_DeviceContext->ClearRenderTargetView( BackBufferRTV, ClearColor );
-			MY_UI_Too::Internal::Root_Widget->Draw();
+			MY_UI_Too::Internal::Root_Widget->Draw(nullptr);
 			SwapChain->Present(0, 0);
 
 		}

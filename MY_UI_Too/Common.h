@@ -9,6 +9,8 @@
 #define NEXTLINEPERCENT .1f  //this is percentage of the tallest character used to padd between text lines
 #define FONT_CREATE_SIZE 30 //this should provide font large enough for most uses.
 
+enum Widget_States{ Hovered, Pressed, UnPressed };
+enum Resizing_States { No_Resizing, Resizing_L, Resizing_R, Resizing_T, Resizing_B, Resizing_TR, Resizing_BR, Resizing_BL, Resizing_TL};
 //used for creating the character map as it containes all characters
 const char Keyboard_Characters[] = {// this is padded strangly, but it is needed so I can generate 
 	'E','E','E','E','E','E','E','E','E','E',		'E','E','E','E','E','E','E','E','E','E',		

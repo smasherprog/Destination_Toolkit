@@ -33,6 +33,17 @@ MY_UI_Too::Controls::Widget::~Widget(){
 void MY_UI_Too::Controls::Widget::Set_Size(Utilities::Point p){
 	_Internals.Size = p;
 }
+void MY_UI_Too::Controls::Widget::Set_Size_To_Contents(){
+	Utilities::Point maxpos;
+	Utilities::Point minpos;
+	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
+		maxpos.x = max(maxpos.x, (*beg)->Get_Absolute_Pos().x);
+		maxpos.y = max(maxpos.y, (*beg)->Get_Absolute_Pos().y);
+		minpos.x = min(minpos.x, (*beg)->Get_Absolute_Pos().x);
+		minpos.x = min(minpos.y, (*beg)->Get_Absolute_Pos().y);
+	}
+	Set_Size(maxpos - minpos);
+}
 MY_UI_Too::Utilities::Point MY_UI_Too::Controls::Widget::Get_Size() const{
 	return _Internals.Size;
 }
@@ -232,24 +243,40 @@ void MY_UI_Too::Controls::Widget::Align_Center() {
 }
 
 void MY_UI_Too::Controls::Widget::Mouse_Left_Down(){
+	_Internals.State = Widget_States::Pressed;
 	On_Mouse_Left_Down.Call();
 }
 void MY_UI_Too::Controls::Widget::Mouse_Left_Up(){
+	_Internals.State = Widget_States::UnPressed;
 	On_Mouse_Left_Up.Call();
 }
+void MY_UI_Too::Controls::Widget::Mouse_Left_DblClk(){
+	_Internals.State = Widget_States::UnPressed;
+	On_Mouse_Left_DblClk.Call();
+}
 void MY_UI_Too::Controls::Widget::Mouse_Right_Down(){
+	_Internals.State = Widget_States::Pressed;
 	On_Mouse_Right_Down.Call();
 }
 void MY_UI_Too::Controls::Widget::Mouse_Right_Up(){
+	_Internals.State = Widget_States::UnPressed;
 	On_Mouse_Right_Up.Call();
 }
+void MY_UI_Too::Controls::Widget::Mouse_Right_DblClk(){
+	_Internals.State = Widget_States::UnPressed;
+	On_Mouse_Right_DblClk.Call();
+}
 void MY_UI_Too::Controls::Widget::Mouse_Moved(){
+	if(Mouse_LButton_Down && _Internals.Draggable) Set_Pos_ByOffset(Utilities::Point(Delta_Mousex, Delta_Mousey));
 	On_Mouse_Moved.Call();
 }
 void MY_UI_Too::Controls::Widget::Mouse_Entered(){
+	_Internals.State = Widget_States::Hovered;
 	On_Mouse_Entered.Call();
 }
 void MY_UI_Too::Controls::Widget::Mouse_Exited(){
+	MY_UI_Too::Internal::Input->SetCursor(Cursor_Types::Standard);
+	_Internals.State = Widget_States::UnPressed;
 	On_Mouse_Exited.Call();
 }
 void MY_UI_Too::Controls::Widget::Mouse_Wheel_Moved(){
@@ -312,6 +339,6 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
 	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
 }
-void MY_UI_Too::Controls::Widget::Draw(){
-	for( auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++) (*beg)->Draw();
+void MY_UI_Too::Controls::Widget::Draw(MY_UI_Too::Interfaces::ISkin* skin){
+	for( auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++) (*beg)->Draw(skin);
 }

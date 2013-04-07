@@ -17,7 +17,7 @@ namespace MY_UI_Too{
 		std::vector<Utilities::Rect> _Rects;
 		void _Setup_Texture(Interfaces::ITexture* tex, Utilities::UVs in_uvs, Utilities::UVs& out_uvs);
 		Utilities::Point _Get_Pos_For_Placement(unsigned int width, unsigned int height);
-
+		void _Draw(const MY_UI_Too::Utilities::Rect& untransformed_uvs, const MY_UI_Too::Utilities::UVs& target_uvs, const MY_UI_Too::Utilities::Rect& r) const;
 	public:
 
 		Standard_Skin():_Skin(nullptr), _Renderer(nullptr) {}
@@ -26,32 +26,18 @@ namespace MY_UI_Too{
 		virtual void Init(Interfaces::IRenderer* renderer, unsigned int skin_size=1024)override;
 		virtual void DeInit() override;
 
-		virtual Utilities::UVs Add_To_Skin(Interfaces::ITexture* tex) override;
-		virtual void Remove_From_Skin(Utilities::UVs u) override;
+		virtual MY_UI_Too::Utilities::UVs Add_To_Skin(MY_UI_Too::Interfaces::ITexture* tex) override;
+		virtual void Remove_From_Skin(MY_UI_Too::Utilities::UVs uvs) override;
 
-		virtual Interfaces::ITexture* Get_Skin() const override{ return _Skin; }
+		virtual void Draw_Button(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_CheckBox(Widget_States state, bool checked, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_Radio(Widget_States state,bool checked, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_Window(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const;
 
-		virtual Utilities::UVs Get_Down_Button() const override { return _Down_Button; }
-		virtual Utilities::UVs Get_Up_Button() const override { return _Up_Button; }
-		virtual Utilities::UVs Get_Hovered_Button() const override { return _Hovered_Button; }
+		virtual void Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black) const;
+		virtual MY_UI_Too::Utilities::Point Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const;
 
-		virtual Utilities::UVs Get_CheckBox_Checked_Hovered() const override { return _CheckBox_Checked_Hovered; }
-		virtual Utilities::UVs Get_CheckBox_Checked() const override { return _CheckBox_Checked; }
-
-		virtual Utilities::UVs Get_CheckBox_UnChecked_Hovered() const override { return _CheckBox_UnChecked_Hovered; }
-		virtual Utilities::UVs Get_CheckBox_UnChecked() const override { return _CheckBox_UnChecked; }
-
-		virtual Utilities::UVs Get_Radio_Checked_Hovered()  const override { return _Radio_Checked_Hovered; }
-		virtual Utilities::UVs Get_Radio_Checked()  const override { return _Radio_Checked; }
-
-		virtual Utilities::UVs Get_Radio_UnChecked_Hovered()  const override { return _Radio_UnChecked_Hovered; }
-		virtual Utilities::UVs Get_Radio_UnChecked()  const override { return _Radio_UnChecked; }
-
-		virtual Utilities::UVs Get_Window_Top() const override { return _Window_Top; }
-		virtual Utilities::UVs Get_Window_Bottom() const override { return _Window_Bottom; }
-
-		virtual Utilities::UVs Get_Text_Box_Focus() const override { return _Text_Box_Focus; }
-		virtual Utilities::UVs Get_Text_Box_No_Focus() const override { return _Text_Box_No_Focus; }
 
 	protected:
 		Utilities::UVs _Down_Button;
@@ -74,6 +60,9 @@ namespace MY_UI_Too{
 		Utilities::UVs _Text_Box_Focus;
 		Utilities::UVs _Text_Box_No_Focus;
 
+		unsigned int _Wnd_Title_Height;
+		float _Border_Size;
+		float _Skin_Scaling;
 	};
 
 };

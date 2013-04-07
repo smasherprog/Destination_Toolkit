@@ -28,6 +28,12 @@ void MY_UI_Too::Controls::Root::Mouse_Left_Up(){
 	if(temp != nullptr && Focus_Holder == temp) temp->Mouse_Left_Up();// make sure the same control completed a mousedown / up
 	Dragged_Widget = nullptr;
 }
+void MY_UI_Too::Controls::Root::Mouse_Left_DblClk() {
+	Interfaces::IWidget* temp = Hit_And_SetFocus();
+	if(temp != nullptr) temp->Mouse_Left_DblClk();// make sure the same control completed a mousedown / up
+	Dragged_Widget = nullptr;
+	Focus_Holder = temp;
+}
 void MY_UI_Too::Controls::Root::Mouse_Right_Down() {
 	Interfaces::IWidget* temp = Hit_And_SetFocus();
 	if(temp != nullptr) temp->Mouse_Right_Down();// something was hit
@@ -38,6 +44,13 @@ void MY_UI_Too::Controls::Root::Mouse_Right_Up() {
 	if(temp != nullptr && Focus_Holder == temp) temp->Mouse_Right_Up();// make sure the same control completed a mousedown / up
 	Dragged_Widget = nullptr;
 }
+void MY_UI_Too::Controls::Root::Mouse_Right_DblClk() {
+	Interfaces::IWidget* temp = Hit_And_SetFocus();
+	if(temp != nullptr) temp->Mouse_Right_DblClk();// make sure the same control completed a mousedown / up
+	Dragged_Widget = nullptr;
+	Focus_Holder = temp;
+}
+
 void MY_UI_Too::Controls::Root::Mouse_Moved() {
 	if((Dragged_Widget != nullptr) & (Mouse_RButton_Down | Mouse_LButton_Down)) return Dragged_Widget->Mouse_Moved();
 
@@ -51,7 +64,6 @@ void MY_UI_Too::Controls::Root::Mouse_Moved() {
 		Hovered_Widget->Mouse_Moved();
 		if(Mouse_RButton_Down | Mouse_LButton_Down) Dragged_Widget = Hovered_Widget; 
 	} else { // nothing was hit
-		
 		if(	Hovered_Widget != nullptr) Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
 		Dragged_Widget= Hovered_Widget = nullptr;
 	}
@@ -65,12 +77,12 @@ void MY_UI_Too::Controls::Root::Key_Down() {
 void MY_UI_Too::Controls::Root::Key_Up() {
 	if(Focus_Holder!= nullptr) Focus_Holder->Key_Up();
 }
-void MY_UI_Too::Controls::Root::Draw(){
+void MY_UI_Too::Controls::Root::Draw(MY_UI_Too::Interfaces::ISkin* skin){
 
 	Internal::Renderer->Begin();
 
 	Internal::Renderer->StartNewBatch();
-	for( auto rbeg = _Internals.Children.rbegin(); rbeg != _Internals.Children.rend(); rbeg++) (*rbeg)->Draw();
+	for( auto rbeg = _Internals.Children.rbegin(); rbeg != _Internals.Children.rend(); rbeg++) (*rbeg)->Draw(Internal::UI_Skin);
 	
 	Internal::Renderer->Draw();
 

@@ -6,6 +6,10 @@
 namespace MY_UI_Too{
 
 	namespace Interfaces{
+		class IRenderer;
+		class ISkin;
+		class IFont_Factory;
+		class IInput;
 
 		class IWidget{
 		protected:
@@ -20,6 +24,7 @@ namespace MY_UI_Too{
 			virtual MY_UI_Too::Utilities::Point Get_Absolute_Pos() const =0;
 
 			virtual void Set_Size(Utilities::Point p)=0;
+			virtual void Set_Size_To_Contents()=0;
 			virtual Utilities::Point Get_Size()const =0;
 
 			virtual void Set_Pos_ByOffset(Utilities::Point offset)=0;
@@ -51,8 +56,10 @@ namespace MY_UI_Too{
 			//Input functions
 			virtual void Mouse_Left_Down()=0;
 			virtual void Mouse_Left_Up()=0;
+			virtual void Mouse_Left_DblClk()=0;
 			virtual void Mouse_Right_Down()=0;
 			virtual void Mouse_Right_Up()=0;
+			virtual void Mouse_Right_DblClk()=0;
 			virtual void Mouse_Moved()=0;
 			virtual void Mouse_Entered()=0;
 			virtual void Mouse_Exited()=0;
@@ -91,15 +98,10 @@ namespace MY_UI_Too{
 			virtual void Set_Color(MY_UI_Too::Utilities::Color color)=0;
 			virtual MY_UI_Too::Utilities::Color Get_Color() const =0;
 
-			virtual void Draw()=0;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin)=0;
 		};	
 	};
-	namespace Interfaces{
-		class IRenderer;
-		class ISkin;
-		class IFont_Factory;
-		class IInput;
-	};
+
 	namespace Internal{
 
 		extern std::set<MY_UI_Too::Interfaces::IWidget*> AllWidgets;

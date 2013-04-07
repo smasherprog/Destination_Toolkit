@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="CheckBox.h" />
+    <ClInclude Include="Collapsible_List.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="Text_Box.h" />
     <ClInclude Include="Window.h" />
@@ -184,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CheckBox.cpp" />
+    <ClCompile Include="Collapsible_List.cpp" />
     <ClCompile Include="Font_Factory.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="IInput.cpp" />

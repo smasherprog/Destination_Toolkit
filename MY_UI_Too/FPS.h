@@ -20,7 +20,7 @@ namespace MY_UI_Too{
 
 			virtual void Start();
 			virtual unsigned int Get_FPS();
-			virtual void Draw()override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin)override;
 
 		};
 	};

@@ -9,7 +9,6 @@ namespace MY_UI_Too{
 	namespace Controls{
 		class Image : public Widget{
 		protected:
-
 			MY_UI_Too::Interfaces::ITexture* _Texture;
 			MY_UI_Too::Utilities::UVs _UVs;
 			bool _Owns_Texture;
@@ -17,13 +16,11 @@ namespace MY_UI_Too{
 			Image(IWidget* parent);
 			virtual ~Image();
 
-			virtual void Draw() override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 			virtual bool Set_Texture(std::string file);
 			virtual bool Set_Texture(MY_UI_Too::Interfaces::ITexture* tex, bool takeownership=true);
 
-			virtual void Set_UVs(MY_UI_Too::Utilities::UVs uvs){_UVs=uvs; }
-			virtual MY_UI_Too::Utilities::UVs Get_UVs()const { return _UVs; }
 		};
 	};
 };

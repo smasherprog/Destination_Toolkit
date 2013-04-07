@@ -276,9 +276,4 @@ MY_UI_Too::Interfaces::IFont* MY_UI_Too::Font_Factory::Get_Font(std::string font
 	if(!b) return nullptr;
 	return wrapper.font;
 }
-MY_UI_Too::Utilities::Point MY_UI_Too::Font_Factory::Measure_String(std::string fontname, unsigned int fontsize, std::string text){
-	MY_UI_Too::Interfaces::IFont* font =Get_Font(fontname);
-	MY_UI_Too::Utilities::Point p = MY_UI_Too::Internal::Renderer->Measure_String(Internal::UI_Skin->Get_Skin()->Get_Dimensions(), font, fontsize, text);
-	Destroy_Font(fontname);// make sure to remove the reference
-	return p;
-}
+

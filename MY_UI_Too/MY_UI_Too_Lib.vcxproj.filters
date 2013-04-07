@@ -68,6 +68,9 @@
     <ClInclude Include="Text_Box.h">
       <Filter>Basic_Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Collapsible_List.h">
+      <Filter>Basic_Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -117,6 +120,9 @@
       <Filter>Advanced_Controls</Filter>
     </ClCompile>
     <ClCompile Include="Text_Box.cpp">
+      <Filter>Basic_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Collapsible_List.cpp">
       <Filter>Basic_Controls</Filter>
     </ClCompile>
   </ItemGroup>

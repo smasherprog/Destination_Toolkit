@@ -21,8 +21,10 @@ namespace MY_UI_Too{
 
 			virtual void Mouse_Left_Down() override;
 			virtual void Mouse_Left_Up() override;
+			virtual void Mouse_Left_DblClk()override;
 			virtual void Mouse_Right_Down() override;
 			virtual void Mouse_Right_Up() override;
+			virtual void Mouse_Right_DblClk()override;
 			virtual void Mouse_Moved() override;
 			virtual void Mouse_Wheel_Moved() override;
 
@@ -31,8 +33,8 @@ namespace MY_UI_Too{
 
 			virtual IWidget* Hit() override;
 			virtual IWidget* Hit_And_SetFocus() override;
-
-			virtual void Draw() override;
+		
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 		};
 	};
 };
