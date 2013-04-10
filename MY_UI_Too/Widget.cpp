@@ -21,6 +21,9 @@ MY_UI_Too::Controls::Widget::Widget(IWidget* parent){
 	}
 }
 MY_UI_Too::Controls::Widget::~Widget(){
+	if(MY_UI_Too::Internal::Dragged_Widget == this) MY_UI_Too::Internal::Dragged_Widget = nullptr;
+	if(MY_UI_Too::Internal::Focus_Holder == this) MY_UI_Too::Internal::Focus_Holder = nullptr;
+	if(MY_UI_Too::Internal::Hovered_Widget == this) MY_UI_Too::Internal::Hovered_Widget = nullptr;
 	On_Destructor.Call();
 	IWidget* parent = Get_Parent();
 	if(parent) parent->Remove_Child(this);
@@ -28,6 +31,7 @@ MY_UI_Too::Controls::Widget::~Widget(){
 		(*beg)->Set_Parent(nullptr);// dont want the child calling Remove_Child on this
 		delete *beg;
 	}
+	
 }
 
 void MY_UI_Too::Controls::Widget::Set_Size(Utilities::Point p){
@@ -268,6 +272,7 @@ void MY_UI_Too::Controls::Widget::Mouse_Right_DblClk(){
 }
 void MY_UI_Too::Controls::Widget::Mouse_Moved(){
 	if(Mouse_LButton_Down && _Internals.Draggable) Set_Pos_ByOffset(Utilities::Point(Delta_Mousex, Delta_Mousey));
+	_Internals.State = Widget_States::Hovered;
 	On_Mouse_Moved.Call();
 }
 void MY_UI_Too::Controls::Widget::Mouse_Entered(){
@@ -338,6 +343,10 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit_And_SetFocus(){
 	Utilities::Rect rect(_Internals.Absolute_TL.left, _Internals.Absolute_TL.top, _Internals.Size.x, _Internals.Size.y);
 	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
 	return nullptr;
+}
+void MY_UI_Too::Controls::Widget::Delete_This(){
+	MY_UI_Too::Internal::Widgets_ToBeDeleted.insert(this);
+
 }
 void MY_UI_Too::Controls::Widget::Draw(MY_UI_Too::Interfaces::ISkin* skin){
 	for( auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++) (*beg)->Draw(skin);

@@ -32,8 +32,10 @@ namespace MY_UI_Too{
 		virtual void Draw_Button(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
 		virtual void Draw_CheckBox(Widget_States state, bool checked, MY_UI_Too::Utilities::Rect bounds) const;
 		virtual void Draw_Radio(Widget_States state,bool checked, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_WindowCloseButton(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
 		virtual void Draw_Window(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
 		virtual void Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_Custom(MY_UI_Too::Utilities::UVs uvs, MY_UI_Too::Utilities::Rect bounds) const;
 
 		virtual void Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black) const;
 		virtual MY_UI_Too::Utilities::Point Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const;
@@ -54,6 +56,8 @@ namespace MY_UI_Too{
 		Utilities::UVs _Radio_UnChecked_Hovered;
 		Utilities::UVs _Radio_UnChecked;
 
+		Utilities::UVs _Window_Hovered_Close_Button;
+		Utilities::UVs _Window_Close_Button;
 		Utilities::UVs _Window_Top;
 		Utilities::UVs _Window_Bottom;
 

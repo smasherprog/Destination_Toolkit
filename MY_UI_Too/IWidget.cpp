@@ -6,11 +6,16 @@
 #include "IInput.h"
 
 std::set<MY_UI_Too::Interfaces::IWidget*> MY_UI_Too::Internal::AllWidgets;
+std::set<MY_UI_Too::Interfaces::IWidget*> MY_UI_Too::Internal::Widgets_ToBeDeleted;
 MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Internal::Root_Widget=nullptr;
 MY_UI_Too::Interfaces::IRenderer* MY_UI_Too::Internal::Renderer=nullptr;
 MY_UI_Too::Interfaces::ISkin* MY_UI_Too::Internal::UI_Skin=nullptr;
 MY_UI_Too::Interfaces::IFont_Factory* MY_UI_Too::Internal::Font_Factory=nullptr;
 MY_UI_Too::Interfaces::IInput* MY_UI_Too::Internal::Input=nullptr;
+
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Internal::Focus_Holder=nullptr;
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Internal::Hovered_Widget=nullptr;
+MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Internal::Dragged_Widget=nullptr;
 
 MY_UI_Too::Interfaces::IWidget::IWidget(){
 #if defined(DEBUG) || defined(_DEBUG)
@@ -54,5 +59,5 @@ void MY_UI_Too::DeInit(){
 	SAFE_DELETE(Internal::Renderer);
 
 	SAFE_DELETE(Internal::Font_Factory);
-
+	assert(MY_UI_Too::Internal::AllWidgets.empty());//if this failes it means that there are widgets which are not properly being deleted
 }

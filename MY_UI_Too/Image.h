@@ -11,16 +11,17 @@ namespace MY_UI_Too{
 		protected:
 			MY_UI_Too::Interfaces::ITexture* _Texture;
 			MY_UI_Too::Utilities::UVs _UVs;
-			bool _Owns_Texture;
 		public:
 			Image(IWidget* parent);
 			virtual ~Image();
 
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
-			virtual bool Set_Texture(std::string file);
-			virtual bool Set_Texture(MY_UI_Too::Interfaces::ITexture* tex, bool takeownership=true);
+			virtual bool Set_Texture(std::string file, MY_UI_Too::Utilities::UVs uvs = MY_UI_Too::Utilities::UVs(0.0f, 0.0f, 1.0f, 1.0f));
+			virtual bool Set_Texture(MY_UI_Too::Interfaces::ITexture* tex, MY_UI_Too::Utilities::UVs uvs = MY_UI_Too::Utilities::UVs(0.0f, 0.0f, 1.0f, 1.0f));
 
+			virtual void Set_UVs(MY_UI_Too::Utilities::UVs uvs){_UVs = uvs;}
+			virtual MY_UI_Too::Utilities::UVs Get_UVs() const{return _UVs;}
 		};
 	};
 };

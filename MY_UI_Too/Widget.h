@@ -111,6 +111,7 @@ namespace MY_UI_Too{
 			virtual IWidget* Hit() override;
 			virtual IWidget* Hit_And_SetFocus() override;
 
+			virtual void Delete_This() override; // this function will delete the widget and free its memory 
 			virtual void Add_Child(IWidget* child)override;
 			virtual void Remove_Child(IWidget* child)override;// this does not call delete on the child
 			virtual void RemoveAll_Children()override;// this DOES call delete on all children!

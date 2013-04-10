@@ -9,6 +9,7 @@ MY_UI_Too::Controls::Text::Text(IWidget* widget): Widget(widget){
 	_Font_Size=14;//defaults
 	Set_Color(Utilities::Black);
 	_Bold=false;
+
 }
 MY_UI_Too::Controls::Text::~Text(){
 	if(Internal::Font_Factory!= nullptr) Internal::Font_Factory->Destroy_Font(_Font->Get_Font());

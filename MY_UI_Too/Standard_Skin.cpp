@@ -47,6 +47,11 @@ void MY_UI_Too::Standard_Skin::Init(Interfaces::IRenderer* renderer, unsigned in
 	textures.push_back(_Renderer->LoadTexture(basefolder+"Radio_UnChecked.png"));
 	_Setup_Texture(textures.back(), uvs, _Radio_UnChecked);
 
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Hovered_Close_Button.png"));
+	_Setup_Texture(textures.back(), uvs, _Window_Hovered_Close_Button);
+	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Close_Button.png"));
+	_Setup_Texture(textures.back(), uvs, _Window_Close_Button);
+
 	textures.push_back(_Renderer->LoadTexture(basefolder+"Window_Top.png"));
 	_Wnd_Title_Height = textures.back()->Get_Dimensions().y;
 	_Setup_Texture(textures.back(), uvs, _Window_Top);
@@ -350,10 +355,18 @@ void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utili
 	uvs.v2 = _Window_Bottom.v2 - _Border_Size;
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
 }
-
+void MY_UI_Too::Standard_Skin::Draw_WindowCloseButton(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
+	Utilities::UVs uv;
+	if(state == Widget_States::Hovered || state == Widget_States::Pressed) uv = _Window_Hovered_Close_Button;
+	else uv = _Window_Close_Button;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uv, bounds);
+}
 void MY_UI_Too::Standard_Skin::Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const{
 	if(focus)  _Renderer->DrawTexturedRect_NoClip(_Skin, _Text_Box_Focus, bounds);
 	else _Renderer->DrawTexturedRect_NoClip(_Skin, _Text_Box_No_Focus, bounds);
+}
+void MY_UI_Too::Standard_Skin::Draw_Custom(MY_UI_Too::Utilities::UVs uvs, MY_UI_Too::Utilities::Rect bounds) const{
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, bounds);
 }
 
 void MY_UI_Too::Standard_Skin::Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color) const{

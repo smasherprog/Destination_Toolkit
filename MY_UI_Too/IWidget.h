@@ -72,6 +72,7 @@ namespace MY_UI_Too{
 			//Utility Functions
 			virtual IWidget* Hit()=0;
 			virtual IWidget* Hit_And_SetFocus()=0;
+			virtual void Delete_This()=0;// this function will delete the widget and free its memory 
 
 			virtual void Add_Child(IWidget* child)=0;
 			virtual void Remove_Child(IWidget* child)=0;
@@ -105,11 +106,14 @@ namespace MY_UI_Too{
 	namespace Internal{
 
 		extern std::set<MY_UI_Too::Interfaces::IWidget*> AllWidgets;
+		extern std::set<MY_UI_Too::Interfaces::IWidget*> Widgets_ToBeDeleted;
 		extern MY_UI_Too::Interfaces::IWidget* Root_Widget;
 		extern MY_UI_Too::Interfaces::IRenderer* Renderer;
 		extern MY_UI_Too::Interfaces::ISkin* UI_Skin;
 		extern MY_UI_Too::Interfaces::IInput* Input;
-	
+		extern MY_UI_Too::Interfaces::IWidget* Focus_Holder;
+		extern MY_UI_Too::Interfaces::IWidget* Hovered_Widget;
+		extern MY_UI_Too::Interfaces::IWidget* Dragged_Widget;
 		extern MY_UI_Too::Interfaces::IFont_Factory* Font_Factory;
 	};
 	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, MY_UI_Too::Interfaces::IInput* input, unsigned int screen_width, unsigned int screen_height, unsigned int skinsize);

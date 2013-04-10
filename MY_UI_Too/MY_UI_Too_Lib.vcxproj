@@ -162,6 +162,7 @@
     <ClInclude Include="CheckBox.h" />
     <ClInclude Include="Collapsible_List.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="Skin_Image.h" />
     <ClInclude Include="Text_Box.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Common.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Root.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Skin_Image.cpp" />
     <ClCompile Include="Standard_Skin.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Text_Box.cpp" />

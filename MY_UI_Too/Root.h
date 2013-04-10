@@ -8,10 +8,6 @@ namespace MY_UI_Too{
 
 		protected:
 
-			IWidget* Focus_Holder;
-			IWidget* Hovered_Widget;
-			IWidget* Dragged_Widget;
-
 		public:
 			Root();
 			virtual ~Root();

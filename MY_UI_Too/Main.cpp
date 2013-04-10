@@ -14,6 +14,8 @@
 #include "Window.h"
 #include "FPS.h"
 #include "Text_Box.h"
+#include "Collapsible_List.h"
+
 
 HWND					g_pHWND =nullptr;
 ID3D11Device			*g_Device=nullptr;
@@ -147,12 +149,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		temp.right, temp.bottom, 2048);
 	
 	MY_UI_Too::Controls::Window* wind =new MY_UI_Too::Controls::Window(MY_UI_Too::Internal::Root_Widget);
-	wind->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
+	wind->Set_Pos(MY_UI_Too::Utilities::Point(100, 150));
 
 	MY_UI_Too::Controls::Button* button6 = new MY_UI_Too::Controls::Button(wind);
 	button6->Set_Pos(MY_UI_Too::Utilities::Point(30, 100));
-	
-	
+
+	MY_UI_Too::Controls::Collapsible_List* collist = new MY_UI_Too::Controls::Collapsible_List(MY_UI_Too::Internal::Root_Widget);
+	collist->Set_Pos(MY_UI_Too::Utilities::Point(500, 100));
+
 	MY_UI_Too::Controls::FPS* fps = new MY_UI_Too::Controls::FPS(MY_UI_Too::Internal::Root_Widget);
 	fps->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
 

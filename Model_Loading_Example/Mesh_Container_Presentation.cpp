@@ -89,8 +89,8 @@ void Mesh_Container_Presentation::LeftMouseButtonUp(){
 	Base_Mesh* mesh=  Mesh_Container->Check_Hit(ray, origin);
 	if(mesh!=NULL) {
 		if(Last_Hit != mesh){
-			mesh->On_Translate_By_Offset.clear();//clear any connections to the trans
-			Mesh_Container->Trans->On_Translate_By_Offset.clear();
+			mesh->On_Translate_By_Offset.Disconnect_All();//clear any connections to the trans
+			Mesh_Container->Trans->On_Translate_By_Offset.Disconnect_All();
 			Mesh_Container->Trans->SetPosition(mesh->Get_Center());// set up the translation for the new mesh
 			Mesh_Container->BV->SetScaling(vec3(mesh->Get_Max_x_Size(), mesh->Get_Max_y_Size(), mesh->Get_Max_z_Size()));
 			Mesh_Container->BV->SetPosition(mesh->Get_Center());
@@ -130,9 +130,9 @@ MY_UI::Controls::cWidgetBase* Mesh_Container_Presentation::Hit_And_SetFocus() {
 		return this;
 	}
 	if(Last_Hit != NULL){
-		Last_Hit->On_SetPosition.clear();//clear any connections to the trans
-		Last_Hit->On_Translate_By_Offset.clear();//clear any connections to the trans
-		Mesh_Container->Trans->On_Translate_By_Offset.clear();
+		Last_Hit->On_SetPosition.Disconnect_All();//clear any connections to the trans
+		Last_Hit->On_Translate_By_Offset.Disconnect_All();//clear any connections to the trans
+		Mesh_Container->Trans->On_Translate_By_Offset.Disconnect_All();
 		Last_Hit=0;
 	}
 	

@@ -71,6 +71,9 @@
     <ClInclude Include="Collapsible_List.h">
       <Filter>Basic_Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Skin_Image.h">
+      <Filter>Basic_Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PCH.cpp" />
@@ -123,6 +126,9 @@
       <Filter>Basic_Controls</Filter>
     </ClCompile>
     <ClCompile Include="Collapsible_List.cpp">
+      <Filter>Basic_Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Skin_Image.cpp">
       <Filter>Basic_Controls</Filter>
     </ClCompile>
   </ItemGroup>
