@@ -13,16 +13,14 @@ namespace MY_UI_Too{
 		class Text_Box: public Widget{
 
 			unsigned int _Carret_Index;
-
+			Utilities::Timer _Timer;
 		public:
-			Text_Box(IWidget* parent);
+			Text_Box(IWidget* parent=nullptr);
 			virtual ~Text_Box(){}
 
-			virtual IWidget* Hit() override;
-			virtual IWidget* Hit_And_SetFocus() override{return Hit();}
+			virtual void Set_Focus(bool focus) override;
 
 			virtual void Mouse_Entered()override;
-			virtual void Mouse_Exited()override;
 
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
@@ -35,6 +33,8 @@ namespace MY_UI_Too{
 			virtual void NewLine();
 			virtual void Enter();
 			virtual void Delete();
+			virtual void Dec_Caret();
+			virtual void Inc_Caret();
 		};
 
 	};

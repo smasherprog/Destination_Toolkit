@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include "../Utilities/Utilities.h"
+#include <chrono>
 
 namespace MY_UI_Too{
 	namespace Utilities{
@@ -15,6 +16,35 @@ namespace MY_UI_Too{
 #define CENTER 16
 #define IN_LINE 32
 #define FILL 64	
+
+		class Timer{			
+			typedef std::chrono::milliseconds milliseconds;
+			std::chrono::high_resolution_clock::time_point _Start;
+			long long _Last_Second;// this stores the milliseconds
+			unsigned int _Current_Frame, _LastFps;
+		public:
+			Timer():_Last_Second(0), _Current_Frame(0), _LastFps(0){}
+
+			void Start(){ _Start = std::chrono::high_resolution_clock::now(); }
+			unsigned int Get_FPS() const{ return _LastFps; }
+
+			bool Advance(){
+				_Last_Second += std::chrono::duration_cast<milliseconds>(std::chrono::high_resolution_clock::now() - _Start).count();
+				_Start = std::chrono::high_resolution_clock::now();
+				bool secondpassed = false;
+				if(_Last_Second>=1000){
+					_Last_Second=0;
+					_LastFps = _Current_Frame;
+					_Current_Frame =0;
+					secondpassed = true;
+				} 
+				_Current_Frame+=1;
+				return secondpassed;
+
+			}
+
+		};
+
 
 		class Color{
 		public:
@@ -145,7 +175,7 @@ namespace MY_UI_Too{
 		inline Utilities::Color Lerp(const Utilities::Color &beg, const Utilities::Color &end, float &scalar){ return beg + (end - beg) * scalar; }
 
 		unsigned int GetTime();
-		
+
 	};
 
 

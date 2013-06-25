@@ -29,16 +29,18 @@ namespace MY_UI_Too{
 		virtual MY_UI_Too::Utilities::UVs Add_To_Skin(MY_UI_Too::Interfaces::ITexture* tex) override;
 		virtual void Remove_From_Skin(MY_UI_Too::Utilities::UVs uvs) override;
 
-		virtual void Draw_Button(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
-		virtual void Draw_CheckBox(Widget_States state, bool checked, MY_UI_Too::Utilities::Rect bounds) const;
-		virtual void Draw_Radio(Widget_States state,bool checked, MY_UI_Too::Utilities::Rect bounds) const;
-		virtual void Draw_WindowCloseButton(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
-		virtual void Draw_Window(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const;
-		virtual void Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const;
-		virtual void Draw_Custom(MY_UI_Too::Utilities::UVs uvs, MY_UI_Too::Utilities::Rect bounds) const;
+		virtual void Draw_Button(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const override;
+		virtual void Draw_CheckBox(Widget_States state, bool checked, MY_UI_Too::Utilities::Rect bounds) const override;
+		virtual void Draw_Radio(Widget_States state,bool checked, MY_UI_Too::Utilities::Rect bounds)const override;
+		virtual void Draw_WindowCloseButton(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const override;
+		virtual void Draw_Window_TitleBar(Widget_States state, MY_UI_Too::Utilities::Rect bounds)const override;
+		virtual void Draw_Window_BackGround(Widget_States state, MY_UI_Too::Utilities::Rect bounds)const override;
+		virtual void Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const override;
+		virtual void Draw_Custom(MY_UI_Too::Utilities::UVs uvs, MY_UI_Too::Utilities::Rect bounds) const override;
 
-		virtual void Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black) const;
-		virtual MY_UI_Too::Utilities::Point Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const;
+		virtual void Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black) const override;
+		virtual void Draw_Caret(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize, unsigned int caretindex, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black)const override;
+		virtual MY_UI_Too::Utilities::Point Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const override;
 
 
 	protected:

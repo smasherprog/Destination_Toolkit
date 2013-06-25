@@ -17,6 +17,7 @@ MY_UI_Too::Controls::Button::Button(IWidget* parent): Widget(parent) {
 
 void MY_UI_Too::Controls::Button::Set_Text(std::string txt){
 	Text->Set_Text(txt);
+	Set_Size(Text->Get_Size() + Utilities::Point(6, 6));// extra padding
 	Text->Align_Center();
 }
 

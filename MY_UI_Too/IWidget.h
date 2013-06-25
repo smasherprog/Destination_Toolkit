@@ -74,9 +74,10 @@ namespace MY_UI_Too{
 			virtual IWidget* Hit_And_SetFocus()=0;
 			virtual void Delete_This()=0;// this function will delete the widget and free its memory 
 
-			virtual void Add_Child(IWidget* child)=0;
-			virtual void Remove_Child(IWidget* child)=0;
-			virtual void RemoveAll_Children()=0;
+			virtual void Attach_Child(IWidget* child)=0;
+			virtual void Detach_Child(IWidget* child)=0;// this does not call delete on the child
+			virtual void Detach_From_Parent()=0;
+			virtual void DeleteAll_Children()=0;// this DOES call delete on all children!
 
 			virtual void Set_Hidden(bool hidden)=0;
 			virtual bool Get_Hidden()const =0;
@@ -118,7 +119,12 @@ namespace MY_UI_Too{
 	};
 	void Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* fontfactory, MY_UI_Too::Interfaces::IWidget* root, MY_UI_Too::Interfaces::IInput* input, unsigned int screen_width, unsigned int screen_height, unsigned int skinsize);
 	void DeInit();
-	void Safe_Delete(Interfaces::IWidget*& widget);
+	template<typename T>void Safe_Delete(T& widget){
+		if(widget == nullptr) return;
+		auto found = Internal::AllWidgets.find(widget);
+		if(found!=Internal::AllWidgets.end()) delete widget;// the destructor should take care of removing itself
+		widget = nullptr;
+	}
 };
 
 

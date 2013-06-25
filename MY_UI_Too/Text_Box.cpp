@@ -12,9 +12,22 @@ MY_UI_Too::Controls::Text_Box::Text_Box(IWidget* parent): Widget(parent) {
 	Set_Name("Text_Box");
 	Text=new MY_UI_Too::Controls::Text(this);
 	Text->Set_Font_Size(20);
-	Text->Set_Text("blank");
+	Text->Set_Text("");
 	Text->Set_Pos(Utilities::Point(5, 5));
+	Text->Set_Hitable(false);
 
+}
+void MY_UI_Too::Controls::Text_Box::Set_Focus(bool focus){
+	MY_UI_Too::Controls::Widget::Set_Focus(focus);
+	if(focus) _Timer.Start();
+}
+void  MY_UI_Too::Controls::Text_Box::Dec_Caret(){
+	if(_Carret_Index<=0) return;
+	_Carret_Index-=1;
+}
+void  MY_UI_Too::Controls::Text_Box::Inc_Caret(){
+	if(_Carret_Index>=Text->Get_Text().size()) return;
+	_Carret_Index+=1;
 }
 
 void MY_UI_Too::Controls::Text_Box::Key_Up(){
@@ -35,9 +48,20 @@ void MY_UI_Too::Controls::Text_Box::Key_Up(){
 	case(KEY_DELETE)://delete key
 		Delete();
 		break;
+	case(KEY_LEFT):
+		Dec_Caret();
+		break;
+	case(KEY_RIGHT):
+		Inc_Caret();
+		break;
+	case(KEY_UP):
+	case(KEY_DOWN):
+		break;
 	default:
 		if(Current_Key>=(START_CHAR-1) && Current_Key<= END_CHAR) {// bounds check
-			Text->Set_Text(Text->Get_Text()+(char)Current_Key);
+			std::string str = Text->Get_Text();
+			str.insert(str.begin()+_Carret_Index, (char)Current_Key);
+			Text->Set_Text(str);
 			_Carret_Index+=1;
 		} 
 		break;
@@ -48,18 +72,15 @@ void MY_UI_Too::Controls::Text_Box::Mouse_Entered(){
 	MY_UI_Too::Controls::Widget::Mouse_Entered();
 	Internal::Input->SetCursor(Cursor_Types::Text);
 }
-void MY_UI_Too::Controls::Text_Box::Mouse_Exited(){
-	MY_UI_Too::Controls::Widget::Mouse_Exited();
-	Internal::Input->SetCursor(Cursor_Types::Standard);
-}
+
 void MY_UI_Too::Controls::Text_Box::Draw(MY_UI_Too::Interfaces::ISkin* skin){
 	skin->Draw_Text_Box(Get_Focus(), Utilities::Rect(_Internals.Absolute_TL.x , _Internals.Absolute_TL.y, _Internals.Size.x, _Internals.Size.y) );
 	Text->Draw(skin);
-}
-MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Text_Box::Hit(){
-	Utilities::Rect rect(_Internals.Absolute_TL.left, _Internals.Absolute_TL.top, _Internals.Size.x, _Internals.Size.y);
-	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;
-	return nullptr;
+	static bool lastloopcaret = true;
+	if(Get_Focus()) {
+		if(_Timer.Advance()) lastloopcaret =!lastloopcaret;
+		if(lastloopcaret) Text->Draw_Caret(skin, _Carret_Index);
+	}
 }
 
 void MY_UI_Too::Controls::Text_Box::BackSpace(){

@@ -15,5 +15,14 @@ extern ID3D11Texture2D			*BackBuffer;
 extern ID3D11DeviceContext		*g_DeviceContext;
 
 
+void Init();
+void InitLoginScreen();
+void DeInitLoginScreen();
+void DeInit();
+
+void SaveInfo();
+void LoadInfo();
+
+void CheckCredentials();
 
 #endif

@@ -17,21 +17,23 @@
 MY_UI_Too::Controls::Widget::Widget(IWidget* parent){
 	if(parent != nullptr) {
 		Set_Absolute_Pos(parent->Get_Absolute_Pos());
-		parent->Add_Child(this);// add this as a child
+	} else {
+		parent = MY_UI_Too::Internal::Root_Widget;
 	}
+	if(parent != nullptr) parent->Attach_Child(this);// add this as a child
+	Set_Parent(parent);
 }
 MY_UI_Too::Controls::Widget::~Widget(){
 	if(MY_UI_Too::Internal::Dragged_Widget == this) MY_UI_Too::Internal::Dragged_Widget = nullptr;
 	if(MY_UI_Too::Internal::Focus_Holder == this) MY_UI_Too::Internal::Focus_Holder = nullptr;
 	if(MY_UI_Too::Internal::Hovered_Widget == this) MY_UI_Too::Internal::Hovered_Widget = nullptr;
 	On_Destructor.Call();
-	IWidget* parent = Get_Parent();
-	if(parent) parent->Remove_Child(this);
+	Detach_From_Parent();
 	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
 		(*beg)->Set_Parent(nullptr);// dont want the child calling Remove_Child on this
 		delete *beg;
 	}
-	
+	_Internals.Children.clear();
 }
 
 void MY_UI_Too::Controls::Widget::Set_Size(Utilities::Point p){
@@ -149,7 +151,7 @@ void MY_UI_Too::Controls::Widget::Align_LeftTop(int padding, IWidget* widget){
 		Set_Pos(Utilities::Point(padding, padding));
 	}
 	else {
-		newpos.x = topleft.left - padding - Get_Size().y;
+		newpos.x = topleft.left - padding - Get_Size().x;
 		newpos.y = topleft.top;
 		Set_Pos(newpos);
 	}
@@ -161,7 +163,7 @@ void MY_UI_Too::Controls::Widget::Align_LeftCenter(int padding, IWidget* widget)
 		Set_Pos(Utilities::Point(padding, newpos.y + padding));
 	}
 	else {
-		newpos.x = topleft.left - padding - Get_Size().y;
+		newpos.x = topleft.left - padding - Get_Size().x;
 		Set_Pos(newpos);
 	}
 }
@@ -196,7 +198,7 @@ void MY_UI_Too::Controls::Widget::Align_RightCenter(int padding, IWidget* widget
 		Set_Pos(Utilities::Point(newpos.x-padding, newpos.y+padding));
 	}
 	else {
-		newpos.x = topleft.left + dimensions.x + Get_Size().x +padding;
+		newpos.x = topleft.left + dimensions.x +padding;
 		Set_Pos(newpos);
 	}
 }
@@ -294,11 +296,13 @@ void MY_UI_Too::Controls::Widget::Key_Up(){
 	On_Key_Up.Call();
 }
 
-void MY_UI_Too::Controls::Widget::Add_Child(IWidget* child){
+void MY_UI_Too::Controls::Widget::Attach_Child(IWidget* child){
+	if(child == this) return;
 	_Internals.Children.push_back(child);
 	child->Set_Parent(this);
 }
-void MY_UI_Too::Controls::Widget::Remove_Child(IWidget* child){
+void MY_UI_Too::Controls::Widget::Detach_Child(IWidget* child){
+	if(child == this) return;
 	for(auto i= _Internals.Children.begin(); i != _Internals.Children.end(); i++){
 		if( (*i) == child) {
 			child->Set_Parent(nullptr);//make sure to clear this
@@ -307,7 +311,11 @@ void MY_UI_Too::Controls::Widget::Remove_Child(IWidget* child){
 		}
 	}
 }
-void MY_UI_Too::Controls::Widget::RemoveAll_Children(){
+void MY_UI_Too::Controls::Widget::Detach_From_Parent(){
+	IWidget* parent = Get_Parent();
+	if(parent!=nullptr && parent!=this) parent->Detach_Child(this);
+}
+void MY_UI_Too::Controls::Widget::DeleteAll_Children(){
 	for(auto beg = _Internals.Children.begin(); beg!= _Internals.Children.end(); beg++){
 		(*beg)->Set_Parent(nullptr);
 		delete *beg;
@@ -318,7 +326,8 @@ MY_UI_Too::Interfaces::IWidget* MY_UI_Too::Controls::Widget::Hit() {
 	if(!_Internals.Hitable || _Internals.Hidden) return nullptr;
 	for(auto &x : _Internals.Children){
 		MY_UI_Too::Interfaces::IWidget* hitcontrol = x->Hit();
-		if(hitcontrol != nullptr) return hitcontrol;
+		if(hitcontrol != nullptr)  return hitcontrol;
+		
 	}
 	Utilities::Rect rect(_Internals.Absolute_TL.left, _Internals.Absolute_TL.top, _Internals.Size.x, _Internals.Size.y);
 	if(rect.Intersect(Utilities::Point(New_MousePosx, New_MousePosy))) return this;

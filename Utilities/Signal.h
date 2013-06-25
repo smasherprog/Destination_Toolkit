@@ -28,8 +28,6 @@ namespace MY_Utilities{
 			_Connections.insert(othersig);
 			othersig->_Connections.insert(this);
 		}
-
-
 		void Call(T... params){
 			if(_Is_Calling) return;//avoid infinite recursion
 			_Is_Calling = true;

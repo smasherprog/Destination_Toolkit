@@ -17,8 +17,8 @@ namespace MY_UI_Too{
 			virtual void Reorient_Children();
 			virtual void Set_Size(Utilities::Point size) override;
 			
-			virtual void Add_Child(IWidget* child)override;
-			virtual void Remove_Child(IWidget* child)override;// this does not call delete on the child
+			virtual void Attach_Child(IWidget* child)override;
+			virtual void Detach_Child(IWidget* child)override;// this does not call delete on the child
 		};
 
 		class Collapsible_Category : public Widget{
@@ -40,8 +40,8 @@ namespace MY_UI_Too{
 			virtual void Mouse_Moved() override;
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
-			virtual void Add_Child(IWidget* child)override;
-			virtual void Remove_Child(IWidget* child)override;// this does not call delete on the child
+			virtual void Attach_Child(IWidget* child)override;
+			virtual void Detach_Child(IWidget* child)override;// this does not call delete on the child
 		};
 
 
@@ -65,8 +65,8 @@ namespace MY_UI_Too{
 			virtual void Mouse_Moved() override;
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
-			virtual void Add_Child(IWidget* child)override;
-			virtual void Remove_Child(IWidget* child)override;// this does not call delete on the child
+			virtual void Attach_Child(IWidget* child)override;
+			virtual void Detach_Child(IWidget* child)override;// this does not call delete on the child
 		};
 	};
 };

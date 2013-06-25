@@ -57,8 +57,8 @@ void MY_UI_Too::Controls::Root::Mouse_Moved() {
 	Interfaces::IWidget* temp = Hit();
 	if(temp != nullptr){// something was hit
 		if(temp != MY_UI_Too::Internal::Hovered_Widget) {
-			temp->Mouse_Entered(); // new control hit
 			if(	MY_UI_Too::Internal::Hovered_Widget != nullptr) MY_UI_Too::Internal::Hovered_Widget->Mouse_Exited();// let the old hovered widget know the mouse left
+			temp->Mouse_Entered(); // new control hit
 		}
 		MY_UI_Too::Internal::Hovered_Widget = temp;
 		MY_UI_Too::Internal::Hovered_Widget->Mouse_Moved();

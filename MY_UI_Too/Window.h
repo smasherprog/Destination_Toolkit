@@ -11,43 +11,44 @@ namespace MY_UI_Too{
 
 		class WindowCloseButton : public Widget{
 		public:
-			WindowCloseButton(IWidget* parent);
+			WindowCloseButton(IWidget* parent=nullptr);
 			virtual ~WindowCloseButton(){}
-
-			virtual IWidget* Hit() override;
-			virtual IWidget* Hit_And_SetFocus() override{return Hit();}
 
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 		};
 
 
-		class Window : public Widget{
-			MY_UI_Too::Controls::Text* _Title;
-			MY_UI_Too::Controls::Widget* _Background;
+		class WindowTitleBar : public Widget{
 			WindowCloseButton* _CloseButton;
-			Resizing_States _Resize_States;
 			bool _Closeable;
-
-			void _Update_Mouse_Cursor();
+			MY_UI_Too::Interfaces::IWidget* _Child_Control;
+			MY_UI_Too::Controls::Text* _Title;
 
 		public:
-			Window(IWidget* parent);
-			virtual ~Window(){}
+			WindowTitleBar(IWidget* control, IWidget* parent=nullptr);
+			virtual ~WindowTitleBar(){}
 
 			virtual void Set_Closeable(bool closeable);
 			virtual bool Get_Closeable() const{ return _Closeable;}
 
-			void Set_Title(std::string title);
-			std::string Get_Title() const;
+			virtual void Attach_Child(IWidget* child)override{_Child_Control->Attach_Child(child);}
+			virtual void Detach_Child(IWidget* child)override{_Child_Control->Detach_Child(child);}
 
 			virtual void Set_Size(Utilities::Point p) override;
 
-			virtual void Add_Child(IWidget* child)override;
+			void Set_Title(std::string title);
+			std::string Get_Title() const;
 
-			virtual void Mouse_Entered() override;
-			virtual void Mouse_Left_Down() override;
-			virtual void Mouse_Moved() override;
+			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
+
+		};
+
+		class Window : public Widget{
+		public:
+			Window(IWidget* parent=nullptr);
+			virtual ~Window(){}
+
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 		};
 	};

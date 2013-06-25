@@ -6,15 +6,6 @@
 #include "Standard_Skin.h"
 #include "Font_Factory.h"
 #include "Input.h"
-#include "Test.h"
-#include "Text.h"
-#include "Button.h"
-#include "CheckBox.h"
-#include "Radio_Group.h"
-#include "Window.h"
-#include "FPS.h"
-#include "Text_Box.h"
-#include "Collapsible_List.h"
 
 
 HWND					g_pHWND =nullptr;
@@ -147,49 +138,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		new MY_UI_Too::Controls::Root(),
 		input,
 		temp.right, temp.bottom, 2048);
-	
-	MY_UI_Too::Controls::Window* wind =new MY_UI_Too::Controls::Window(MY_UI_Too::Internal::Root_Widget);
-	wind->Set_Pos(MY_UI_Too::Utilities::Point(100, 150));
 
-	MY_UI_Too::Controls::Button* button6 = new MY_UI_Too::Controls::Button(wind);
-	button6->Set_Pos(MY_UI_Too::Utilities::Point(30, 100));
-
-	MY_UI_Too::Controls::Collapsible_List* collist = new MY_UI_Too::Controls::Collapsible_List(MY_UI_Too::Internal::Root_Widget);
-	collist->Set_Pos(MY_UI_Too::Utilities::Point(500, 100));
-
-	MY_UI_Too::Controls::FPS* fps = new MY_UI_Too::Controls::FPS(MY_UI_Too::Internal::Root_Widget);
-	fps->Set_Pos(MY_UI_Too::Utilities::Point(100, 100));
-
-	MY_UI_Too::Controls::Button* button = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button->Set_Pos(MY_UI_Too::Utilities::Point(350, 350));
-
-	MY_UI_Too::Controls::Button* button1 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button1->Align_BL(0, button);
-	MY_UI_Too::Controls::Button* button2 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button2->Align_BottomCenter(0, button);
-	MY_UI_Too::Controls::Button* button3 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button3->Align_BR(0, button);
-	MY_UI_Too::Controls::Button* button4 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button4->Align_TR(0, button);
-	MY_UI_Too::Controls::Button* button5 = new MY_UI_Too::Controls::Button(MY_UI_Too::Internal::Root_Widget);
-	button5->Align_TL(0, button);
-	button5->Set_Text("button5");
-
-	MY_UI_Too::Controls::CheckBox* checkbox = new MY_UI_Too::Controls::CheckBox(MY_UI_Too::Internal::Root_Widget);
-	checkbox->Align_BL(5, button5);
-
-
-	MY_UI_Too::Controls::Radio_Group* radios = new MY_UI_Too::Controls::Radio_Group(MY_UI_Too::Internal::Root_Widget);
-	radios->Add();
-	radios->Add();
-	radios->Add();
-	radios->Add();
-	radios->Add();
-	
-	radios->Set_Pos(MY_UI_Too::Utilities::Point(400, 20));
-
-	MY_UI_Too::Controls::Text_Box* tbox = new MY_UI_Too::Controls::Text_Box(MY_UI_Too::Internal::Root_Widget);
-	tbox->Set_Pos(MY_UI_Too::Utilities::Point(50, 400));
+	Init();
 	MSG msg;
 	while( true )
 	{
@@ -222,6 +172,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 		}
 	}
+	DeInit();
 	SAFE_DELETE(input);// make sure to delete this here. It will call the cleanup the library in its destructor
 
 	HR(SwapChain->SetFullscreenState(false, 0));// this is needed in case full screen is on
@@ -230,4 +181,243 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	RELEASECOM(g_DeviceContext);
 	RELEASECOM(g_Device);
 
+}
+
+#include "Text.h"
+#include "Button.h"
+#include "CheckBox.h"
+#include "Radio_Group.h"
+#include "Window.h"
+#include "FPS.h"
+#include "Text_Box.h"
+#include <fstream>
+
+MY_UI_Too::Controls::WindowTitleBar* loginwindow=nullptr;
+MY_UI_Too::Controls::Text* logintxt=nullptr;
+MY_UI_Too::Controls::Text_Box* logintb=nullptr;
+MY_UI_Too::Controls::Text* passtxt=nullptr;
+MY_UI_Too::Controls::Text_Box* password=nullptr;
+MY_UI_Too::Controls::Text* validmessage=nullptr;
+MY_UI_Too::Controls::Button* loginbutton=nullptr;
+MY_Utilities::Signal_st<void> loginslot, checkcredentials;
+MY_UI_Too::Controls::Text* Current_User=nullptr;
+std::string Prev_User;
+std::string Prev_PW;
+//test controls
+MY_UI_Too::Controls::CheckBox* check1 =nullptr;
+MY_UI_Too::Controls::CheckBox* check2 =nullptr;
+
+MY_UI_Too::Controls::Radio_Group* radiogrp=nullptr;
+
+MY_UI_Too::Controls::Text_Box* txtbox1=nullptr;
+MY_UI_Too::Controls::Text_Box* txtbox2=nullptr;
+
+MY_UI_Too::Controls::WindowTitleBar* window=nullptr;
+
+void Init(){
+
+	MY_UI_Too::Controls::FPS* fps = new MY_UI_Too::Controls::FPS();
+	fps->Set_Pos(MY_UI_Too::Utilities::Point(10, 10));
+
+	MY_UI_Too::Controls::Button* chnguser = new MY_UI_Too::Controls::Button();
+	chnguser->Set_Text("Change User");
+	chnguser->Align_RightCenter(10, fps);
+	chnguser->On_Mouse_Left_Up.Connect(&loginslot, InitLoginScreen);
+
+	Current_User=new MY_UI_Too::Controls::Text();
+	Current_User->Set_Text("Current User:None");
+	Current_User->Align_RightCenter(5, chnguser);
+
+	InitLoginScreen();
+}
+void InitLoginScreen(){
+	DeInitLoginScreen();
+	loginwindow = new MY_UI_Too::Controls::WindowTitleBar(new MY_UI_Too::Controls::Window());
+	loginwindow->Set_Pos(MY_UI_Too::Utilities::Point(300, 100));
+	loginwindow->Set_Title("Login Window");
+	loginwindow->Set_Size(MY_UI_Too::Utilities::Point(340, 100));
+
+	logintxt = new MY_UI_Too::Controls::Text(loginwindow);
+	logintxt->Set_Text("Login:");
+	logintxt->Set_Pos(MY_UI_Too::Utilities::Point(10,30));
+	logintb = new MY_UI_Too::Controls::Text_Box(loginwindow);
+	logintb->Align_RightCenter(5, logintxt);
+
+	passtxt = new MY_UI_Too::Controls::Text(loginwindow);
+	passtxt->Set_Text("Password:");
+	passtxt->Set_Pos(MY_UI_Too::Utilities::Point(10,60));
+	password = new MY_UI_Too::Controls::Text_Box(loginwindow);
+	password->Align_RightCenter(5, passtxt);
+
+	validmessage= new MY_UI_Too::Controls::Text(loginwindow);
+	validmessage->Set_Text("Enter user credentials");
+	validmessage->Align_BottomCenter(5, password);
+
+	loginbutton = new MY_UI_Too::Controls::Button(loginwindow);
+	loginbutton->Set_Text("Login");
+	loginbutton->Align_RightCenter(10, password);
+	loginbutton->On_Mouse_Left_Up.Connect(&checkcredentials, CheckCredentials);
+}
+void DeInitLoginScreen(){
+	SaveInfo();
+	MY_UI_Too::Safe_Delete(loginwindow);
+	MY_UI_Too::Safe_Delete(logintxt);
+	MY_UI_Too::Safe_Delete(passtxt);
+	MY_UI_Too::Safe_Delete(loginbutton);
+	MY_UI_Too::Safe_Delete(password);
+	MY_UI_Too::Safe_Delete(logintb);
+}
+void DeInit(){
+	MY_UI_Too::Internal::Root_Widget->DeleteAll_Children();
+}
+void ClearUserArea(){
+	MY_UI_Too::Safe_Delete(check1);
+	MY_UI_Too::Safe_Delete(check2);
+	MY_UI_Too::Safe_Delete(radiogrp);
+	MY_UI_Too::Safe_Delete(txtbox1);
+	MY_UI_Too::Safe_Delete(txtbox2);
+	MY_UI_Too::Safe_Delete(window);
+}
+void SaveInfo(){
+	if(Prev_User.size()==0) return;
+	std::ofstream file(Prev_User);
+	if(!file) return;
+	file<<Prev_PW<<std::endl;
+	MY_UI_Too::Utilities::Point p = check1->Get_Pos();
+	file<<p.x<<std::endl;
+	file<<p.y<<std::endl;
+	file<<check1->Get_Checked()<<std::endl;
+
+	p = check2->Get_Pos();
+	file<<p.x<<std::endl;
+	file<<p.y<<std::endl;
+	file<<check2->Get_Checked()<<std::endl;
+
+	p = txtbox1->Get_Pos();
+	file<<p.x<<std::endl;
+	file<<p.y<<std::endl;
+	file<<txtbox1->Text->Get_Text()<<std::endl;
+
+	p = txtbox2->Get_Pos();
+	file<<p.x<<std::endl;
+	file<<p.y<<std::endl;
+	file<<txtbox2->Text->Get_Text()<<std::endl;
+
+	p = window->Get_Pos();
+	file<<p.x<<std::endl;
+	file<<p.y<<std::endl;
+	file.close();
+}
+void LoadInfo(std::ifstream& file){
+	ClearUserArea();
+	int x, y;
+	bool checked;
+	file>>x;
+	file>>y;
+	file>>checked;
+	check1 =new MY_UI_Too::Controls::CheckBox();
+	check1->Set_Pos(MY_UI_Too::Utilities::Point(x, y));
+	check1->Set_Checked(checked);
+
+	file>>x;
+	file>>y;
+	file>>checked;
+	check2 =new MY_UI_Too::Controls::CheckBox();
+	check2->Set_Pos(MY_UI_Too::Utilities::Point(x, y));
+	check2->Set_Checked(checked);
+
+	std::string text;
+	file>>x;
+	file>>y;
+	file>>text;
+
+	txtbox1 = new MY_UI_Too::Controls::Text_Box();
+	txtbox1->Set_Pos(MY_UI_Too::Utilities::Point(x, y));
+	txtbox1->Text->Set_Text(text);
+
+	file>>x;
+	file>>y;
+	file>>text;
+
+	txtbox2 = new MY_UI_Too::Controls::Text_Box();
+	txtbox2->Set_Pos(MY_UI_Too::Utilities::Point(x, y));
+	txtbox2->Text->Set_Text(text);
+
+	file>>x;
+	file>>y;
+	window =  new MY_UI_Too::Controls::WindowTitleBar(new MY_UI_Too::Controls::Window());
+	window->Set_Pos(MY_UI_Too::Utilities::Point(x, y));
+	window->Set_Title("tester");
+	window->Set_Size(MY_UI_Too::Utilities::Point(200, 200));
+
+	MY_UI_Too::Controls::Button* but = new MY_UI_Too::Controls::Button(window);
+	but->Set_Pos(MY_UI_Too::Utilities::Point(20, 30));
+}
+void GenFile(std::ofstream& file){
+	file<<200<<std::endl;
+	file<<200<<std::endl;
+	file<<true<<std::endl;
+
+	file<<200<<std::endl;
+	file<<240<<std::endl;
+	file<<false<<std::endl;
+
+	file<<200<<std::endl;
+	file<<260<<std::endl;
+	file<<"tesx1"<<std::endl;
+
+	file<<200<<std::endl;
+	file<<290<<std::endl;
+	file<<"test1231"<<std::endl;
+
+	file<<400<<std::endl;
+	file<<280<<std::endl;
+}
+
+
+void clearlogin(){
+	loginwindow->Delete_This();
+	loginwindow=nullptr;
+	logintxt=nullptr;
+	passtxt=nullptr;
+	loginbutton=nullptr;
+	logintb=nullptr;
+	password=nullptr;
+}
+void CheckCredentials(){
+	std::string log = logintb->Text->Get_Text();
+	std::string pw = password->Text->Get_Text();
+	std::ifstream file(log);
+	if(file){
+		std::string pass;
+		file>>pass;
+		if(pass==pw){
+			clearlogin();
+			Current_User->Set_Text("Current User:"+ log);
+			if(Prev_User.size()>0) SaveInfo();	
+			
+			Prev_User=log;
+			Prev_PW = pw;
+			LoadInfo(file);
+		} else {
+			validmessage->Set_Text("Incorrect login/password");
+		}
+		file.close();
+	} else {//if file doesnt exsist create a new one
+		std::ofstream f(log);
+		f<<pw<<std::endl;
+		clearlogin();
+		Current_User->Set_Text("Current User:"+ log);
+		if(Prev_User.size()>0) SaveInfo();
+		Prev_User=log;
+		Prev_PW = pw;
+		GenFile(f);
+		f.close();
+		std::ifstream file(Prev_User);
+		if(file) {
+			file>>Prev_PW;
+			LoadInfo(file);
+		}
+
+	}
 }

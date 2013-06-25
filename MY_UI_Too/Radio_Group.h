@@ -29,7 +29,7 @@ namespace MY_UI_Too{
 			std::vector<Radio_Button*> _Buttons;
 			void _Radio_Selected(Radio_Button* radio);
 		public:
-			Radio_Group(IWidget* parent);
+			Radio_Group(IWidget* parent=nullptr);
 			virtual ~Radio_Group() override{}
 
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;

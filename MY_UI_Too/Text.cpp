@@ -17,8 +17,10 @@ MY_UI_Too::Controls::Text::~Text(){
 
 void MY_UI_Too::Controls::Text::Draw(MY_UI_Too::Interfaces::ISkin* skin){
 	skin->Draw_Text(_Font, _Text, _Internals.Absolute_TL, _Font_Size);
-	Utilities::Point p = _Internals.Absolute_TL+ Utilities::Point(1, 1);//bold just adds a little thickness
-	if(_Bold) skin->Draw_Text(_Font, _Text, p, _Font_Size);
+	if(_Bold) skin->Draw_Text(_Font, _Text, _Internals.Absolute_TL+ Utilities::Point(1, 1), _Font_Size);//bold just adds a little thickness
+}
+void MY_UI_Too::Controls::Text::Draw_Caret(MY_UI_Too::Interfaces::ISkin* skin, unsigned int caretindex){
+	skin->Draw_Caret(_Font, _Text, _Internals.Absolute_TL, _Font_Size, caretindex);
 }
 
 void MY_UI_Too::Controls::Text::Set_Font(std::string fontname){

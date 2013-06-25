@@ -11,7 +11,7 @@ namespace MY_UI_Too{
 		protected:
 			MY_UI_Too::Utilities::UVs _UVs;
 		public:
-			Skin_Image(IWidget* parent);
+			Skin_Image(IWidget* parent=nullptr);
 			virtual ~Skin_Image();
 
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;

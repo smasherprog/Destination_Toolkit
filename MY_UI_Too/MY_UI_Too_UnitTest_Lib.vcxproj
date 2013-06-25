@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Text_Example.cpp" />
     <ClInclude Include="UnitTest.h" />
   </ItemGroup>
   <ItemGroup>

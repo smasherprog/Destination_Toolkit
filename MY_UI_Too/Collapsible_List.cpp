@@ -54,15 +54,15 @@ void MY_UI_Too::Controls::Collapsible_List::Set_Size(Utilities::Point size) {
 	Reorient_Children();
 }
 void MY_UI_Too::Controls::Collapsible_List::Draw(MY_UI_Too::Interfaces::ISkin* skin) {
-	skin->Draw_Window(_Internals.State, Utilities::Rect(_Internals.Absolute_TL.x , _Internals.Absolute_TL.y, _Internals.Size.x, _Internals.Size.y));
+
 	for( auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++) (*beg)->Draw(skin);
 }
-void MY_UI_Too::Controls::Collapsible_List::Add_Child(IWidget* child){
-	_Background->Add_Child(child);
+void MY_UI_Too::Controls::Collapsible_List::Attach_Child(IWidget* child){
+	_Background->Attach_Child(child);
 	Reorient_Children();
 }
-void MY_UI_Too::Controls::Collapsible_List::Remove_Child(IWidget* child){
-	MY_UI_Too::Controls::Widget::Remove_Child(child);
+void MY_UI_Too::Controls::Collapsible_List::Detach_Child(IWidget* child){
+	MY_UI_Too::Controls::Widget::Detach_Child(child);
 	Reorient_Children();
 }
 void MY_UI_Too::Controls::Collapsible_List::_Update_Mouse_Cursor(){
@@ -92,13 +92,13 @@ MY_UI_Too::Controls::Collapsible_Category::Collapsible_Category(Collapsible_List
 	_Title->Set_Pos(Utilities::Point(10, 4));
 	_Title->Set_Hitable(false);
 	_Title->Set_Name("Window Title");
-
+	/*
 	_Background = new MY_UI_Too::Controls::Widget(nullptr);
 	_Internals.Children.push_back(_Background);
 	_Background->Set_Parent(this);
 	_Background->Set_Pos(Utilities::Point(WND_BORDER, WND_TITLE_HEIGHT));
 	_Background->Set_Name("Window BackGround");
-
+	*/
 	Set_Draggable(true);
 
 	Set_Size(Utilities::Point(150, 300));
@@ -128,15 +128,15 @@ void MY_UI_Too::Controls::Collapsible_Category::Set_Size(Utilities::Point size) 
 	Reorient_Children();
 }
 void MY_UI_Too::Controls::Collapsible_Category::Draw(MY_UI_Too::Interfaces::ISkin* skin) {
-	skin->Draw_Window(_Internals.State, Utilities::Rect(_Internals.Absolute_TL.x , _Internals.Absolute_TL.y, _Internals.Size.x, _Internals.Size.y));
+
 	for( auto beg = _Internals.Children.begin(); beg != _Internals.Children.end(); beg++) (*beg)->Draw(skin);
 }
-void MY_UI_Too::Controls::Collapsible_Category::Add_Child(IWidget* child){
-	_Background->Add_Child(child);
+void MY_UI_Too::Controls::Collapsible_Category::Attach_Child(IWidget* child){
+	_Background->Attach_Child(child);
 	Reorient_Children();
 }
-void MY_UI_Too::Controls::Collapsible_Category::Remove_Child(IWidget* child){
-	MY_UI_Too::Controls::Widget::Remove_Child(child);
+void MY_UI_Too::Controls::Collapsible_Category::Detach_Child(IWidget* child){
+	MY_UI_Too::Controls::Widget::Detach_Child(child);
 	Reorient_Children();
 }
 void MY_UI_Too::Controls::Collapsible_Category::_Update_Mouse_Cursor(){

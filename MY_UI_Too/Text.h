@@ -15,7 +15,7 @@ namespace MY_UI_Too{
 			bool _Bold;
 		public:
 
-			Text(IWidget* widget);
+			Text(IWidget* parent=nullptr);
 			virtual ~Text() override;
 
 			virtual void Set_Text(std::string text);
@@ -30,6 +30,7 @@ namespace MY_UI_Too{
 			virtual void Set_Bold(bool bold);
 			virtual bool Get_Bold();
 
+			virtual void Draw_Caret(MY_UI_Too::Interfaces::ISkin* skin, unsigned int caretindex);
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
 
 		};

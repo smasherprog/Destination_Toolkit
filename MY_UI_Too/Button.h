@@ -9,7 +9,7 @@ namespace MY_UI_Too{
 		class Text;
 		class Button : public Widget{
 		public:
-			Button(IWidget* parent);
+			Button(IWidget* parent=nullptr);
 			virtual ~Button(){}
 
 			virtual IWidget* Hit() override;

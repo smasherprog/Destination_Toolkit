@@ -28,12 +28,6 @@ MY_UI_Too::Interfaces::IWidget::~IWidget(){
 #endif
 }
 
-void MY_UI_Too::Safe_Delete(MY_UI_Too::Interfaces::IWidget*& widget) {
-	if(widget == nullptr) return;
-	auto found = Internal::AllWidgets.find(widget);
-	if(found!=Internal::AllWidgets.end()) delete widget;// the destructor should take care of removing itself
-	widget = nullptr;
-}
 void MY_UI_Too::Init(MY_UI_Too::Interfaces::IRenderer* renderer, MY_UI_Too::Interfaces::ISkin* skin, MY_UI_Too::Interfaces::IFont_Factory* font_factory, MY_UI_Too::Interfaces::IWidget* root,  MY_UI_Too::Interfaces::IInput* input, unsigned int screen_width, unsigned int screen_height, unsigned int skinsize){
 	Internal::Renderer=renderer; 
 	Internal::UI_Skin = skin; 

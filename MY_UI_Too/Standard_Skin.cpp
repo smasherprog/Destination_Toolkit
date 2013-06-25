@@ -216,43 +216,13 @@ void MY_UI_Too::Standard_Skin::Draw_Radio(Widget_States state,bool checked, MY_U
 	}
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uv, bounds);
 }
-void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
+void MY_UI_Too::Standard_Skin::Draw_Window_BackGround(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
 
 	MY_UI_Too::Utilities::UVs uvs = _Window_Top;
 	MY_UI_Too::Utilities::Rect r(bounds);
-	r.width -=BORDER_SIZE;
-	r.left += BORDER_SIZE/2;
-	r.height = _Wnd_Title_Height;
-	uvs *= _Border_Size;
-	_Renderer->DrawTexturedRect_NoClip(_Skin, _Window_Top, r);
-
-	uvs = _Window_Top;
-	uvs.u2 = uvs.u1 + _Border_Size;
-	r.left = bounds.left;
-	r.width = BORDER_SIZE;
-	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
-
-	uvs.u1 =_Window_Top.u2 - _Border_Size;
-	uvs.u2 = _Window_Top.u2;
-	r.width = BORDER_SIZE;
-	r.left = (bounds.left + bounds.width) - BORDER_SIZE;
-	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
-
-	//draw the center 
-	r = bounds;
-	r.left += BORDER_SIZE;
-	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
-	r.width =  bounds.width - (BORDER_SIZE*2);
-	r.top += _Wnd_Title_Height + BORDER_SIZE;
-	uvs = _Window_Bottom;
-	uvs.u1 += _Border_Size;
-	uvs.u2 -= _Border_Size;
-	uvs.v1 += _Border_Size;
-	uvs.v2 -= _Border_Size;
-	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
-
+	
 	//now the top left corner
-	r.top = bounds.top + _Wnd_Title_Height;
+	r.top = bounds.top;
 	r.left = bounds.left;
 	r.height = BORDER_SIZE;
 	r.width =  BORDER_SIZE;
@@ -265,7 +235,7 @@ void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utili
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
 
 	//now the top center
-	r.top = bounds.top + _Wnd_Title_Height;
+	r.top = bounds.top;
 	r.left = bounds.left + BORDER_SIZE;
 	r.height = BORDER_SIZE;
 	r.width =  bounds.width - (BORDER_SIZE*2);
@@ -278,7 +248,7 @@ void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utili
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
 
 	//now the top right
-	r.top = bounds.top + _Wnd_Title_Height;
+	r.top = bounds.top;
 	r.left = bounds.left + bounds.width - BORDER_SIZE;
 	r.height = BORDER_SIZE;
 	r.width =  BORDER_SIZE;
@@ -291,9 +261,9 @@ void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utili
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
 
 	//now the right center
-	r.top = bounds.top + _Wnd_Title_Height+ BORDER_SIZE;
+	r.top = bounds.top+ BORDER_SIZE;
 	r.left = bounds.left + bounds.width - BORDER_SIZE;
-	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
+	r.height = bounds.height - (BORDER_SIZE*2);
 	r.width =  BORDER_SIZE;
 
 	uvs = _Window_Bottom;
@@ -343,9 +313,9 @@ void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utili
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
 
 	//now the left center
-	r.top = bounds.top + _Wnd_Title_Height+ BORDER_SIZE;
+	r.top = bounds.top + BORDER_SIZE;
 	r.left = bounds.left;
-	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
+	r.height = bounds.height - (BORDER_SIZE*2);
 	r.width = BORDER_SIZE;
 
 	uvs = _Window_Bottom;
@@ -354,6 +324,42 @@ void MY_UI_Too::Standard_Skin::Draw_Window(Widget_States state, MY_UI_Too::Utili
 	uvs.v1 = _Window_Bottom.v1 + _Border_Size;
 	uvs.v2 = _Window_Bottom.v2 - _Border_Size;
 	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+}
+void MY_UI_Too::Standard_Skin::Draw_Window_TitleBar(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
+
+	MY_UI_Too::Utilities::UVs uvs = _Window_Top;
+	MY_UI_Too::Utilities::Rect r(bounds);
+	r.width -=BORDER_SIZE;
+	r.left += BORDER_SIZE/2;
+	r.height = _Wnd_Title_Height;
+	uvs *= _Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, _Window_Top, r);
+
+	uvs = _Window_Top;
+	uvs.u2 = uvs.u1 + _Border_Size;
+	r.left = bounds.left;
+	r.width = BORDER_SIZE;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	uvs.u1 =_Window_Top.u2 - _Border_Size;
+	uvs.u2 = _Window_Top.u2;
+	r.width = BORDER_SIZE;
+	r.left = (bounds.left + bounds.width) - BORDER_SIZE;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
+	//draw the center 
+	r = bounds;
+	r.left += BORDER_SIZE;
+	r.height = bounds.height - _Wnd_Title_Height - (BORDER_SIZE*2);
+	r.width =  bounds.width - (BORDER_SIZE*2);
+	r.top += _Wnd_Title_Height + BORDER_SIZE;
+	uvs = _Window_Bottom;
+	uvs.u1 += _Border_Size;
+	uvs.u2 -= _Border_Size;
+	uvs.v1 += _Border_Size;
+	uvs.v2 -= _Border_Size;
+	_Renderer->DrawTexturedRect_NoClip(_Skin, uvs, r);
+
 }
 void MY_UI_Too::Standard_Skin::Draw_WindowCloseButton(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const{
 	Utilities::UVs uv;
@@ -372,6 +378,10 @@ void MY_UI_Too::Standard_Skin::Draw_Custom(MY_UI_Too::Utilities::UVs uvs, MY_UI_
 void MY_UI_Too::Standard_Skin::Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color) const{
 	_Renderer->DrawText_NoClip(_Skin, font, txt, startinpos, fontsize, color, color, color, color);
 }
+void MY_UI_Too::Standard_Skin::Draw_Caret(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize, unsigned int carentindex,  MY_UI_Too::Utilities::Color color) const{
+	_Renderer->DrawTextCaret_NoClip(_Skin, font, txt, startinpos, fontsize, carentindex, color, color, color, color);
+}
+
 MY_UI_Too::Utilities::Point MY_UI_Too::Standard_Skin::Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const{
 	return _Renderer->Measure_String(_Skin->Get_Dimensions(), font, fontsize, text);
 }

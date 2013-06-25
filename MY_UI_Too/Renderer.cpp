@@ -22,7 +22,7 @@ void MY_UI_Too::Renderer::Draw(){
 		++DrawCalls;
 		Draw_States[i].changed=false;
 	}
-	
+
 }
 void MY_UI_Too::Renderer::StartNewBatch() { 
 	Draw_State_Index=0; 
@@ -200,6 +200,78 @@ void MY_UI_Too::Renderer::DrawText_NoClip(const MY_UI_Too::Interfaces::ITexture*
 		}
 	}
 }
+void MY_UI_Too::Renderer::DrawTextCaret_NoClip(const MY_UI_Too::Interfaces::ITexture* pTexture, const MY_UI_Too::Interfaces::IFont* font, const std::string text, const MY_UI_Too::Utilities::Point startinpos, const unsigned int fontsize, unsigned int careindex, const MY_UI_Too::Utilities::Color color_tl,const  MY_UI_Too::Utilities::Color color_tr, const MY_UI_Too::Utilities::Color color_bl, const MY_UI_Too::Utilities::Color color_br, bool drawnow){
+	if(!SetTexture(pTexture, drawnow)) return;
+	int startleft= startinpos.x;
+	float skinwidth = (float)pTexture->Get_Dimensions().left;
+	float skinheight = (float)pTexture->Get_Dimensions().top;
+	float fontsizef = (float)fontsize;
+	float fontscale = fontsizef/(float)FONT_CREATE_SIZE;
+
+	Utilities::UVs spaceuvs = font->Get_Char('a');
+	unsigned int spacewidth=(int)(skinwidth*(spaceuvs.u2 - spaceuvs.u1)*fontscale);
+	spaceuvs = font->Get_Char(')');
+	unsigned int vertheight =(int)(NEXTLINEPERCENT*skinheight*(spaceuvs.v2 - spaceuvs.v1) + skinheight*(spaceuvs.v2 - spaceuvs.v1));
+	MY_UI_Too::Utilities::Point startin_pos=startinpos;
+	unsigned int index=0;
+	//goto http://www.asciitable.com/ for ascii info
+	for(auto beg = text.begin(); beg!= text.end(); beg++){
+
+		char c = *beg;
+		if(c == 0)continue;
+		else if(c==9) startin_pos.left+=(spacewidth*8);// a tab is 8 spaces
+		else if(c==32) startin_pos.left+=spacewidth;
+		else if(c==13){
+			if(beg+1 != text.end()){
+				if(*(beg+1) == 10) {
+					beg++;//advance a character.. some people still think \r\n is appropriate for a newline instead of just \n
+				}
+			}
+			startin_pos.top+=vertheight;
+			startin_pos.left = startleft;
+		} else if(c==10) {
+			startin_pos.top+=vertheight;
+			startin_pos.left = startleft;
+		}
+		else {
+			if( (c<START_CHAR) | (c> END_CHAR)) {
+				OUTPUT_DEBUG_MSG("Measure string encountered a non keyboard character. The character is(dec): "<<(int)c<<"  This character is being ignored");
+				continue;
+			}
+			Utilities::UVs uvs = font->Get_Char(c);
+			float width = skinwidth*(uvs.u2 - uvs.u1)*fontscale;
+			if(index == careindex){
+				uvs = font->Get_Char('|');
+				width = skinwidth*(uvs.u2 - uvs.u1)*fontscale;
+				float left= static_cast<float>(startin_pos.x);
+				float top = static_cast<float>(startin_pos.y);
+				float right = width + left;
+				float height = fontsizef;
+				float bottom = height + top;
+
+				AddVert( left, top,					uvs.u1, uvs.v1, color_tl );
+				AddVert( right, top,				uvs.u2, uvs.v1, color_tr );
+				AddVert( left, bottom,				uvs.u1, uvs.v2, color_bl );
+				AddVert( right, bottom,				uvs.u2, uvs.v2, color_br );
+				return;
+			}
+			startin_pos.x+=(int)width+1;// add at least one pixel
+		}
+		index+=1;
+	}
+	Utilities::UVs uvs = font->Get_Char('|');
+	float width = skinwidth*(uvs.u2 - uvs.u1)*fontscale;
+	float left= static_cast<float>(startin_pos.x);
+	float top = static_cast<float>(startin_pos.y);
+	float right = width + left;
+	float height = fontsizef;
+	float bottom = height + top;
+
+	AddVert( left, top,					uvs.u1, uvs.v1, color_tl );
+	AddVert( right, top,				uvs.u2, uvs.v1, color_tr );
+	AddVert( left, bottom,				uvs.u1, uvs.v2, color_bl );
+	AddVert( right, bottom,				uvs.u2, uvs.v2, color_br );
+}
 MY_UI_Too::Utilities::Point MY_UI_Too::Renderer::Measure_String(const MY_UI_Too::Utilities::Point skinsize,const  MY_UI_Too::Interfaces::IFont* font, const unsigned int fontsize, const std::string text){
 	MY_UI_Too::Utilities::Point dims;
 	float skinwidth = (float)skinsize.x;
@@ -209,7 +281,7 @@ MY_UI_Too::Utilities::Point MY_UI_Too::Renderer::Measure_String(const MY_UI_Too:
 	unsigned int spacewidth=(int)(skinwidth*(spaceuvs.u2 - spaceuvs.u1)*fontscale);
 	spaceuvs = font->Get_Char(')');
 	unsigned int vertheight =(int)(NEXTLINEPERCENT*skinheight*(spaceuvs.v2 - spaceuvs.v1)*fontscale + skinheight*(spaceuvs.v2 - spaceuvs.v1)*fontscale);
-	
+
 	//goto http://www.asciitable.com/ for ascii info
 	for(auto beg = text.begin(); beg!= text.end(); beg++){
 

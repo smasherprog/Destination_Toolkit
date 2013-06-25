@@ -162,6 +162,7 @@
     <ClInclude Include="CheckBox.h" />
     <ClInclude Include="Collapsible_List.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="Resizable.h" />
     <ClInclude Include="Skin_Image.h" />
     <ClInclude Include="Text_Box.h" />
     <ClInclude Include="Window.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="IWidget.cpp" />
     <ClCompile Include="Radio_Group.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Resizable.cpp" />
     <ClCompile Include="Root.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Skin_Image.cpp" />

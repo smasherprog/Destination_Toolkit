@@ -9,17 +9,15 @@ namespace MY_UI_Too{
 	namespace Controls{
 		class Text;
 		class FPS : public Widget{
-			typedef std::chrono::milliseconds milliseconds;
-			std::chrono::high_resolution_clock::time_point _Start;
+
 			Text* _Text;
-			long long _Last_Second;// this stores the milliseconds
-			unsigned int _Current_Frame, _LastFps;
+			Utilities::Timer _Timer;
 		public:
-			FPS(IWidget* parent);
+			FPS(IWidget* parent=nullptr);
 			virtual ~FPS(){}
 
-			virtual void Start();
-			virtual unsigned int Get_FPS();
+			virtual void Start(){_Timer.Start();}
+			virtual unsigned int Get_FPS(){ return _Timer.Get_FPS();}
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin)override;
 
 		};

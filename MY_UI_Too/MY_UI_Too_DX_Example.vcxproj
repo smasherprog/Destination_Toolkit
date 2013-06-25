@@ -26,12 +26,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Test_Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Test.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{00E7A70D-4868-4592-B0FE-B2947BC67FFE}</ProjectGuid>

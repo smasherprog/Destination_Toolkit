@@ -24,12 +24,15 @@ namespace MY_UI_Too{
 			virtual void Draw_CheckBox(Widget_States state, bool checked, MY_UI_Too::Utilities::Rect bounds) const=0;
 			virtual void Draw_Radio(Widget_States state,bool checked, MY_UI_Too::Utilities::Rect bounds) const=0;
 			virtual void Draw_WindowCloseButton(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const=0;
-			virtual void Draw_Window(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const=0;
+			virtual void Draw_Window_TitleBar(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const=0;
+			virtual void Draw_Window_BackGround(Widget_States state, MY_UI_Too::Utilities::Rect bounds) const=0;
 			virtual void Draw_Text_Box(bool focus, MY_UI_Too::Utilities::Rect bounds) const=0;
 		
 			virtual void Draw_Custom(MY_UI_Too::Utilities::UVs u, MY_UI_Too::Utilities::Rect bounds) const=0;
 			
 			virtual void Draw_Text(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize,  MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black) const=0;
+			virtual void Draw_Caret(MY_UI_Too::Interfaces::IFont* font, std::string txt, MY_UI_Too::Utilities::Point startinpos, unsigned int fontsize, unsigned int caretindex, MY_UI_Too::Utilities::Color color_tl = MY_UI_Too::Utilities::Black) const=0;
+			
 			virtual MY_UI_Too::Utilities::Point Measure_String(MY_UI_Too::Interfaces::IFont* font, unsigned int fontsize, std::string text) const=0;
 
 		};

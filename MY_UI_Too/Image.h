@@ -12,7 +12,7 @@ namespace MY_UI_Too{
 			MY_UI_Too::Interfaces::ITexture* _Texture;
 			MY_UI_Too::Utilities::UVs _UVs;
 		public:
-			Image(IWidget* parent);
+			Image(IWidget* parent=nullptr);
 			virtual ~Image();
 
 			virtual void Draw(MY_UI_Too::Interfaces::ISkin* skin) override;
