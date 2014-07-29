@@ -3,7 +3,7 @@
 
 #include "cPhysicsEngine.h"
 #include "cParticle.h"
-#include "../BV_Lib/cSphere.h"
+//#include "../BV_Lib/cSphere.h"
 
 using namespace std;
 class OBB;

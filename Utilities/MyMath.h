@@ -43,7 +43,6 @@
 #include "stdint.h"
 #include <algorithm>
 
-#define INFINITY 3.402823466e+38F 
 #define Pi  3.14159265358979323846f
 #define INV_Pi  1.0f/Pi
 #define PI_D_CI 2*Pi/360.0f//pi divided by circle

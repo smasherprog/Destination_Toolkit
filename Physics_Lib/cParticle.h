@@ -3,7 +3,7 @@
 
 #include "../Utilities/MyMath.h"
 #include "cPhysicsEngine.h"
-#include "../BV_Lib/cSphere.h"
+//#include "../BV_Lib/cSphere.h"
 
 using namespace std;
 class OBB;
@@ -19,7 +19,7 @@ class Particle : public cPhysicsObject
 		void AddForces();
 		void SatisfyConstraints(std::vector<OBB*> &obstacles);
 
-		cSphere Sphere;
+	//	cSphere Sphere;
 		float m_bounce;
 };
 

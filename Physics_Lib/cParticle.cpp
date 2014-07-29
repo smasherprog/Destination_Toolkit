@@ -42,7 +42,7 @@ void Particle::SatisfyConstraints(std::vector<OBB*> &obstacles){
 			vec3 dir=V;
 			dir.normalize();
 			vec3 org;
-			obstacles[i]->GetContactPoint(dir, m_oldPos, dir, org);
+			//obstacles[i]->GetContactPoint(dir, m_oldPos, dir, org);
 			vec3 VN = Dot(dir, V) * dir;
 			vec3 VT = V - VN;
 			m_pos = org + 0.005f * dir;

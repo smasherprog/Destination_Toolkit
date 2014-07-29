@@ -2,7 +2,7 @@
 #define CFUNCTION_H
 
 #include "../Utilities/MyMath.h"
-#include "../BV_Lib/cAABB.h"
+//#include "../BV_Lib/cAABB.h"
 #include "../Utilities/My_Timer.h"
 #include <fstream>
 
@@ -19,7 +19,7 @@ public:
 	double Duration;
 	cItem* Item;
 	vec3 Position;
-	cAABB BV;
+	//cAABB BV;
 	//cCharacter* Character;
 	//cObject* Object;
 	//cStructure* Structure;
