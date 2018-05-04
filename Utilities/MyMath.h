@@ -736,6 +736,7 @@ public:
 	};
 
 	quat() {}
+    quat(const quat& q) : row_v(q.row_v) {}
 	quat(const vec4& vec4) : row_v(vec4) {}
 #ifdef _WIN64
 	quat(const __m128 v) : vec(v) {}
@@ -946,6 +947,8 @@ public:
 #ifdef _WIN64
 	mat4(const __m128& nrow0, const  __m128& nrow1, const  __m128& nrow2, const __m128& nrow3): row0(nrow0), row1(nrow1), row2(nrow2), row3(nrow3) {}
 	mat4(const mat4& obj) : row0(obj.row0), row1(obj.row1), row2(obj.row2), row3(obj.row3) {}
+#else
+    mat4(const mat4& obj) : row0_v(obj.row0_v), row1_v(obj.row1_v), row2_v(obj.row2_v), row3_v(obj.row3_v) {}
 #endif
 	mat4(const vec4& nrow0, const  vec4& nrow1, const  vec4& nrow2, const vec4& nrow3): row0_v(nrow0), row1_v(nrow1), row2_v(nrow2), row3_v(nrow3) {}
 	mat4(const Plane plane):

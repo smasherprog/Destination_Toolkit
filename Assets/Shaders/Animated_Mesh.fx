@@ -17,7 +17,7 @@ cbuffer CBuffer1 {
 };
 
 cbuffer CBuffer2{
-	float4x4 bone_matrices[MATRIX_PALETTE_SIZE_DEFAULT];
+	float4x4 bone_matrices[60];
 }
 
 Texture2D Slot0, Slot1;
