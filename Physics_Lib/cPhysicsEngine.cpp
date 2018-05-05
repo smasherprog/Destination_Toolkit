@@ -16,29 +16,29 @@ void cPhysicsEngine::Init(){
 	//obb->Init();
 	//m_obstacles.push_back(obb);
 	
-	OBB* obb = new OBB(vec3(0.8f, 0.1f, 2.0f));
-	obb->Center = vec3(-0.5f, 1.0f, 0.0f)  + vec3(-150, 85, 235);
-	obb->Rot.SetupRotation(euler(0.0f, -0.1f, -0.5f));
-	obb->Init();
-	m_obstacles.push_back(obb);
+	//OBB* obb = new OBB(vec3(0.8f, 0.1f, 2.0f));
+	//obb->Center = vec3(-0.5f, 1.0f, 0.0f)  + vec3(-150, 85, 235);
+	//obb->Rot.SetupRotation(euler(0.0f, -0.1f, -0.5f));
+	//obb->Init();
+	//m_obstacles.push_back(obb);
 
-	obb = new OBB(vec3(0.8f, 0.1f, 2.0f));
-	obb->Center = vec3(0.5f, 2.0f, 0.0f)  + vec3(-150, 85, 235);
-	obb->Rot.SetupRotation(euler( 0.1f, 0.0f, 0.4f));
-	obb->Init();
-	m_obstacles.push_back(obb);
+	//obb = new OBB(vec3(0.8f, 0.1f, 2.0f));
+	//obb->Center = vec3(0.5f, 2.0f, 0.0f)  + vec3(-150, 85, 235);
+	//obb->Rot.SetupRotation(euler( 0.1f, 0.0f, 0.4f));
+	//obb->Init();
+	//m_obstacles.push_back(obb);
 
-	obb = new OBB(vec3(1.0f, 0.1f, 2.0f));
-	obb->Center = vec3(-0.5f, 3.0f, 0.0f)  + vec3(-150, 85, 235);
-	obb->Rot.SetupRotation(euler( 0.0f, -0.1f, -0.3f));
-	obb->Init();
-	m_obstacles.push_back(obb);
+	//obb = new OBB(vec3(1.0f, 0.1f, 2.0f));
+	//obb->Center = vec3(-0.5f, 3.0f, 0.0f)  + vec3(-150, 85, 235);
+	//obb->Rot.SetupRotation(euler( 0.0f, -0.1f, -0.3f));
+	//obb->Init();
+	//m_obstacles.push_back(obb);
 
-	obb = new OBB(vec3(0.5f, 0.1f, 1.0f));
-	obb->Center = vec3(0.8f, 4.0f, 0.0f)  + vec3(-150, 85, 235);
-	obb->Rot.SetupRotation(euler(0.1f, 0.0f, 0.2f));
-	obb->Init();
-	m_obstacles.push_back(obb);
+	//obb = new OBB(vec3(0.5f, 0.1f, 1.0f));
+	//obb->Center = vec3(0.8f, 4.0f, 0.0f)  + vec3(-150, 85, 235);
+	//obb->Rot.SetupRotation(euler(0.1f, 0.0f, 0.2f));
+	//obb->Init();
+	//m_obstacles.push_back(obb);
 }
 cPhysicsEngine::~cPhysicsEngine(){
 	DeInit();

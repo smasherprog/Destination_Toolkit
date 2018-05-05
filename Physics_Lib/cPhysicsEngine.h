@@ -4,6 +4,9 @@
 #include "../Utilities/MyMath.h"
 #include <random>
 
+
+#pragma comment(lib, "legacy_stdio_definitions")
+
 class OBB;
 using namespace std;
 

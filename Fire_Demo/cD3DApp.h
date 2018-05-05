@@ -6,6 +6,7 @@
 class cLoginControl;
 class cDemoControl;
 #include "../Utilities/My_Timer.h"
+#pragma comment(lib, "legacy_stdio_definitions")
 
 namespace MY_UI{
 	namespace Utilities{

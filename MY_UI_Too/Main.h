@@ -7,6 +7,7 @@
 #include <d3dx11.h>
 #include <d3dcompiler.h>
 #pragma warning(pop)
+#pragma comment(lib, "legacy_stdio_definitions")
 extern HWND						g_pHWND;
 extern ID3D11Device				*g_Device;
 extern IDXGISwapChain			*SwapChain;

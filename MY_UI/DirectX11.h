@@ -16,6 +16,7 @@
 
 #pragma comment(lib, "d3d11")
 #pragma comment(lib, "DXGI")
+#pragma comment(lib, "legacy_stdio_definitions")
 
 #if defined(_DEBUG) | defined (DEBUG)
 #pragma comment(lib, "d3dx11d")
